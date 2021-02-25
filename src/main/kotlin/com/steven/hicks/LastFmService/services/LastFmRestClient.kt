@@ -1,16 +1,13 @@
 package com.steven.hicks.LastFmService.services
 
+import com.steven.hicks.LastFmService.entities.LastFmException
 import com.steven.hicks.LastFmService.entities.dto.RecentTracks
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestTemplate
 import org.springframework.web.reactive.function.client.WebClient
 
 @Component
-class LastFmRestClient(
-        val restTemplate: RestTemplate
-) {
+class LastFmRestClient {
 
     @Value("\${lastfm.user}")
     private lateinit var lastFmDefaultUser: String
@@ -21,19 +18,28 @@ class LastFmRestClient(
         val LAST_FM_URL = "https://ws.audioscrobbler.com/2.0/?"
     }
 
-    open fun getRecentTracks() {
+    fun getRecentTracks(
+            page: Int? = null,
+            from: Long? = null,
+            to: Long? = null
+    ): RecentTracks {
 
-        val url = "${LAST_FM_URL}method=user.getrecenttracks&user=${lastFmDefaultUser}&limit=200&format=json&api_key=${lastFmKey}"
+        val pageParam = if (page != null) "&page=$page" else ""
+
+        val url = "${LAST_FM_URL}method=user.getrecenttracks&user=${lastFmDefaultUser}&limit=200&format=json&api_key=${lastFmKey}$pageParam"
         val client = WebClient.create()
 
-        val recentTracks = client.get()
-                .uri(url)
-                .retrieve()
-                .bodyToMono(RecentTracks::class.java)
-                .block()
+        return try {
+            val recentTracks = client.get()
+                    .uri(url)
+                    .retrieve()
+                    .bodyToMono(RecentTracks::class.java)
+                    .block()
 
-        println(recentTracks);
+            recentTracks ?: throw Exception("")
+        } catch (e: Exception) {
+            println(e);
+            throw LastFmException("Problem calling last FM", e)
+        }
     }
-
-
 }
