@@ -1,4 +1,4 @@
-package com.steven.hicks.LastFmService.entities.data
+package com.steven.hicks.lastFmService.entities.data
 
 import javax.persistence.*
 

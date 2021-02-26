@@ -1,12 +1,8 @@
-package com.steven.hicks.LastFmService.entities.dto
+package com.steven.hicks.lastFmService.entities.dto
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
-import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
-
-//@JsonDeserialize(using = RecentTracksDeserializer::class)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 data class RecentTracks(val recenttracks: RecentTrack)
 
