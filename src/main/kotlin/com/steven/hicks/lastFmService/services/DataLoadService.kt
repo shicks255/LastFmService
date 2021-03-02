@@ -36,7 +36,5 @@ class DataLoadService(
             //log
             println(e.localizedMessage)
         }
-
     }
-
 }
