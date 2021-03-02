@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://192.168.1.39:5432/Lastfm
+    username: shicks
+    password:
+    platform: postgres
+
+
+lastfm:
+  user: shicks255
+  apiKey:
