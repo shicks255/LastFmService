@@ -1,7 +1,6 @@
 package com.steven.hicks.lastFmService.entities.data
 
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import javax.persistence.*
 

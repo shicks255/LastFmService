@@ -16,7 +16,8 @@ class LastFmRestClient {
     private lateinit var lastFmKey: String
 
     companion object {
-        val LAST_FM_URL = "https://ws.audioscrobbler.com"
+        const val LAST_FM_URL = "https://ws.audioscrobbler.com"
+        const val PAGE_LIMIT = 200
     }
 
     fun getRecentTracks(
@@ -35,7 +36,7 @@ class LastFmRestClient {
                         uri.path("/2.0/")
                                 .queryParam("method", "user.getrecenttracks")
                                 .queryParam("user", lastFmDefaultUser)
-                                .queryParam("limit", 200)
+                                .queryParam("limit", PAGE_LIMIT)
                                 .queryParam("format", "json")
                                 .queryParam("api_key", lastFmKey)
                         if (page != null)
@@ -51,7 +52,7 @@ class LastFmRestClient {
                     .bodyToMono(RecentTracks::class.java)
                     .block()
 
-            recentTracks ?: throw Exception("")
+            recentTracks ?: throw LastFmException("")
         } catch (e: Exception) {
             println(e);
             throw LastFmException("Problem calling last FM", e)

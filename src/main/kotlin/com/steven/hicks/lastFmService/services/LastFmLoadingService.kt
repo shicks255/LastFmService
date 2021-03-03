@@ -1,6 +1,7 @@
 package com.steven.hicks.lastFmService.services
 
 import com.steven.hicks.lastFmService.entities.LastFmException
+import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.ZoneId
@@ -11,55 +12,55 @@ class LastFmLoadingService(
         val scrobbleService: ScrobbleService
 ) {
 
+    companion object {
+        const val SLEEP_TIME = 6000L
+        const val SECONDS_IN_DAY = 86399
+        const val START_PAGE = 333
+    }
+
     fun loadAll() {
-        var pageNumber = 92;
+        var pageNumber = START_PAGE;
         while (pageNumber > 0) {
             val recent = client.getRecentTracks(page = pageNumber)
-            val tracks = recent.recenttracks.track ?: emptyList()
-            tracks.reversed().forEach {
-                println("Saving ${it.name}")
-                scrobbleService.saveRecentTrack(it)
-            }
-
+            saveTracks(recent)
             println("Finished loading $pageNumber")
             pageNumber -= 1
 
-            Thread.sleep(6000)
+            Thread.sleep(SLEEP_TIME)
         }
     }
 
     fun loadDay(day: LocalDate): Int {
-        try {
-            val from = day.atStartOfDay(ZoneId.of("UTC")).toEpochSecond()
-            val to = from + 86399
+        val from = day.atStartOfDay(ZoneId.of("UTC")).toEpochSecond()
+        val to = from + SECONDS_IN_DAY
 
-            val recent = client.getRecentTracks(
+        val recent = client.getRecentTracks(
+                from = from,
+                to = to
+        )
+
+        var pageNumber = recent.recenttracks.attr.totalPages
+        while (pageNumber > 0) {
+            val recentTrax = client.getRecentTracks(
+                    page = pageNumber,
                     from = from,
                     to = to
             )
+            saveTracks(recentTrax)
+            println("Finished loading $pageNumber")
+            pageNumber -= 1
 
-            var pageNumber = recent.recenttracks.attr.totalPages
-            while (pageNumber > 0) {
-                val recent = client.getRecentTracks(
-                        page = pageNumber,
-                        from = from,
-                        to = to
-                )
-                val tracks = recent.recenttracks.track ?: emptyList()
-                tracks.reversed().forEach {
-                    println("Saving ${it.name}")
-                    scrobbleService.saveRecentTrack(it)
-                }
+            Thread.sleep(SLEEP_TIME)
+        }
 
-                println("Finished loading $pageNumber")
-                pageNumber -= 1
+        return recent.recenttracks.attr.total
+    }
 
-                Thread.sleep(3000)
-            }
-
-            return recent.recenttracks.attr.total
-        } catch (e: Exception) {
-            throw LastFmException("Problem calling last.fm", e)
+    private fun saveTracks(recentTrax: RecentTracks) {
+        val tracks = recentTrax.recenttracks.track ?: emptyList()
+        tracks.reversed().forEach {
+            println("Saving ${it.name}")
+            scrobbleService.saveRecentTrack(it)
         }
     }
 }
