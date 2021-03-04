@@ -65,6 +65,6 @@ tasks.check {
 
 tasks.register<Copy>("copyJar") {
     println("$buildDir")
-    from("$buildDir/libs/LastFmService-0.0.1-SNAPSHOT.jar")
+    from("build/libs/LastFmService-0.0.1-SNAPSHOT.jar")
     into("Z:\\lastFmService")
 }
