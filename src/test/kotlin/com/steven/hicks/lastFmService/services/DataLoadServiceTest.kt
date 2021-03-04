@@ -1,11 +1,9 @@
-package com.steven.hicks.lastFmService
+package com.steven.hicks.lastFmService.services
 
 import com.steven.hicks.lastFmService.entities.LastFmException
 import com.steven.hicks.lastFmService.entities.data.DataLoad
 import com.steven.hicks.lastFmService.entities.data.DataLoadStatus
 import com.steven.hicks.lastFmService.repositories.DataLoadRepository
-import com.steven.hicks.lastFmService.services.DataLoadService
-import com.steven.hicks.lastFmService.services.LastFmLoadingService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
@@ -48,7 +46,7 @@ class DataLoadServiceTest {
     }
 
     @Test
-    fun `dsf`() {
+    fun `should save DataLoad entity if error thrown`() {
         val date = LocalDate.now()
         val event = DataLoad(
                 date,

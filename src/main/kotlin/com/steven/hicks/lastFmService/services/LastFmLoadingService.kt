@@ -1,6 +1,5 @@
 package com.steven.hicks.lastFmService.services
 
-import com.steven.hicks.lastFmService.entities.LastFmException
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import org.springframework.stereotype.Service
 import java.time.LocalDate
