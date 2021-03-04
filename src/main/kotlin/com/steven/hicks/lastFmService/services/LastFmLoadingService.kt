@@ -53,7 +53,6 @@ class LastFmLoadingService(
             Thread.sleep(SLEEP_TIME)
         }
 
-
         return recent.recenttracks.attr.total
     }
 

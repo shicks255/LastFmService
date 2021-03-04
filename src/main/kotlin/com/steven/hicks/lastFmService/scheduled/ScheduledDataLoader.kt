@@ -10,7 +10,7 @@ class ScheduledDataLoader(val dataLoadService: DataLoadService) {
 
     //Every morning at 3
     @Scheduled(cron = "0 0 3 * * *")
-//    @Scheduled(initialDelay = 1000, fixedDelay = 100000)
+//    @Scheduled(initialDelay = 1000, fixedDelay = 1000000)
     fun loadDay() {
         //log
         println("Loading ${LocalDate.now().minusDays(1)}")
