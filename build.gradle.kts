@@ -62,3 +62,8 @@ tasks.jacocoTestCoverageVerification {
 tasks.check {
     doLast { tasks.jacocoTestCoverageVerification }
 }
+
+tasks.register<Copy>("copyJar") {
+    from("$buildDir/libs/LastFmService-0.0.1-SNAPSHOT.jar")
+    into("Z:\\lastFmService")
+}
