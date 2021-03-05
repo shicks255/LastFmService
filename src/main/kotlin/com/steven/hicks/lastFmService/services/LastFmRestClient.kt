@@ -17,10 +17,10 @@ class LastFmRestClient {
         .build()
 
     @Value("\${lastfm.user}")
-    private lateinit var lastFmDefaultUser: String
+    lateinit var lastFmDefaultUser: String
 
     @Value("\${lastfm.apiKey}")
-    private lateinit var lastFmKey: String
+    lateinit var lastFmKey: String
 
     companion object {
         const val LAST_FM_URL = "https://ws.audioscrobbler.com"
@@ -35,25 +35,10 @@ class LastFmRestClient {
 
         return try {
             val recentTracks = client.get()
-                    .uri { uri ->
-                        uri.path("/2.0/")
-                                .queryParam("method", "user.getrecenttracks")
-                                .queryParam("user", lastFmDefaultUser)
-                                .queryParam("limit", PAGE_LIMIT)
-                                .queryParam("format", "json")
-                                .queryParam("api_key", lastFmKey)
-                        if (page != null)
-                            uri.queryParam("page", page)
-                        if (from != null)
-                            uri.queryParam("from", from)
-                        if (to != null)
-                            uri.queryParam("to", to)
-
-                        uri.build()
-                    }
-                    .retrieve()
-                    .bodyToMono(RecentTracks::class.java)
-                    .block()
+                .uri(createUrl(page, from, to))
+                .retrieve()
+                .bodyToMono(RecentTracks::class.java)
+                .block()
 
             recentTracks ?: throw LastFmException("Problem calling last FM")
         } catch (e: WebClientException) {
@@ -62,17 +47,16 @@ class LastFmRestClient {
         }
     }
 
-//    private fun createUrl(page: Int? = null, from: Long? = null, to: Long? = null): String =
-//        URI.create(
-//            "/2.0/?method=user.getrecenttracks&
-//            user=$lastFmDefaultUser&limit=$PAGE_LIMIT&format=json&api_key=$lastFmKey"
-//                .also {
-//                    if (page != null)
-//                        it.plus("&page=$page")
-//                    if (from != null)
-//                        it.plus("&from=$from")
-//                    if (to != null)
-//                        it.plus("&to=$to")
-//                }
-//        ).toString()
+    private fun createUrl(page: Int? = null, from: Long? = null, to: Long? = null): String =
+        URI.create(
+            "/2.0/?method=user.getrecenttracks&user=$lastFmDefaultUser&limit=$PAGE_LIMIT&format=json&api_key=$lastFmKey"
+                .also {
+                    if (page != null)
+                        it.plus("&page=$page")
+                    if (from != null)
+                        it.plus("&from=$from")
+                    if (to != null)
+                        it.plus("&to=$to")
+                }
+        ).toString()
 }

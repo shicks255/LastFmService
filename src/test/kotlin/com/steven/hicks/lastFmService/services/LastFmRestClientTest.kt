@@ -6,29 +6,20 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.*
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito.`when`
+import org.mockito.Captor
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientRequestException
-import org.springframework.web.reactive.function.client.*
-import java.net.URI
-import reactor.core.publisher.Mono
-
-import org.mockito.ArgumentMatchers.any
-
-import org.mockito.Mockito.doReturn
-import org.mockito.junit.jupiter.MockitoSettings
-import org.mockito.quality.Strictness
 import org.springframework.web.util.UriBuilder
-import kotlin.jvm.internal.Intrinsics
-import org.mockito.ArgumentCaptor
-import java.util.function.BiFunction
-import java.util.function.Function
+import reactor.core.publisher.Mono
+import java.net.URI
 
 
 @ExtendWith(MockitoExtension::class)
@@ -54,17 +45,18 @@ class LastFmRestClientTest {
             .hasMessageContaining("Problem calling last FM")
     }
 
-//    @Test
-    fun `sadf`() {
+//    open inline fun <reified T : Any> myAny() = Mockito.any(T::class.java)
 
-        val uriSpecMock = Mockito.mock(WebClient.RequestHeadersUriSpec::class.java)
-        val headersSpecMock = Mockito.mock(WebClient.RequestHeadersSpec::class.java)
-        val responseSpecMock = Mockito.mock(WebClient.ResponseSpec::class.java)
-        val monoSpecMock = Mockito.mock(Mono::class.java)
-//        val uri = Mockito.mock(URI::class.java)
+    @Test
+    fun `should return lastFm results`() {
 
-//        var lam = {x: UriBuilder -> URI.create(anyString())}
-//        val x = Mockito.mock(lam::class.java)
+        sut.lastFmDefaultUser = ""
+        sut.lastFmKey = ""
+
+        val uriSpecMock = mock(WebClient.RequestHeadersUriSpec::class.java)
+        val headersSpecMock = mock(WebClient.RequestHeadersSpec::class.java)
+        val responseSpecMock = mock(WebClient.ResponseSpec::class.java)
+        val monoSpecMock = mock(Mono::class.java)
 
         doReturn(uriSpecMock)
             .`when`(client).get()
@@ -72,7 +64,7 @@ class LastFmRestClientTest {
             .`when`(uriSpecMock)
             .uri(anyString())
         doReturn(responseSpecMock)
-            .`when`(uriSpecMock)
+            .`when`(headersSpecMock)
             .retrieve()
         doReturn(monoSpecMock)
             .`when`(responseSpecMock)
@@ -81,13 +73,7 @@ class LastFmRestClientTest {
             .`when`(monoSpecMock)
             .block()
 
-//        `when`(client.get()).thenReturn(uriSpecMock)
-//        `when`(uriSpecMock.uri(Function<>))).thenReturn(headersSpecMock)
-//        `when`(headersSpecMock.retrieve()).thenReturn(responseSpecMock)
-//        `when`(responseSpecMock.bodyToMono(ArgumentMatchers.notNull<Class<RecentTracks>>()))
-//            .thenReturn(Mono.just(createRecentTracks()))
-
-        val tracks = sut.getRecentTracks()
+        val tracks = sut.getRecentTracks(1, 2, 3)
 
         assertThat(tracks).isEqualTo(createRecentTracks())
     }
@@ -115,5 +101,4 @@ class LastFmRestClientTest {
             )
         )
     )
-
 }

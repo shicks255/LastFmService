@@ -14,7 +14,7 @@ class LastFmLoadingService(
     companion object {
         const val SLEEP_TIME = 6000L
         const val SECONDS_IN_DAY = 86399
-        const val START_PAGE = 333
+        const val START_PAGE = 1
     }
 
     fun loadAll() {

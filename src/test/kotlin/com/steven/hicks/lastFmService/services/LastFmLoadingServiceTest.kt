@@ -39,6 +39,17 @@ class LastFmLoadingServiceTest {
         verify(scrobbleService, times(1)).saveRecentTrack(createRecentTracks().recenttracks.track.first())
     }
 
+    @Test
+    fun `should loadAll`() {
+        `when`(client.getRecentTracks(eq(1), eq(null), eq(null)))
+            .thenReturn(createRecentTracks())
+
+        sut.loadAll()
+
+        verify(client, times(1)).getRecentTracks(eq(1), eq(null), eq(null))
+        verify(scrobbleService, times(1)).saveRecentTrack(createRecentTracks().recenttracks.track.first())
+    }
+
     private fun createRecentTracks(): RecentTracks = RecentTracks(
         RecentTrack(
             attr = Attr(
