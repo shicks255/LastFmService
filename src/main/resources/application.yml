@@ -21,3 +21,9 @@ spring:
 lastfm:
   user: shicks255
   apiKey:
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

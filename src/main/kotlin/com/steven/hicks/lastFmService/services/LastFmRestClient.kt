@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientException
-import java.net.URI
 
 @Component
 class LastFmRestClient {
@@ -42,21 +41,22 @@ class LastFmRestClient {
 
             recentTracks ?: throw LastFmException("Problem calling last FM")
         } catch (e: WebClientException) {
-            println(e);
+            println(e)
             throw LastFmException("Problem calling last FM", e)
         }
     }
 
-    private fun createUrl(page: Int? = null, from: Long? = null, to: Long? = null): String =
-        URI.create(
+    private fun createUrl(page: Int? = null, from: Long? = null, to: Long? = null): String {
+        var url =
             "/2.0/?method=user.getrecenttracks&user=$lastFmDefaultUser&limit=$PAGE_LIMIT&format=json&api_key=$lastFmKey"
-                .also {
-                    if (page != null)
-                        it.plus("&page=$page")
-                    if (from != null)
-                        it.plus("&from=$from")
-                    if (to != null)
-                        it.plus("&to=$to")
-                }
-        ).toString()
+
+        if (page != null)
+            url += "&page=$page"
+        if (from != null)
+           url += "&from=$from"
+        if (to != null)
+            url += "&to=$to"
+
+        return  url;
+    }
 }
