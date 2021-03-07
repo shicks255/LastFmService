@@ -17,7 +17,7 @@ class DataLoadService(
 
     val logger = LoggerFactory.getLogger(DataLoadService::class.java)
 
-    fun performDataLoad(date: LocalDate = LocalDate.now().minusDays(4)) {
+    fun performDataLoad(date: LocalDate = LocalDate.now().minusDays(1)) {
 
         val loadEvent = DataLoad(
                 date, OffsetDateTime.now(), DataLoadStatus.RUNNING, 0)
