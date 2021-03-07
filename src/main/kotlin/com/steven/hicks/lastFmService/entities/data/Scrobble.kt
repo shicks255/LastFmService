@@ -20,4 +20,11 @@ data class Scrobble(
     val albumMbid: String,
     val albumName: String,
     val time: Long
-)
+) {
+
+    override fun toString(): String {
+        return """
+            $time:$name - $artistName - $albumName
+        """.trimIndent()
+    }
+}

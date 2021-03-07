@@ -34,6 +34,11 @@ class LastFmRestClientTest {
     @InjectMocks
     val sut = LastFmRestClient()
 
+    init {
+        sut.lastFmDefaultUser = ""
+        sut.lastFmKey = ""
+    }
+
     @Test
     fun `should throw LastFMException when something goes wrong`() {
 
@@ -49,9 +54,6 @@ class LastFmRestClientTest {
 
     @Test
     fun `should return lastFm results`() {
-
-        sut.lastFmDefaultUser = ""
-        sut.lastFmKey = ""
 
         val uriSpecMock = mock(WebClient.RequestHeadersUriSpec::class.java)
         val headersSpecMock = mock(WebClient.RequestHeadersSpec::class.java)

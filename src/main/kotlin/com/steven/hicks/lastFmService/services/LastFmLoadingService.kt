@@ -1,6 +1,7 @@
 package com.steven.hicks.lastFmService.services
 
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.ZoneId
@@ -17,14 +18,16 @@ class LastFmLoadingService(
         const val START_PAGE = 1
     }
 
+    val logger = LoggerFactory.getLogger(LastFmLoadingService::class.java)
+
     fun loadAll() {
         var pageNumber = START_PAGE;
         while (pageNumber > 0) {
             val recent = client.getRecentTracks(page = pageNumber)
             saveTracks(recent)
-            println("Finished loading $pageNumber")
             pageNumber -= 1
 
+            logger.info("Finished loading $pageNumber")
             Thread.sleep(SLEEP_TIME)
         }
     }
@@ -46,21 +49,17 @@ class LastFmLoadingService(
                     to = to
             )
             saveTracks(recentTrax)
-            println("Finished loading $pageNumber")
+            logger.info("Finished loading page $pageNumber")
             pageNumber -= 1
 
             Thread.sleep(SLEEP_TIME)
         }
 
-
         return recent.recenttracks.attr.total
     }
 
     private fun saveTracks(recentTrax: RecentTracks) {
-        val tracks = recentTrax.recenttracks.track ?: emptyList()
-        tracks.reversed().forEach {
-            println("Saving ${it.name}")
-            scrobbleService.saveRecentTrack(it)
-        }
+        val tracks = recentTrax.recenttracks.track
+        tracks.reversed().forEach { scrobbleService.saveRecentTrack(it) }
     }
 }
