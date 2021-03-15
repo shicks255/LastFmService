@@ -1,15 +1,13 @@
 package com.steven.hicks.lastFmService.entities.data
 
-import java.time.LocalDate
 import java.time.OffsetDateTime
 import javax.persistence.*
 
 @Entity
 data class DataLoad(
         @Id
-        var date: LocalDate,
         @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
-        var ranAt: OffsetDateTime,
+        var timestamp: OffsetDateTime,
         @Enumerated(EnumType.STRING)
         var status: DataLoadStatus,
         var count: Int,

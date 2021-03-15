@@ -1,5 +1,6 @@
 package com.steven.hicks.lastFmService.services
 
+import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.dto.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -8,7 +9,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
-import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class LastFmLoadingServiceTest {
@@ -23,24 +23,34 @@ class LastFmLoadingServiceTest {
     lateinit var sut: LastFmLoadingService
 
     @Test
-    fun `should loadDay`() {
+    fun `should load recent`() {
 
-        val date = LocalDate.now()
-
-        `when`(client.getRecentTracks(from = any(), to = any(), page = eq(null)))
+        `when`(client.getRecentTracks(from = 12345679L, to = null, page = 1))
             .thenReturn(createRecentTracks())
-        `when`(client.getRecentTracks(any(), any(), any()))
+        `when`(client.getRecentTracks(from = 12345679L, to = null, page = null))
             .thenReturn(createRecentTracks())
+        `when`(scrobbleService.getMostRecentScrobble())
+            .thenReturn(Scrobble(
+                id = 1,
+                name = "Test",
+                artistMbid = "",
+                artistName = "",
+                albumName = "",
+                albumMbid = "",
+                time = 12345678
+            ))
 
-        sut.loadDay(date)
+        sut.loadRecent()
 
-        verify(client, times(1)).getRecentTracks(eq(null), any(), any())
-        verify(client, times(2)).getRecentTracks(any(), any(), anyLong())
+        verify(client, times(1)).getRecentTracks(eq(null), any(), eq(null))
+        verify(client, times(2)).getRecentTracks(any(), any(), eq(null))
         verify(scrobbleService, times(1)).saveRecentTrack(createRecentTracks().recenttracks.track.first())
+        verify(scrobbleService, times(1)).getMostRecentScrobble()
     }
 
     @Test
     fun `should loadAll`() {
+
         `when`(client.getRecentTracks(eq(1), eq(null), eq(null)))
             .thenReturn(createRecentTracks())
 

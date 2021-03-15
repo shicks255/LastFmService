@@ -1,5 +1,6 @@
 package com.steven.hicks.lastFmService.services
 
+import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.dto.Album
 import com.steven.hicks.lastFmService.entities.dto.Artist
@@ -55,4 +56,107 @@ class ScrobbleServiceTest {
                         s.name == track.name
             }
     }
+
+    @Test
+    fun `should get most recent scrobble`() {
+        `when`(scrobbleRepository.findTopByOrderByTimeDesc())
+            .thenReturn(Scrobble(
+                id = 1,
+                name = "Test",
+                artistMbid = "",
+                artistName = "",
+                albumName = "",
+                albumMbid = "",
+                time = 12345678
+            ))
+
+        val mostRecent = sut.getMostRecentScrobble()
+
+        verify(scrobbleRepository, times(1)).findTopByOrderByTimeDesc()
+        assertThat(mostRecent.time).isEqualTo(12345678)
+    }
+
+//    @Test
+    fun `should get tracks`() {
+        `when`(scrobbleRepository.getScrobbles(ScrobbleRequest(
+            artistName = "",
+            albumName = "",
+            from = null,
+            to = null,
+            limit = null,
+            sort = null
+        )))
+            .thenReturn(listOf(
+                Scrobble(
+                    id = 1,
+                    name = "Test",
+                    artistMbid = "",
+                    artistName = "",
+                    albumName = "",
+                    albumMbid = "",
+                    time = 12345678
+                )
+            ))
+
+        val results = sut.getTracks(ScrobbleRequest(
+            artistName = "",
+            albumName = "",
+            from = null,
+            to = null,
+            limit = null,
+            sort = null
+        ))
+
+        verify(scrobbleRepository.getScrobbles(ScrobbleRequest(
+            artistName = "",
+            albumName = "",
+            from = null,
+            to = null,
+            limit = null,
+            sort = null
+        )), times(1))
+
+
+
+    }
+
+    @Test
+    fun `should get tracks grouped`() {
+
+    }
+
+    @Test
+    fun `should get artist tracks grouped`() {
+
+    }
+
+    @Test
+    fun `should get album tracks grouped`() {
+
+    }
+
+    @Test
+    fun `should get artists`() {
+        `when`(scrobbleRepository.suggestArtists("Pink Floyd"))
+            .thenReturn(listOf("Pink Floyd"))
+
+        val results = sut.getArtists("Pink Floyd")
+
+        verify(scrobbleRepository, times(1)).suggestArtists("Pink Floyd")
+        assertThat(results.size).isEqualTo(1)
+        assertThat(results.first()).isEqualTo("Pink Floyd")
+    }
+
+    @Test
+    fun `should get albums`() {
+        `when`(scrobbleRepository.suggestAlbums("Dark Side"))
+            .thenReturn(listOf("The Dark Side of the Moon", "Dark Side of the Moon"))
+
+        val results = sut.getAlbums("Dark Side")
+
+        verify(scrobbleRepository, times(1)).suggestAlbums("Dark Side")
+        assertThat(results.size).isEqualTo(2)
+        assertThat(results.first()).isEqualTo("The Dark Side of the Moon")
+    }
+
 }

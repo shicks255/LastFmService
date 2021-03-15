@@ -6,7 +6,6 @@ import com.steven.hicks.lastFmService.entities.data.DataLoadStatus
 import com.steven.hicks.lastFmService.repositories.DataLoadRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 import java.time.OffsetDateTime
 
 @Service
@@ -17,14 +16,14 @@ class DataLoadService(
 
     val logger = LoggerFactory.getLogger(DataLoadService::class.java)
 
-    fun performDataLoad(date: LocalDate = LocalDate.now().minusDays(1)) {
+    fun performDataLoad() {
 
         val loadEvent = DataLoad(
-                date, OffsetDateTime.now(), DataLoadStatus.RUNNING, 0)
+                OffsetDateTime.now(), DataLoadStatus.RUNNING, 0)
 
         repository.save(loadEvent)
         try {
-            val result = lastFmLoadingService.loadDay(date)
+            val result = lastFmLoadingService.loadRecent()
             val finishedEvent = loadEvent.copy(
                     status = DataLoadStatus.SUCCESS,
                     count = result

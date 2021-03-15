@@ -29,7 +29,6 @@ class DataLoadServiceTest {
     @Test
     fun `should finish normally`() {
         val event = DataLoad(
-                LocalDate.now(),
                 OffsetDateTime.now(),
                 DataLoadStatus.RUNNING,
                 0
@@ -37,7 +36,7 @@ class DataLoadServiceTest {
 
         `when`(dataLoadRepository.save(any()))
                 .thenReturn(event)
-        `when`(lastfmLoadService.loadDay(LocalDate.now().minusDays(1)))
+        `when`(lastfmLoadService.loadRecent())
                 .thenReturn(0)
 
         sut.performDataLoad()
@@ -49,7 +48,6 @@ class DataLoadServiceTest {
     fun `should save DataLoad entity if error thrown`() {
         val date = LocalDate.now()
         val event = DataLoad(
-                date,
                 OffsetDateTime.now(),
                 DataLoadStatus.RUNNING,
                 0
@@ -57,10 +55,10 @@ class DataLoadServiceTest {
 
         `when`(dataLoadRepository.save(any()))
                 .thenReturn(event)
-        `when`(lastfmLoadService.loadDay(date))
+        `when`(lastfmLoadService.loadRecent())
                 .then { throw LastFmException("") }
 
-        sut.performDataLoad(date)
+        sut.performDataLoad()
 
         verify(dataLoadRepository, times(2)).save(any())
     }
