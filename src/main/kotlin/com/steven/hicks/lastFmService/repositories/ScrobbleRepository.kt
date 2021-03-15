@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ScrobbleRepository : JpaRepository<Scrobble, Long>
+interface ScrobbleRepository : JpaRepository<Scrobble, Long>, CustomScrobbleRepository {
+    fun findTopByOrderByTimeDesc(): Scrobble
+}

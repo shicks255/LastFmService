@@ -3,8 +3,6 @@ package com.steven.hicks.lastFmService.services
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.time.LocalDate
-import java.time.ZoneId
 
 @Service
 class LastFmLoadingService(
@@ -32,13 +30,13 @@ class LastFmLoadingService(
         }
     }
 
-    fun loadDay(day: LocalDate): Int {
-        val from = day.atStartOfDay(ZoneId.of("UTC")).toEpochSecond()
-        val to = from + SECONDS_IN_DAY
+    fun loadRecent(): Int {
+        val lastScrobble = scrobbleService.getMostRecentScrobble()
+
+        val from = lastScrobble.time + 1
 
         val recent = client.getRecentTracks(
-                from = from,
-                to = to
+                from = from
         )
 
         var pageNumber = recent.recenttracks.attr.totalPages
@@ -46,7 +44,6 @@ class LastFmLoadingService(
             val recentTrax = client.getRecentTracks(
                     page = pageNumber,
                     from = from,
-                    to = to
             )
             saveTracks(recentTrax)
             logger.info("Finished loading page $pageNumber")
