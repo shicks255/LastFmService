@@ -18,15 +18,23 @@ class CustomScrobbleRepositoryImpl(
     val entityManager: EntityManager
 ) : CustomScrobbleRepository {
 
+    companion object {
+        const val UTC_OFFSET = -6
+    }
+
     override fun suggestAlbums(typed: String): List<String> {
         return entityManager
-            .createNativeQuery("select distinct album_name from scrobble where lower(album_name) like '%${typed.toLowerCase()}%'  order by album_name asc")
+            .createNativeQuery("select distinct " +
+                    "album_name from scrobble where lower(album_name) " +
+                    "like '%${typed.toLowerCase()}%'  order by album_name asc")
             .resultList as List<String>
     }
 
     override fun suggestArtists(typed: String): List<String> {
         return entityManager
-            .createNativeQuery("select distinct artist_name from scrobble where lower(artist_name) like '%${typed.toLowerCase()}%'  order by artist_name asc")
+            .createNativeQuery("select distinct artist_name from scrobble " +
+                    "where lower(artist_name) like '%${typed.toLowerCase()}%'  " +
+                    "order by artist_name asc")
             .resultList as List<String>    }
 
     override fun getScrobbles(request: ScrobbleRequest): List<Scrobble> {
@@ -95,13 +103,11 @@ class CustomScrobbleRepositoryImpl(
     fun includeTimeClause(where: String, from: LocalDate?, to: LocalDate?): String {
         var wheree = where
         if (from != null) {
-            val fromm = from.atStartOfDay().toEpochSecond(ZoneOffset.ofHours(-6))
-//            val fromm = ZonedDateTime.of(from.atStartOfDay(), ZoneId.of("UTC")).toEpochSecond()
+            val fromm = from.atStartOfDay().toEpochSecond(ZoneOffset.ofHours(UTC_OFFSET))
             wheree += " and time >= $fromm "
         }
         if (to != null) {
-            val too = to.atStartOfDay().toEpochSecond(ZoneOffset.ofHours(-6))
-//            val too = ZonedDateTime.of(to.atStartOfDay(), ZoneId.of("UTC")).toEpochSecond()
+            val too = to.atStartOfDay().toEpochSecond(ZoneOffset.ofHours(UTC_OFFSET))
             wheree += " and time < $too "
         }
 
@@ -141,5 +147,4 @@ class CustomScrobbleRepositoryImpl(
 
         return query + whereClause + sortBy
     }
-
 }

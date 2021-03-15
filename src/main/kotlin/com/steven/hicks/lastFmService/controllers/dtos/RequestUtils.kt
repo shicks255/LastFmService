@@ -19,7 +19,7 @@ enum class GroupBy(val field: String) {
     }
 }
 
-enum class TimeGroup() {
+enum class TimeGroup {
     DAY,
     WEEK,
     MONTH,
