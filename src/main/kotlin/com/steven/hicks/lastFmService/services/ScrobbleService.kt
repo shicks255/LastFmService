@@ -41,7 +41,7 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
     }
 
     fun getTracksGrouped(request: GroupedScrobbleRequest): List<DataByDay> {
-        val data = scrobbleRepository.getScrobbles(request)
+        val data = scrobbleRepository.getGroupedScrobbles(request)
 
         return data.map {
             val o = it as Array<Any>
@@ -56,7 +56,7 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
 
         request.artistNames?.forEach {
             var counter = 0
-            val stuff = scrobbleRepository.getScrobbles(request.copy(artistNames = listOf(it)))
+            val stuff = scrobbleRepository.getArtistGroupedScrobbles(request.copy(artistNames = listOf(it)))
             val dataa = stuff?.map {
                 val o = it as Array<Any>
                 val x = o.get(0) as BigInteger
@@ -80,7 +80,7 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
 
         request.albumNames?.forEach {
             var counter = 0
-            val stuff = scrobbleRepository.getScrobbles(request.copy(albumNames = listOf(it)))
+            val stuff = scrobbleRepository.getAlbumGroupedScrobbles(request.copy(albumNames = listOf(it)))
             val dataa = stuff?.map {
                 val o = it as Array<Any>
                 val x = o.get(0) as BigInteger

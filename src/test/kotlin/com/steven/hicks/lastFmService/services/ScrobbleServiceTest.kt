@@ -1,5 +1,10 @@
 package com.steven.hicks.lastFmService.services
 
+import com.steven.hicks.lastFmService.controllers.dtos.SortBy
+import com.steven.hicks.lastFmService.controllers.dtos.TimeGroup
+import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedAlbumScrobbleRequest
+import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedArtistScrobbleRequest
+import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.dto.Album
@@ -16,6 +21,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
+import java.math.BigInteger
 
 @ExtendWith(MockitoExtension::class)
 class ScrobbleServiceTest {
@@ -60,33 +66,7 @@ class ScrobbleServiceTest {
     @Test
     fun `should get most recent scrobble`() {
         `when`(scrobbleRepository.findTopByOrderByTimeDesc())
-            .thenReturn(Scrobble(
-                id = 1,
-                name = "Test",
-                artistMbid = "",
-                artistName = "",
-                albumName = "",
-                albumMbid = "",
-                time = 12345678
-            ))
-
-        val mostRecent = sut.getMostRecentScrobble()
-
-        verify(scrobbleRepository, times(1)).findTopByOrderByTimeDesc()
-        assertThat(mostRecent.time).isEqualTo(12345678)
-    }
-
-//    @Test
-    fun `should get tracks`() {
-        `when`(scrobbleRepository.getScrobbles(ScrobbleRequest(
-            artistName = "",
-            albumName = "",
-            from = null,
-            to = null,
-            limit = null,
-            sort = null
-        )))
-            .thenReturn(listOf(
+            .thenReturn(
                 Scrobble(
                     id = 1,
                     name = "Test",
@@ -96,43 +76,199 @@ class ScrobbleServiceTest {
                     albumMbid = "",
                     time = 12345678
                 )
-            ))
+            )
 
-        val results = sut.getTracks(ScrobbleRequest(
-            artistName = "",
-            albumName = "",
-            from = null,
-            to = null,
-            limit = null,
-            sort = null
-        ))
+        val mostRecent = sut.getMostRecentScrobble()
 
-        verify(scrobbleRepository.getScrobbles(ScrobbleRequest(
-            artistName = "",
-            albumName = "",
-            from = null,
-            to = null,
-            limit = null,
-            sort = null
-        )), times(1))
+        verify(scrobbleRepository, times(1)).findTopByOrderByTimeDesc()
+        assertThat(mostRecent.time).isEqualTo(12345678)
+    }
 
+    @Test
+    fun `should get tracks`() {
+        `when`(
+            scrobbleRepository.getScrobbles(
+                ScrobbleRequest(
+                    artistName = "",
+                    albumName = "",
+                    from = null,
+                    to = null,
+                    limit = null,
+                    sort = null
+                )
+            )
+        )
+            .thenReturn(
+                listOf(
+                    Scrobble(
+                        id = 1,
+                        name = "Test",
+                        artistMbid = "",
+                        artistName = "",
+                        albumName = "",
+                        albumMbid = "",
+                        time = 12345678
+                    )
+                )
+            )
 
+        val results = sut.getTracks(
+            ScrobbleRequest(
+                artistName = "",
+                albumName = "",
+                from = null,
+                to = null,
+                limit = null,
+                sort = null
+            )
+        )
 
+        verify(scrobbleRepository, times(1))
+            .getScrobbles(
+                ScrobbleRequest(
+                    artistName = "",
+                    albumName = "",
+                    from = null,
+                    to = null,
+                    limit = null,
+                    sort = null
+                ))
+
+        assertThat(results).hasSize(1)
+        assertThat(results.first().name).isEqualTo("Test")
     }
 
     @Test
     fun `should get tracks grouped`() {
+        `when`(
+            scrobbleRepository.getGroupedScrobbles(
+                GroupedScrobbleRequest(
+                    from = null,
+                    to = null,
+                    timeGroup = TimeGroup.DAY
+                )
+            )
+        )
+            .thenReturn(
+                listOf(
+                    arrayOf(BigInteger.ONE, "11")
+                )
+            )
 
+        val results = sut.getTracksGrouped(
+            GroupedScrobbleRequest(
+                from = null,
+                to = null,
+                timeGroup = TimeGroup.DAY
+            )
+        )
+
+        verify(scrobbleRepository, times(1))
+            .getGroupedScrobbles(
+                GroupedScrobbleRequest(
+                    from = null,
+                    to = null,
+                    timeGroup = TimeGroup.DAY
+                ))
+
+        assertThat(results).hasSize(1)
+        assertThat(results.first().plays).isEqualTo(1)
+        assertThat(results.first().timeGroup).isEqualTo("11")
     }
 
     @Test
     fun `should get artist tracks grouped`() {
+        `when`(
+            scrobbleRepository.getArtistGroupedScrobbles(
+                GroupedArtistScrobbleRequest(
+                    from = null,
+                    to = null,
+                    timeGroup = TimeGroup.DAY,
+                    artistNames = listOf("Slayer"),
+                    sort = null,
+                    group = null
+                )
+            )
+        )
+            .thenReturn(
+                listOf(
+                    arrayOf(BigInteger.ONE, "11")
+                )
+            )
 
+        val results = sut.getArtistTracksGrouped(
+            GroupedArtistScrobbleRequest(
+                from = null,
+                to = null,
+                timeGroup = TimeGroup.DAY,
+                artistNames = listOf("Slayer"),
+                sort = null,
+                group = null
+            )
+        )
+
+        verify(scrobbleRepository, times(1))
+            .getArtistGroupedScrobbles(
+                GroupedArtistScrobbleRequest(
+                    from = null,
+                    to = null,
+                    timeGroup = TimeGroup.DAY,
+                    artistNames = listOf("Slayer"),
+                    sort = null,
+                    group = null
+                ))
+
+        assertThat(results.data).hasSize(1)
+        assertThat(results.data.first().data.first().plays).isEqualTo(1)
+        assertThat(results.data.first().artistName).isEqualTo("Slayer")
     }
 
     @Test
     fun `should get album tracks grouped`() {
+        `when`(
+            scrobbleRepository.getAlbumGroupedScrobbles(
+                GroupedAlbumScrobbleRequest(
+                    from = null,
+                    to = null,
+                    timeGroup = TimeGroup.DAY,
+                    albumNames = listOf("Bleed American"),
+                    sort = null,
+                    group = null
+                )
+            )
+        )
+            .thenReturn(
+                listOf(
+                    arrayOf(BigInteger.ONE, "11")
+                )
+            )
 
+        val results = sut.getAlbumTracksGrouped(
+            GroupedAlbumScrobbleRequest(
+                from = null,
+                to = null,
+                timeGroup = TimeGroup.DAY,
+                albumNames = listOf("Bleed American"),
+                sort = null,
+                group = null
+            )
+        )
+
+        verify(scrobbleRepository, times(1))
+            .getAlbumGroupedScrobbles(
+                GroupedAlbumScrobbleRequest(
+                    from = null,
+                    to = null,
+                    timeGroup = TimeGroup.DAY,
+                    albumNames = listOf("Bleed American"),
+                    sort = null,
+                    group = null
+                )
+            )
+
+        assertThat(results.data).hasSize(1)
+        assertThat(results.data.first().data.first().plays).isEqualTo(1)
+        assertThat(results.data.first().albumName).isEqualTo("Bleed American")
     }
 
     @Test

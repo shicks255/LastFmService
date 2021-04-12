@@ -9,9 +9,9 @@ import com.steven.hicks.lastFmService.entities.data.Scrobble
 interface CustomScrobbleRepository {
 
     fun getScrobbles(request: ScrobbleRequest): List<Scrobble>
-    fun getScrobbles(request: GroupedArtistScrobbleRequest): List<Any>
-    fun getScrobbles(request: GroupedAlbumScrobbleRequest): List<Any>
-    fun getScrobbles(request: GroupedScrobbleRequest): List<Any>
+    fun getArtistGroupedScrobbles(request: GroupedArtistScrobbleRequest): List<Any>
+    fun getAlbumGroupedScrobbles(request: GroupedAlbumScrobbleRequest): List<Any>
+    fun getGroupedScrobbles(request: GroupedScrobbleRequest): List<Any>
     fun suggestArtists(typed: String): List<String>
     fun suggestAlbums(typed: String): List<String>
 }

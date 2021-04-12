@@ -11,10 +11,8 @@ import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseB
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.services.ScrobbleService
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/v1/scrobbles")
@@ -22,34 +20,86 @@ class ScrobbleController(val scrobbleService: ScrobbleService) {
 
     val logger = LoggerFactory.getLogger(ScrobbleController::class.java)
 
-    @GetMapping
-    fun getScrobbles(request: ScrobbleRequest): List<Scrobble> {
+    @GetMapping()
+    fun getScrobbles(
+        @RequestParam
+        artistName: String?,
+        @RequestParam
+        albumName: String?,
+        @RequestParam
+        from: String?,
+        @RequestParam
+        to: String?,
+        @RequestParam
+        limit: Int?,
+        @RequestParam
+        sort: SortBy?,
+    ): List<Scrobble> {
+        val request = ScrobbleRequest(
+            artistName,
+            albumName,
+            if (from != null) LocalDate.parse(from) else null,
+            if (to != null) LocalDate.parse(to) else null,
+            limit,
+            sort
+        )
         return scrobbleService.getTracks(request)
     }
 
     @GetMapping("/grouped")
     @CrossOrigin("http://localhost:3000")
-    fun getScrobbledGrouped(request: GroupedScrobbleRequest): List<DataByDay> {
+    fun getScrobbledGrouped(
+        @RequestParam from: String?,
+        @RequestParam to: String?,
+        @RequestParam timeGroup: TimeGroup
+    ): List<DataByDay> {
+        val request = GroupedScrobbleRequest(
+            if (from != null) LocalDate.parse(from) else null,
+            if (to != null) LocalDate.parse(to) else null,
+            timeGroup = timeGroup
+        )
+
         return scrobbleService.getTracksGrouped(request)
     }
 
     @GetMapping("/artistsGrouped")
-    fun getArtistScrobblesGrouped(request: GroupedArtistScrobbleRequest): GroupedResponseByArtist {
+    fun getArtistScrobblesGrouped(
+        @RequestParam from: String?,
+        @RequestParam to: String?,
+        @RequestParam artistNames: List<String>?,
+        @RequestParam group: GroupBy?,
+        @RequestParam sort: SortBy?,
+        @RequestParam timeGroup: TimeGroup
+    ): GroupedResponseByArtist {
+        val request = GroupedArtistScrobbleRequest(
+            if (from != null) LocalDate.parse(from) else null,
+            if (to != null) LocalDate.parse(to) else null,
+            artistNames,
+            group,
+            sort,
+            timeGroup
+        )
+
         return scrobbleService.getArtistTracksGrouped(request)
     }
 
     @GetMapping("/albumsGrouped")
-    fun getAlbumScrobblesGrouped(request: GroupedAlbumScrobbleRequest): GroupedResponseByAlbum {
+    fun getAlbumScrobblesGrouped(
+        @RequestParam from: String?,
+        @RequestParam to: String?,
+        @RequestParam albumNames: List<String>?,
+        @RequestParam group: GroupBy?,
+        @RequestParam sort: SortBy?,
+        @RequestParam timeGroup: TimeGroup
+    ): GroupedResponseByAlbum {
+        val request = GroupedAlbumScrobbleRequest(
+            if (from != null) LocalDate.parse(from) else null,
+            if (to != null) LocalDate.parse(to) else null,
+            albumNames,
+            group,
+            sort,
+            timeGroup
+        )
         return scrobbleService.getAlbumTracksGrouped(request)
-    }
-
-    @GetMapping("/artists")
-    fun getArtists(typed: String): List<String> {
-        return scrobbleService.getArtists(typed)
-    }
-
-    @GetMapping("/albums")
-    fun getAlbums(typed: String): List<String> {
-        return scrobbleService.getAlbums(typed)
     }
 }
