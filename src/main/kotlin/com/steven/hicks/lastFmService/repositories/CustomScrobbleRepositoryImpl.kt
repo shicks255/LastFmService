@@ -42,61 +42,52 @@ class CustomScrobbleRepositoryImpl(
         return query.resultList as List<Scrobble>
     }
 
-    override fun getScrobbles(request: GroupedArtistScrobbleRequest): List<Any> {
-        val query = entityManager.createNativeQuery(buildQuery(request))
+    override fun getArtistGroupedScrobbles(request: GroupedArtistScrobbleRequest): List<Any> {
+        val query = entityManager.createNativeQuery(buildArtistGroupedQuery(request))
         return query.resultList as List<Any>
     }
 
-    override fun getScrobbles(request: GroupedAlbumScrobbleRequest): List<Any> {
-        val query = entityManager.createNativeQuery(buildQuery(request))
+    override fun getAlbumGroupedScrobbles(request: GroupedAlbumScrobbleRequest): List<Any> {
+        val query = entityManager.createNativeQuery(buildAlbumGroupedQuery(request))
         return query.resultList as List<Any>
     }
 
-    override fun getScrobbles(request: GroupedScrobbleRequest): List<Any> {
-        val query = entityManager.createNativeQuery(buildQuery(request))
+    override fun getGroupedScrobbles(request: GroupedScrobbleRequest): List<Any> {
+        val query = entityManager.createNativeQuery(buildGroupedQuery(request))
         return query.resultList as List<Any>
     }
 
-    fun buildQuery(request: GroupedScrobbleRequest): String {
+    fun buildGroupedQuery(request: GroupedScrobbleRequest): String {
         val query = "select count(*), ${getTimeGroup(request.timeGroup)} from scrobble " +
                 "where 1 = 1"
-
         val where = includeTimeClause("", request.from, request.to)
-
         val groupBy = " group by ${getTimeGroup(request.timeGroup)}"
-
         return query + where + groupBy
     }
 
-    fun buildQuery(scrobbleRequest: GroupedAlbumScrobbleRequest): String {
+    fun buildAlbumGroupedQuery(scrobbleRequest: GroupedAlbumScrobbleRequest): String {
         val query = "select count(*), ${getTimeGroup(scrobbleRequest.timeGroup)} from scrobble " +
                 "where 1 = 1"
-
         val whereClause = with(scrobbleRequest) {
             var where = ""
             if (!scrobbleRequest.albumNames.isNullOrEmpty())
                 where += " and album_name in (${scrobbleRequest.albumNames.joinToString(",", "'", "'")})"
             includeTimeClause(where, scrobbleRequest.from, scrobbleRequest.to)
         }
-
         val groupBy = " group by ${getTimeGroup(scrobbleRequest.timeGroup)}"
-
         return query + whereClause + groupBy
     }
 
-    fun buildQuery(scrobbleRequest: GroupedArtistScrobbleRequest): String {
+    fun buildArtistGroupedQuery(scrobbleRequest: GroupedArtistScrobbleRequest): String {
         val query = "select count(*), ${getTimeGroup(scrobbleRequest.timeGroup)} from scrobble " +
                 "where 1 = 1 "
-
         val whereClause = with(scrobbleRequest) {
             var where = ""
             if (!scrobbleRequest.artistNames.isNullOrEmpty())
                 where += " and artist_name in (${scrobbleRequest.artistNames.joinToString(",", "'", "'")})"
             includeTimeClause(where, scrobbleRequest.from, scrobbleRequest.to)
         }
-
         val groupBy = " group by ${getTimeGroup(scrobbleRequest.timeGroup)}"
-
         return query + whereClause + groupBy
     }
 
@@ -110,7 +101,6 @@ class CustomScrobbleRepositoryImpl(
             val too = to.atStartOfDay().toEpochSecond(ZoneOffset.ofHours(UTC_OFFSET))
             wheree += " and time < $too "
         }
-
         return wheree
     }
 
@@ -127,7 +117,6 @@ class CustomScrobbleRepositoryImpl(
         val query =
             "select id, album_name, album_mbid, artist_name, artist_mbid, name, time " +
                     "from scrobble where 1 = 1 "
-
         val whereClause = with(scrobbleRequest) {
             var where = ""
             if (!scrobbleRequest.albumName.isNullOrBlank())
@@ -136,7 +125,6 @@ class CustomScrobbleRepositoryImpl(
                 where += " and artist_name=\'${scrobbleRequest.artistName}\'"
             includeTimeClause(where, scrobbleRequest.from, scrobbleRequest.to)
         }
-
         val sortBy = with(scrobbleRequest) {
             var order = ""
             if (scrobbleRequest.sort != null) {
@@ -144,7 +132,6 @@ class CustomScrobbleRepositoryImpl(
             }
             order
         }
-
         return query + whereClause + sortBy
     }
 }
