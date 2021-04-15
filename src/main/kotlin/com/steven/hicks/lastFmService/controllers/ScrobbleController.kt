@@ -5,9 +5,7 @@ import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedAlbumScrob
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedArtistScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
-import com.steven.hicks.lastFmService.controllers.dtos.response.DataByDay
-import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByAlbum
-import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByArtist
+import com.steven.hicks.lastFmService.controllers.dtos.response.*
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.services.ScrobbleService
 import org.slf4j.LoggerFactory
@@ -101,5 +99,14 @@ class ScrobbleController(val scrobbleService: ScrobbleService) {
             timeGroup
         )
         return scrobbleService.getAlbumTracksGrouped(request)
+    }
+
+    @GetMapping("/stats")
+    @CrossOrigin("http://localhost:3000")
+    fun getUserStats(
+        @RequestParam userName: String
+    ): UserStats {
+
+        return scrobbleService.getStats(userName)
     }
 }

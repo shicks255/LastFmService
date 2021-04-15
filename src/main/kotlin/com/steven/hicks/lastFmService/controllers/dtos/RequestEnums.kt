@@ -5,7 +5,7 @@ enum class SortBy(val field: String) {
     ALBUM("album_name"),
     TIME("time");
 
-    override fun toString(): String {
+    fun stringify(): String {
         return field
     }
 }
@@ -14,7 +14,7 @@ enum class GroupBy(val field: String) {
     ARTIST("artist_name"),
     ALBUM("album_name");
 
-    override fun toString(): String {
+    fun stringify(): String {
         return field
     }
 }
