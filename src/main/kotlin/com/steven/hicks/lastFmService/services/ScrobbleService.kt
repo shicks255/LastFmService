@@ -11,6 +11,10 @@ import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigInteger
+import java.time.Instant
+import java.time.LocalDate
+import java.time.Period
+import java.time.ZoneOffset
 
 @Service
 class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
@@ -105,5 +109,61 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
 
     fun getAlbums(typed: String): List<String> {
         return scrobbleRepository.suggestAlbums(typed)
+    }
+
+    fun getStats(userName: String): UserStats {
+
+        val oldestAndNewest = getOldestAndNewest(userName)
+        val longestDormancy = getLongestDormancy(userName)
+
+        return UserStats(
+            oldestAndNewest = oldestAndNewest,
+            longestDormancy = longestDormancy
+        )
+    }
+
+    fun getLongestDormancy(userName: String): ArtistWithLongestDormancy {
+        val result = scrobbleRepository.getArtistWithLongestDormancy(userName)
+
+        val resu = result.first() as Array<Object>
+
+        val artistName = resu[0] as String
+        val newest = (resu[1] as Double).toLong()
+        val oldest = (resu[2] as Double).toLong()
+
+        val firstDate = LocalDate.ofInstant(Instant.ofEpochSecond(oldest), ZoneOffset.UTC)
+        val lastDate = LocalDate.ofInstant(Instant.ofEpochSecond(newest), ZoneOffset.UTC)
+
+        val period = Period.between(firstDate, lastDate)
+
+        return ArtistWithLongestDormancy(
+            artistName = artistName,
+            oldest = firstDate,
+            newest = lastDate,
+            difference = period
+        )
+    }
+
+    fun getOldestAndNewest(userName: String): ArtistWithOldestAndNewest {
+
+        val result = scrobbleRepository.getArtistWithOldestAndNewestPlay(userName)
+
+        val resu = result.first() as Array<Object>
+
+        val artistName = resu[0] as String
+        val newest = (resu[1] as Double).toLong()
+        val oldest = (resu[2] as Double).toLong()
+
+        val firstDate = LocalDate.ofInstant(Instant.ofEpochSecond(oldest), ZoneOffset.UTC)
+        val lastDate = LocalDate.ofInstant(Instant.ofEpochSecond(newest), ZoneOffset.UTC)
+
+        val period = Period.between(firstDate, lastDate)
+
+        return ArtistWithOldestAndNewest(
+            artistName = artistName,
+            oldest = firstDate,
+            newest = lastDate,
+            difference = period
+        )
     }
 }
