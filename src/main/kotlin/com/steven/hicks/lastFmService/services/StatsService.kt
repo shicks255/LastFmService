@@ -9,6 +9,7 @@ import java.time.Period
 import java.time.ZoneOffset
 
 @Service
+@Suppress("MagicNumber")
 class StatsService(
     val scrobbleRepository: ScrobbleRepository
 ) {
