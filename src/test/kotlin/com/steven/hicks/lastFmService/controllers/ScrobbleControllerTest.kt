@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.services.ScrobbleService
+import com.steven.hicks.lastFmService.services.StatsService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -31,6 +32,9 @@ class ScrobbleControllerTest {
 
     @MockBean
     lateinit var scrobbleService: ScrobbleService
+
+    @MockBean
+    lateinit var statService: StatsService
 
     @Test
     fun `should get scrobbles`() {
