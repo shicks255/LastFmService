@@ -134,4 +134,35 @@ class CustomScrobbleRepositoryImpl(
         }
         return query + whereClause + sortBy
     }
+
+    override fun getOldestAndNewestPlay(userName: String, type: String): List<Any> {
+        val extraQuery = if (type == "album_name") ", artist_name " else ""
+
+        val query =
+            "select $type, max(time), min(time), " +
+                    "max(time)-min(time) as rang " +
+                    extraQuery +
+                    "from scrobble " +
+                    "group by $type $extraQuery" +
+                            "order by rang desc limit 1"
+
+        val queryr = entityManager.createNativeQuery(query)
+        val finalthing = queryr.resultList as List<Any>
+        return finalthing
+    }
+
+    override fun getLongestDormancy(userName: String, type: String): List<Any> {
+        val extraQuery = if (type == "album_name") ", artist_name " else ""
+
+        val query =
+            "select $type, time, " +
+                    "lag(time) over (partition by $type order by time) as pp, " +
+                    "time - lag(time) over (partition by $type order by time) as last_play " +
+                    extraQuery +
+                            "from scrobble order by last_play desc nulls last;"
+
+        val queryy = entityManager.createNativeQuery(query)
+        val final = queryy.resultList as List<Any>
+        return final
+    }
 }
