@@ -6,39 +6,15 @@ import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRe
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.response.*
 import com.steven.hicks.lastFmService.entities.data.Scrobble
-import com.steven.hicks.lastFmService.entities.dto.Track
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigInteger
-import java.time.Instant
-import java.time.LocalDate
-import java.time.Period
-import java.time.ZoneOffset
 
 @Service
 class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
 
     val logger = LoggerFactory.getLogger(ScrobbleService::class.java)
-
-    fun getMostRecentScrobble(): Scrobble {
-        return scrobbleRepository.findTopByOrderByTimeDesc()
-    }
-
-    fun saveRecentTrack(track: Track) {
-        val scrobble = Scrobble(
-            id = 0,
-            name = track.name,
-            artistMbid = track.artist.mbid,
-            albumMbid = track.album.mbid,
-            albumName = track.album.text,
-            artistName = track.artist.text,
-            time = track.date.uts
-        )
-
-        logger.info("Saving $scrobble")
-        scrobbleRepository.save(scrobble)
-    }
 
     fun getTracks(request: ScrobbleRequest): List<Scrobble> {
         return scrobbleRepository.getScrobbles(request)
@@ -110,5 +86,4 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
     fun getAlbums(typed: String): List<String> {
         return scrobbleRepository.suggestAlbums(typed)
     }
-
 }

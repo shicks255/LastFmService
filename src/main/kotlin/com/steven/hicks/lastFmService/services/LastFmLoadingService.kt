@@ -1,62 +1,77 @@
 package com.steven.hicks.lastFmService.services
 
+import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
+import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class LastFmLoadingService(
-        val client: LastFmRestClient,
-        val scrobbleService: ScrobbleService
+    val client: LastFmRestClient,
+    val scrobbleRepository: ScrobbleRepository,
+    val dataLoadService: DataLoadService
 ) {
 
     companion object {
         const val SLEEP_TIME = 6000L
-        const val SECONDS_IN_DAY = 86399
-        const val START_PAGE = 1
     }
 
     val logger = LoggerFactory.getLogger(LastFmLoadingService::class.java)
 
-    fun loadAll() {
-        var pageNumber = START_PAGE;
-        while (pageNumber > 0) {
-            val recent = client.getRecentTracks(page = pageNumber)
-            saveTracks(recent)
-            pageNumber -= 1
-
-            logger.info("Finished loading $pageNumber")
-            Thread.sleep(SLEEP_TIME)
+    fun loadRecent(userName: String): Int {
+        var from: Long? = null;
+        if (scrobbleRepository.existsScrobbleByUserNameEquals(userName)) {
+            val mostRecent = scrobbleRepository.findTopByUserNameOrderByTimeDesc(userName);
+            from = mostRecent.time + 1
         }
-    }
-
-    fun loadRecent(): Int {
-        val lastScrobble = scrobbleService.getMostRecentScrobble()
-
-        val from = lastScrobble.time + 1
 
         val recent = client.getRecentTracks(
-                from = from
+            from = from,
+            userName = userName
         )
 
-        var pageNumber = recent.recenttracks.attr.totalPages
-        while (pageNumber > 0) {
-            val recentTrax = client.getRecentTracks(
+        try {
+            var pageNumber = recent.recenttracks.attr.totalPages
+            dataLoadService.startDataLoadTracking(userName, pageNumber)
+            while (pageNumber > 0) {
+                val recentTrax = client.getRecentTracks(
                     page = pageNumber,
                     from = from,
-            )
-            saveTracks(recentTrax)
-            logger.info("Finished loading page $pageNumber")
-            pageNumber -= 1
-
-            Thread.sleep(SLEEP_TIME)
+                    userName = userName
+                )
+                saveTracks(recentTrax, userName)
+                logger.info("Finished loading page $pageNumber for $userName")
+                pageNumber -= 1
+                dataLoadService.updateDataLoadStatus(userName, pageNumber)
+                Thread.sleep(SLEEP_TIME)
+            }
+        } finally {
+            dataLoadService.endDataLoadStatus(userName)
         }
 
         return recent.recenttracks.attr.total
     }
 
-    private fun saveTracks(recentTrax: RecentTracks) {
+    private fun saveTracks(recentTrax: RecentTracks, userName: String) {
         val tracks = recentTrax.recenttracks.track
-        tracks.reversed().forEach { scrobbleService.saveRecentTrack(it) }
+        tracks.reversed().forEach {
+            val scrobble = Scrobble(
+                id = 0,
+                name = it.name,
+                userName = userName,
+                artistMbid = it.artist.mbid,
+                artistName = it.artist.text,
+                albumMbid = it.album.mbid,
+                albumName = it.album.text,
+                time = it.date.uts
+            )
+
+            try {
+                scrobbleRepository.save(scrobble)
+            } catch (e: Exception) {
+                logger.info("Something went wrong")
+            }
+        }
     }
 }

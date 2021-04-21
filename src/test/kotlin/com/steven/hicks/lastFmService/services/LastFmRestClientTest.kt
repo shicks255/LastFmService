@@ -45,12 +45,10 @@ class LastFmRestClientTest {
         `when`(client.get())
             .then { throw WebClientRequestException(Exception(), HttpMethod.GET, URI.create(""), HttpHeaders.EMPTY) }
 
-        assertThatThrownBy { sut.getRecentTracks() }
+        assertThatThrownBy { sut.getRecentTracks("shicks255") }
             .isInstanceOf(LastFmException::class.java)
             .hasMessageContaining("Problem calling last FM")
     }
-
-//    open inline fun <reified T : Any> myAny() = Mockito.any(T::class.java)
 
     @Test
     fun `should return lastFm results`() {
@@ -75,7 +73,7 @@ class LastFmRestClientTest {
             .`when`(monoSpecMock)
             .block()
 
-        val tracks = sut.getRecentTracks(1, 2, 3)
+        val tracks = sut.getRecentTracks("shicks255", 1, 2, 3)
 
         assertThat(tracks).isEqualTo(createRecentTracks())
     }
