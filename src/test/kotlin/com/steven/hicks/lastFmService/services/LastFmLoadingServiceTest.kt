@@ -65,6 +65,8 @@ class LastFmLoadingServiceTest {
             .startDataLoadTracking("shicks255", 1)
         verify(dataLoadService, times(1))
             .endDataLoadStatus("shicks255")
+        verify(scrobbleRepository, times(1))
+            .save(any())
         verifyNoMoreInteractions(scrobbleRepository)
         verifyNoMoreInteractions(client)
     }

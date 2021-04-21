@@ -39,6 +39,7 @@ class ScheduledDataLoader(
                     count = result
                 )
             } catch (e: Exception) {
+                logger.info(e.message)
                 finishedEvent = loadEvent.copy(
                     status = DataLoadStatus.ERROR,
                     count = 0

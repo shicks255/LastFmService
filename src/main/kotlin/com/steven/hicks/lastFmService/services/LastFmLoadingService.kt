@@ -70,7 +70,7 @@ class LastFmLoadingService(
             try {
                 scrobbleRepository.save(scrobble)
             } catch (e: Exception) {
-                logger.info("Something went wrong")
+                logger.info("Something went wrong, ${e.message}")
             }
         }
     }

@@ -19,6 +19,7 @@ class DataLoadService(
 
     companion object {
         const val MY_USERNAME = "shicks255"
+        const val ONE_HUNDRED_PERCENT = 100
     }
 
     val logger = LoggerFactory.getLogger(DataLoadService::class.java)
@@ -68,7 +69,7 @@ class DataLoadService(
             if (currentPage == 0) currentPage = 1
             var percentDone = currentPage.toDouble() / tracking.totalPages.toDouble()
             if (percentDone >= 1) percentDone = (currentPage - 1).toDouble() / tracking.totalPages.toDouble()
-            val percent = (percentDone * 100).toInt()
+            val percent = (percentDone * ONE_HUNDRED_PERCENT).toInt()
             val message = "$percent%  done.  Working on page $currentPage of ${tracking.totalPages}"
 
             return LoadStatusResponse(
