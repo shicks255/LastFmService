@@ -30,15 +30,16 @@ class LastFmRestClient {
     }
 
     fun getRecentTracks(
+        userName: String,
         page: Int? = null,
         from: Long? = null,
         to: Long? = null
     ): RecentTracks {
 
         return try {
-            logger.info("Calling ${createUrl(page, from, to)}")
+            logger.info("Calling ${createUrl(userName, page, from, to)}")
             val recentTracks = client.get()
-                .uri(createUrl(page, from, to))
+                .uri(createUrl(userName, page, from, to))
                 .retrieve()
                 .bodyToMono(RecentTracks::class.java)
                 .block()
@@ -50,9 +51,9 @@ class LastFmRestClient {
         }
     }
 
-    private fun createUrl(page: Int? = null, from: Long? = null, to: Long? = null): String {
+    private fun createUrl(userName: String, page: Int? = null, from: Long? = null, to: Long? = null): String {
         var url =
-            "/2.0/?method=user.getrecenttracks&user=$lastFmDefaultUser&limit=$PAGE_LIMIT&format=json&api_key=$lastFmKey"
+            "/2.0/?method=user.getrecenttracks&user=$userName&limit=$PAGE_LIMIT&format=json&api_key=$lastFmKey"
 
         if (page != null)
             url += "&page=$page"

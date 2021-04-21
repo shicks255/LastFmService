@@ -1,14 +1,17 @@
 package com.steven.hicks.lastFmService.controllers
 
-import com.steven.hicks.lastFmService.controllers.dtos.*
+import com.steven.hicks.lastFmService.controllers.dtos.GroupBy
+import com.steven.hicks.lastFmService.controllers.dtos.SortBy
+import com.steven.hicks.lastFmService.controllers.dtos.TimeGroup
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedAlbumScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedArtistScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
-import com.steven.hicks.lastFmService.controllers.dtos.response.*
+import com.steven.hicks.lastFmService.controllers.dtos.response.DataByDay
+import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByAlbum
+import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByArtist
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.services.ScrobbleService
-import com.steven.hicks.lastFmService.services.StatsService
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
@@ -17,8 +20,7 @@ import java.time.LocalDate
 @RequestMapping("/api/v1/scrobbles")
 class ScrobbleController(
     val scrobbleService: ScrobbleService,
-    val statsService: StatsService
-    ) {
+) {
 
     val logger = LoggerFactory.getLogger(ScrobbleController::class.java)
 
@@ -50,7 +52,7 @@ class ScrobbleController(
 
     @GetMapping("/grouped")
     @CrossOrigin("http://localhost:3000")
-    fun getScrobbledGrouped(
+    fun getScrobblesGrouped(
         @RequestParam from: String?,
         @RequestParam to: String?,
         @RequestParam timeGroup: TimeGroup
@@ -103,14 +105,5 @@ class ScrobbleController(
             timeGroup
         )
         return scrobbleService.getAlbumTracksGrouped(request)
-    }
-
-    @GetMapping("/stats")
-    @CrossOrigin("http://localhost:3000")
-    fun getUserStats(
-        @RequestParam userName: String
-    ): UserStats {
-
-        return statsService.getStats(userName)
     }
 }

@@ -1,16 +1,11 @@
 package com.steven.hicks.lastFmService.services
 
-import com.steven.hicks.lastFmService.controllers.dtos.SortBy
 import com.steven.hicks.lastFmService.controllers.dtos.TimeGroup
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedAlbumScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedArtistScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
 import com.steven.hicks.lastFmService.entities.data.Scrobble
-import com.steven.hicks.lastFmService.entities.dto.Album
-import com.steven.hicks.lastFmService.entities.dto.Artist
-import com.steven.hicks.lastFmService.entities.dto.Datee
-import com.steven.hicks.lastFmService.entities.dto.Track
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -36,55 +31,6 @@ class ScrobbleServiceTest {
     lateinit var sut: ScrobbleService
 
     @Test
-    fun `should save track`() {
-        `when`(scrobbleRepository.save(any()))
-            .thenReturn(any())
-
-        val track = Track(
-            artist = Artist("", ""),
-            Album("", ""),
-            emptyList(),
-            1,
-            Datee(1L, ""),
-            "", "", ""
-        )
-
-        sut.saveRecentTrack(track)
-
-        verify(scrobbleRepository, times(1)).save(any())
-        verify(scrobbleRepository).save(captor.capture())
-        assertThat(captor.value)
-            .satisfies { s ->
-                s.albumMbid == track.album.mbid &&
-                        s.albumName == track.album.text &&
-                        s.artistMbid == track.artist.mbid &&
-                        s.artistName == track.artist.text &&
-                        s.name == track.name
-            }
-    }
-
-    @Test
-    fun `should get most recent scrobble`() {
-        `when`(scrobbleRepository.findTopByOrderByTimeDesc())
-            .thenReturn(
-                Scrobble(
-                    id = 1,
-                    name = "Test",
-                    artistMbid = "",
-                    artistName = "",
-                    albumName = "",
-                    albumMbid = "",
-                    time = 12345678
-                )
-            )
-
-        val mostRecent = sut.getMostRecentScrobble()
-
-        verify(scrobbleRepository, times(1)).findTopByOrderByTimeDesc()
-        assertThat(mostRecent.time).isEqualTo(12345678)
-    }
-
-    @Test
     fun `should get tracks`() {
         `when`(
             scrobbleRepository.getScrobbles(
@@ -102,6 +48,7 @@ class ScrobbleServiceTest {
                 listOf(
                     Scrobble(
                         id = 1,
+                        userName = "shicks255",
                         name = "Test",
                         artistMbid = "",
                         artistName = "",
@@ -294,5 +241,4 @@ class ScrobbleServiceTest {
         assertThat(results.size).isEqualTo(2)
         assertThat(results.first()).isEqualTo("The Dark Side of the Moon")
     }
-
 }
