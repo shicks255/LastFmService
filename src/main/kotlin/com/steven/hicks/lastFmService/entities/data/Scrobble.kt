@@ -3,10 +3,11 @@ package com.steven.hicks.lastFmService.entities.data
 import javax.persistence.*
 
 @Entity
-@Table(indexes =
-[Index(name = "idx_scrobble_unique", columnList = "userName, name, artistName, time", unique = true),
-Index(name = "idx_user_artist", columnList = "userName, artistName"),
-Index(name = "idx_user_artist_album", columnList = "userName, artistName, albumName")]
+@Table(
+    indexes =
+    [Index(name = "idx_scrobble_unique", columnList = "userName, name, artistName, time", unique = true),
+        Index(name = "idx_user_artist", columnList = "userName, artistName"),
+        Index(name = "idx_user_artist_album", columnList = "userName, artistName, albumName")]
 )
 data class Scrobble(
 

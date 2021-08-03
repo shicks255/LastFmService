@@ -9,5 +9,5 @@ import org.springframework.scheduling.annotation.EnableScheduling
 class LastFmServiceApplication
 
 fun main(args: Array<String>) {
-	runApplication<LastFmServiceApplication>(*args)
+    runApplication<LastFmServiceApplication>(*args)
 }

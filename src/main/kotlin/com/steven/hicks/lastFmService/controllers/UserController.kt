@@ -1,5 +1,6 @@
 package com.steven.hicks.lastFmService.controllers
 
+import com.steven.hicks.lastFmService.aspects.Logged
 import com.steven.hicks.lastFmService.controllers.dtos.response.LoadStatusResponse
 import com.steven.hicks.lastFmService.controllers.dtos.response.UserStats
 import com.steven.hicks.lastFmService.services.DataLoadService
@@ -19,6 +20,7 @@ class UserController(
 
     @GetMapping("/stats")
     @CrossOrigin("http://localhost:3000")
+    @Logged
     fun getUserStats(
         @RequestParam userName: String
     ): UserStats {
@@ -26,7 +28,10 @@ class UserController(
         return statsService.getStats(userName)
     }
 
-    @GetMapping("/load")
+    @PostMapping("/load")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @CrossOrigin("http://localhost:3000")
+    @Logged
     fun loadScrobbles(
         @RequestParam userName: String
     ): HttpStatus {
@@ -38,6 +43,8 @@ class UserController(
     }
 
     @GetMapping("/loadStatus")
+    @CrossOrigin("http://localhost:3000")
+    @Logged
     fun getLoadStatus(
         @RequestParam userName: String
     ): LoadStatusResponse {

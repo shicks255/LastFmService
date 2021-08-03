@@ -1,5 +1,6 @@
 package com.steven.hicks.lastFmService.services
 
+import com.steven.hicks.lastFmService.aspects.Logged
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
@@ -14,15 +15,16 @@ class LastFmLoadingService(
 ) {
 
     companion object {
-        const val SLEEP_TIME = 6000L
+        const val SLEEP_TIME = 2_000L
     }
 
     val logger = LoggerFactory.getLogger(LastFmLoadingService::class.java)
 
+    @Logged
     fun loadRecent(userName: String): Int {
-        var from: Long? = null;
+        var from: Long? = null
         if (scrobbleRepository.existsScrobbleByUserNameEquals(userName)) {
-            val mostRecent = scrobbleRepository.findTopByUserNameOrderByTimeDesc(userName);
+            val mostRecent = scrobbleRepository.findTopByUserNameOrderByTimeDesc(userName)
             from = mostRecent.time + 1
         }
 
@@ -53,9 +55,10 @@ class LastFmLoadingService(
         return recent.recenttracks.attr.total
     }
 
+    @Logged
     private fun saveTracks(recentTrax: RecentTracks, userName: String) {
         val tracks = recentTrax.recenttracks.track
-        tracks.reversed().forEach {
+        tracks.filter { it.date != null }.reversed().forEach {
             val scrobble = Scrobble(
                 id = 0,
                 name = it.name,
@@ -64,7 +67,7 @@ class LastFmLoadingService(
                 artistName = it.artist.text,
                 albumMbid = it.album.mbid,
                 albumName = it.album.text,
-                time = it.date.uts
+                time = it.date!!.uts
             )
 
             try {

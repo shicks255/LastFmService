@@ -1,5 +1,6 @@
 package com.steven.hicks.lastFmService.controllers
 
+import com.steven.hicks.lastFmService.aspects.Logged
 import com.steven.hicks.lastFmService.services.ScrobbleService
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
@@ -15,12 +16,20 @@ class TypeAheadController(
     val logger = LoggerFactory.getLogger(TypeAheadController::class.java)
 
     @GetMapping("/artists")
-    fun getArtists(@RequestParam query: String): List<String> {
-        return scrobbleService.getArtists(query)
+    @Logged
+    fun getArtists(
+        @RequestParam userName: String,
+        @RequestParam query: String
+    ): List<String> {
+        return scrobbleService.getArtists(userName, query)
     }
 
     @GetMapping("/albums")
-    fun getAlbums(@RequestParam query: String): List<String> {
-        return scrobbleService.getAlbums(query)
+    @Logged
+    fun getAlbums(
+        @RequestParam userName: String,
+        @RequestParam query: String
+    ): List<String> {
+        return scrobbleService.getAlbums(userName, query)
     }
 }
