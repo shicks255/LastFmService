@@ -15,6 +15,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Service
+@Suppress("MagicNumber")
 class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
 
     @Logged
@@ -62,7 +63,7 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
         }
 
         val stuff = scrobbleRepository.getArtistGroupedScrobbles(request)
-        val dataa = stuff.map {
+        stuff.map {
             val o = it as Array<Any>
             val count = o.get(0) as BigInteger
             val timeGroup = o.get(1) as String
