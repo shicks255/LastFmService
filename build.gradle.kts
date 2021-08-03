@@ -33,8 +33,10 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:4.11")
 
     implementation ("org.springdoc:springdoc-openapi-ui:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 }
 
 tasks.withType<KotlinCompile> {
@@ -57,10 +59,24 @@ tasks.withType<Test> {
 }
 
 tasks.jacocoTestCoverageVerification {
+    dependsOn(tasks.test)
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) {
+                exclude(
+                    "com/steven/hicks/lastFmService/entities/**",
+                    "com/steven/hicks/lastFmService/repositories/**",
+                    "com/steven/hicks/lastFmService/controllers/dtos/**",
+                    "com/steven/hicks/lastFmService/aspects/**",
+                    "com/steven/hicks/lastFmService/entities/**"
+                )
+            }
+        })
+    )
     violationRules {
         rule {
             limit {
-                minimum = BigDecimal("0.64")
+                minimum = BigDecimal("0.82")
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.steven.hicks.lastFmService.services
 
+import com.steven.hicks.lastFmService.aspects.Logged
 import com.steven.hicks.lastFmService.entities.LastFmException
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import org.slf4j.LoggerFactory
@@ -29,6 +30,7 @@ class LastFmRestClient {
         const val PAGE_LIMIT = 200
     }
 
+    @Logged
     fun getRecentTracks(
         userName: String,
         page: Int? = null,
@@ -51,6 +53,7 @@ class LastFmRestClient {
         }
     }
 
+    @Logged
     private fun createUrl(userName: String, page: Int? = null, from: Long? = null, to: Long? = null): String {
         var url =
             "/2.0/?method=user.getrecenttracks&user=$userName&limit=$PAGE_LIMIT&format=json&api_key=$lastFmKey"
@@ -58,10 +61,10 @@ class LastFmRestClient {
         if (page != null)
             url += "&page=$page"
         if (from != null)
-           url += "&from=$from"
+            url += "&from=$from"
         if (to != null)
             url += "&to=$to"
 
-        return  url;
+        return url
     }
 }

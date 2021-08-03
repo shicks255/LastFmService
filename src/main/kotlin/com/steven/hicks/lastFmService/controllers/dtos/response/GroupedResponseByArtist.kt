@@ -6,6 +6,6 @@ data class GroupedResponseByArtist(
 
 data class ResponseByArtist(
     val artistName: String,
-    val total: Int,
-    val data: List<DataByDay>,
+    var total: Int,
+    val data: MutableList<DataByDay>,
 )

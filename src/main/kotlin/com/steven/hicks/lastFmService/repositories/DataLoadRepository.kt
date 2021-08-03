@@ -6,4 +6,4 @@ import org.springframework.stereotype.Repository
 import java.time.LocalDate
 
 @Repository
-interface DataLoadRepository: JpaRepository<DataLoad, LocalDate>
+interface DataLoadRepository : JpaRepository<DataLoad, LocalDate>
