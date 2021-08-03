@@ -1,5 +1,6 @@
 package com.steven.hicks.lastFmService.services
 
+import com.steven.hicks.lastFmService.aspects.Logged
 import com.steven.hicks.lastFmService.controllers.dtos.response.LoadStatusResponse
 import com.steven.hicks.lastFmService.entities.data.DataLoad
 import com.steven.hicks.lastFmService.entities.data.DataLoadStatus
@@ -24,6 +25,7 @@ class DataLoadService(
 
     val logger = LoggerFactory.getLogger(DataLoadService::class.java)
 
+    @Logged
     fun createDataLoad(): DataLoad {
         val loadEvent = DataLoad(
             OffsetDateTime.now(), DataLoadStatus.RUNNING, 0
@@ -33,10 +35,12 @@ class DataLoadService(
         return loadEvent
     }
 
+    @Logged
     fun saveDataLoad(dataLoad: DataLoad) {
         dataLoadRepository.save(dataLoad)
     }
 
+    @Logged
     fun startDataLoadTracking(userName: String, totalPages: Int): LoadStatus {
         val newTracking = LoadStatus(
             userName = userName,
@@ -48,6 +52,7 @@ class DataLoadService(
         return loadStatusRepository.save(newTracking)
     }
 
+    @Logged
     fun updateDataLoadStatus(userName: String, page: Int): LoadStatus? {
         val tracking = loadStatusRepository.findByIdOrNull(userName)
         if (tracking != null) {
@@ -57,10 +62,12 @@ class DataLoadService(
         return null
     }
 
+    @Logged
     fun endDataLoadStatus(userName: String) {
         loadStatusRepository.deleteById(userName)
     }
 
+    @Logged
     fun getDataLoadStatus(userName: String): LoadStatusResponse {
         val tracking = loadStatusRepository.findByIdOrNull(userName)
         if (tracking != null) {

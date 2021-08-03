@@ -1,5 +1,6 @@
 package com.steven.hicks.lastFmService.scheduled
 
+import com.steven.hicks.lastFmService.aspects.Logged
 import com.steven.hicks.lastFmService.entities.data.DataLoad
 import com.steven.hicks.lastFmService.entities.data.DataLoadStatus
 import com.steven.hicks.lastFmService.services.DataLoadService
@@ -26,6 +27,7 @@ class ScheduledDataLoader(
 
     //Every 12 hours
     @Scheduled(initialDelay = FIVE_MINUTES, fixedDelay = TWELVE_HOURS)
+    @Logged
     fun loadDay() {
 
         val time = measureTimeMillis {

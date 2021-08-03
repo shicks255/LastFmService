@@ -1,7 +1,15 @@
 package com.steven.hicks.lastFmService.services
 
-import com.steven.hicks.lastFmService.controllers.dtos.response.*
+import com.steven.hicks.lastFmService.aspects.Logged
+import com.steven.hicks.lastFmService.controllers.dtos.response.LongestDormancyStat
+import com.steven.hicks.lastFmService.controllers.dtos.response.OldestAndNewestStat
+import com.steven.hicks.lastFmService.controllers.dtos.response.TimeStat
+import com.steven.hicks.lastFmService.controllers.dtos.response.UserStats
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.LocalDate
@@ -14,22 +22,29 @@ class StatsService(
     val scrobbleRepository: ScrobbleRepository
 ) {
 
+    @Logged
     fun getStats(userName: String): UserStats {
 
-        val oldestAndNewestArtist = getOldestAndNewest(userName, "artist_name")
-        val longestDormancyArtist = getLongestDormancy(userName, "artist_name")
-        val oldestAndNewestAlbum = getOldestAndNewest(userName, "album_name")
-        val longestDormancyAlbum = getLongestDormancy(userName, "album_name")
+        val oldestAndNewestArtist = GlobalScope.async { getOldestAndNewest(userName, "artist_name") }
+        val longestDormancyArtist = GlobalScope.async { getLongestDormancy(userName, "artist_name") }
+        val oldestAndNewestAlbum = GlobalScope.async { getOldestAndNewest(userName, "album_name") }
+        val longestDormancyAlbum = GlobalScope.async { getLongestDormancy(userName, "album_name") }
 
-        return UserStats(
-            oldestAndNewestArtist = oldestAndNewestArtist,
-            longestDormancyArtist = longestDormancyArtist,
-            oldestAndNewestAlbum = oldestAndNewestAlbum,
-            longestDormancyAlbum = longestDormancyAlbum
-        )
+        val stats: UserStats = runBlocking {
+            awaitAll(oldestAndNewestAlbum, longestDormancyAlbum, oldestAndNewestArtist, longestDormancyArtist)
+            return@runBlocking UserStats(
+                oldestAndNewestArtist = oldestAndNewestArtist.await(),
+                longestDormancyArtist = longestDormancyArtist.await(),
+                oldestAndNewestAlbum = oldestAndNewestAlbum.await(),
+                longestDormancyAlbum = longestDormancyAlbum.await()
+            )
+        }
+
+        return stats
     }
 
-    fun getLongestDormancy(userName: String, field: String): LongestDormancyStat {
+    @Logged
+    suspend fun getLongestDormancy(userName: String, field: String): LongestDormancyStat {
         val result = scrobbleRepository.getLongestDormancy(userName, field)
 
         val resu = result.first() as Array<Object>
@@ -58,7 +73,8 @@ class StatsService(
         )
     }
 
-    fun getOldestAndNewest(userName: String, field: String): OldestAndNewestStat {
+    @Logged
+    suspend fun getOldestAndNewest(userName: String, field: String): OldestAndNewestStat {
 
         val result = scrobbleRepository.getOldestAndNewestPlay(userName, field)
 
@@ -79,7 +95,7 @@ class StatsService(
 
         return OldestAndNewestStat(
             name = name,
-            extra= extra,
+            extra = extra,
             timeStat = TimeStat(
                 oldest = firstDate,
                 newest = lastDate,
