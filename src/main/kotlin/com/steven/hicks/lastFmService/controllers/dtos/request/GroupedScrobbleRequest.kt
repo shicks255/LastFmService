@@ -5,7 +5,6 @@ import com.steven.hicks.lastFmService.entities.ScrobbleField
 import com.steven.hicks.lastFmService.entities.Table
 import com.steven.hicks.lastFmService.entities.queryBuilding.Condition
 import com.steven.hicks.lastFmService.entities.queryBuilding.QueryBuilder
-import com.steven.hicks.lastFmService.entities.queryBuilding.WhereOperator
 import com.steven.hicks.lastFmService.entities.queryBuilding.WhereOperator.EQ
 import com.steven.hicks.lastFmService.prepareStrQuery
 import org.springframework.format.annotation.DateTimeFormat

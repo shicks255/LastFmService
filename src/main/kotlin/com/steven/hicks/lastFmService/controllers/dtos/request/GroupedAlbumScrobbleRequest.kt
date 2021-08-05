@@ -1,12 +1,10 @@
 package com.steven.hicks.lastFmService.controllers.dtos.request
 
 import com.steven.hicks.lastFmService.controllers.dtos.TimeGroup
-import com.steven.hicks.lastFmService.entities.ScrobbleField
 import com.steven.hicks.lastFmService.entities.ScrobbleField.ALBUM_NAME
 import com.steven.hicks.lastFmService.entities.ScrobbleField.ARTIST_NAME
 import com.steven.hicks.lastFmService.entities.ScrobbleField.COUNT_STAR
 import com.steven.hicks.lastFmService.entities.ScrobbleField.USER_NAME
-import com.steven.hicks.lastFmService.entities.Table
 import com.steven.hicks.lastFmService.entities.Table.SCROBBLE
 import com.steven.hicks.lastFmService.entities.queryBuilding.Condition
 import com.steven.hicks.lastFmService.entities.queryBuilding.QueryBuilder
