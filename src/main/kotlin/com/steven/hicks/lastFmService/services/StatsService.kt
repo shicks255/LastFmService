@@ -47,7 +47,7 @@ class StatsService(
     suspend fun getLongestDormancy(userName: String, field: String): LongestDormancyStat {
         val result = scrobbleRepository.getLongestDormancy(userName, field)
 
-        val resu = result.first() as Array<Object>
+        val resu = result.first() as Array<*>
 
         val name = resu[0] as String
         val newest = (resu[1] as Double).toLong()
@@ -78,7 +78,7 @@ class StatsService(
 
         val result = scrobbleRepository.getOldestAndNewestPlay(userName, field)
 
-        val resu = result.first() as Array<Object>
+        val resu = result.first() as Array<*>
 
         val name = resu[0] as String
         val newest = (resu[1] as Double).toLong()

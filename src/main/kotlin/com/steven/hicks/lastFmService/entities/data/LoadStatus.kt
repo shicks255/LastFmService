@@ -7,7 +7,7 @@ import javax.persistence.Id
 
 @Entity
 data class LoadStatus(
-    @Id()
+    @Id
     val userName: String,
 
     val totalPages: Int,

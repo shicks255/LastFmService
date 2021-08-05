@@ -2,7 +2,10 @@ package com.steven.hicks.lastFmService.controllers.dtos.request
 
 import com.steven.hicks.lastFmService.controllers.dtos.TimeGroup
 import com.steven.hicks.lastFmService.entities.ScrobbleField
-import com.steven.hicks.lastFmService.entities.ScrobbleField.*
+import com.steven.hicks.lastFmService.entities.ScrobbleField.TIMEGROUP_DAY
+import com.steven.hicks.lastFmService.entities.ScrobbleField.TIMEGROUP_MONTH
+import com.steven.hicks.lastFmService.entities.ScrobbleField.TIMEGROUP_WEEK
+import com.steven.hicks.lastFmService.entities.ScrobbleField.TIMEGROUP_YEAR
 
 interface QueryRequest {
 
@@ -16,4 +19,3 @@ interface QueryRequest {
         }
     }
 }
-

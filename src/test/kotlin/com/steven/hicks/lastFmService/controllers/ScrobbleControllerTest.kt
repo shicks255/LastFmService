@@ -6,20 +6,25 @@ import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedAlbumScrob
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedArtistScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
-import com.steven.hicks.lastFmService.controllers.dtos.response.*
+import com.steven.hicks.lastFmService.controllers.dtos.response.DataByDay
+import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByAlbum
+import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByArtist
+import com.steven.hicks.lastFmService.controllers.dtos.response.ResponseByAlbum
+import com.steven.hicks.lastFmService.controllers.dtos.response.ResponseByArtist
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.services.ScrobbleService
 import com.steven.hicks.lastFmService.services.StatsService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.BDDMockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.ResultMatcher
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
@@ -80,10 +85,10 @@ class ScrobbleControllerTest {
                 .param("to", "2021-03-16")
         )
             .andExpect(status().isOk)
-            .andExpect(ResultMatcher {
+            .andExpect {
                 println(it.request.contentAsString)
                 println(it.response.contentAsString)
-            })
+            }
             .andReturn()
 
         verify(scrobbleService, times(1))
@@ -120,10 +125,10 @@ class ScrobbleControllerTest {
                 .param("timeGroup", TimeGroup.DAY.toString())
         )
             .andExpect(status().isOk)
-            .andExpect(ResultMatcher {
+            .andExpect {
                 println(it.request.contentAsString)
                 println(it.response.contentAsString)
-            })
+            }
             .andReturn()
 
         verify(scrobbleService, times(1))

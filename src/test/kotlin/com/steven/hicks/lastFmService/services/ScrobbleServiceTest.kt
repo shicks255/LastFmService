@@ -1,8 +1,10 @@
 package com.steven.hicks.lastFmService.services
 
 import com.steven.hicks.lastFmService.controllers.dtos.TimeGroup
-import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedAlbumScrobbleRequest
 import com.steven.hicks.lastFmService.entities.data.Scrobble
+import com.steven.hicks.lastFmService.entities.resultMappers.GroupedAlbumResultMapper
+import com.steven.hicks.lastFmService.entities.resultMappers.GroupedArtistResultMapper
+import com.steven.hicks.lastFmService.entities.resultMappers.GroupedResultMapper
 import com.steven.hicks.lastFmService.mockGroupedScrobbleRequest
 import com.steven.hicks.lastFmService.mockScrobbleRequest
 import com.steven.hicks.lastFmService.mockedGroupedAlbumScrobbleRequest
@@ -11,23 +13,18 @@ import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
-import java.math.BigInteger
-import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class ScrobbleServiceTest {
 
     @Mock
     lateinit var scrobbleRepository: ScrobbleRepository
-
-    @Captor
-    lateinit var captor: ArgumentCaptor<Scrobble>
 
     @InjectMocks
     lateinit var sut: ScrobbleService
@@ -68,7 +65,7 @@ class ScrobbleServiceTest {
         )
             .thenReturn(
                 listOf(
-                    arrayOf(BigInteger.ONE, "11")
+                    GroupedResultMapper(1, "11")
                 )
             )
 
@@ -95,7 +92,7 @@ class ScrobbleServiceTest {
         )
             .thenReturn(
                 listOf(
-                    arrayOf(BigInteger.ONE, "2021-10-31", "Slayer")
+                    GroupedArtistResultMapper(1, "2021-10-31", "Slayer")
                 )
             )
 
@@ -110,7 +107,7 @@ class ScrobbleServiceTest {
 
         assertThat(results.data).hasSize(1)
         assertThat(results.data.first().data.first().plays).isEqualTo(1)
-        assertThat(results.data.first().data[1].plays).isEqualTo(0) //because 1 empty
+        assertThat(results.data.first().data[1].plays).isEqualTo(0) // because 1 empty
         assertThat(results.data.first().artistName).isEqualTo("Slayer")
     }
 
@@ -123,8 +120,8 @@ class ScrobbleServiceTest {
         )
             .thenReturn(
                 listOf(
-                    arrayOf(BigInteger.ONE, "2021-10-31", "Slayer"),
-                    arrayOf(BigInteger.TEN, "2021-11-01", "Slayer")
+                    GroupedArtistResultMapper(1, "2021-10-31", "Slayer"),
+                    GroupedArtistResultMapper(10, "2021-11-01", "Slayer")
                 )
             )
 
@@ -152,7 +149,7 @@ class ScrobbleServiceTest {
         )
             .thenReturn(
                 listOf(
-                    arrayOf(BigInteger.ONE, "2021-11-01", "Slayer")
+                    GroupedArtistResultMapper(1, "2021-11-01", "Slayer")
                 )
             )
 
@@ -179,7 +176,7 @@ class ScrobbleServiceTest {
         )
             .thenReturn(
                 listOf(
-                    arrayOf(BigInteger.ONE, "2021-11-01", "Slayer")
+                    GroupedArtistResultMapper(1, "2021-11-01", "Slayer")
                 )
             )
 
@@ -206,7 +203,7 @@ class ScrobbleServiceTest {
         )
             .thenReturn(
                 listOf(
-                    arrayOf(BigInteger.ONE, "2021-11-01", "Slayer")
+                    GroupedArtistResultMapper(1, "2021-11-01", "Slayer")
                 )
             )
 
@@ -233,7 +230,7 @@ class ScrobbleServiceTest {
         )
             .thenReturn(
                 listOf(
-                    arrayOf(BigInteger.ONE, "2021-10-31", "Bleed American", "Jimmy Eat World")
+                    GroupedAlbumResultMapper(1, "2021-10-31", "Bleed American", "Jimmy Eat World")
                 )
             )
 
@@ -261,8 +258,8 @@ class ScrobbleServiceTest {
         )
             .thenReturn(
                 listOf(
-                    arrayOf(BigInteger.ONE, "2021-10-31", "Bleed American", "Jimmy Eat World"),
-                    arrayOf(BigInteger.TEN, "2021-11-01", "Bleed American", "Jimmy Eat World")
+                    GroupedAlbumResultMapper(1, "2021-10-31", "Bleed American", "Jimmy Eat World"),
+                    GroupedAlbumResultMapper(10, "2021-11-01", "Bleed American", "Jimmy Eat World")
                 )
             )
 
@@ -290,7 +287,7 @@ class ScrobbleServiceTest {
         )
             .thenReturn(
                 listOf(
-                    arrayOf(BigInteger.ONE, "2021-11-01", "Bleed American", "Jimmy Eat World")
+                    GroupedAlbumResultMapper(1, "2021-11-01", "Bleed American", "Jimmy Eat World")
                 )
             )
 
@@ -317,7 +314,7 @@ class ScrobbleServiceTest {
         )
             .thenReturn(
                 listOf(
-                    arrayOf(BigInteger.ONE, "2021-11-01", "Bleed American", "Jimmy Eat World")
+                    GroupedAlbumResultMapper(1, "2021-11-01", "Bleed American", "Jimmy Eat World")
                 )
             )
 
@@ -344,7 +341,7 @@ class ScrobbleServiceTest {
         )
             .thenReturn(
                 listOf(
-                    arrayOf(BigInteger.ONE, "2021-11-01", "Bleed American", "Jimmy Eat World")
+                    GroupedAlbumResultMapper(1, "2021-11-01", "Bleed American", "Jimmy Eat World")
                 )
             )
 
@@ -371,7 +368,7 @@ class ScrobbleServiceTest {
         )
             .thenReturn(
                 listOf(
-                    arrayOf(BigInteger.ONE, "2021-11-01", "Bleed American", "Jimmy Eat World")
+                    GroupedAlbumResultMapper(1, "2021-11-01", "Bleed American", "Jimmy Eat World")
                 )
             )
 

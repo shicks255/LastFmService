@@ -6,13 +6,17 @@ import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedAlbumScrob
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedArtistScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
-import com.steven.hicks.lastFmService.controllers.dtos.response.*
+import com.steven.hicks.lastFmService.controllers.dtos.response.DataByDay
+import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByAlbum
+import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByArtist
+import com.steven.hicks.lastFmService.controllers.dtos.response.ResponseByAlbum
+import com.steven.hicks.lastFmService.controllers.dtos.response.ResponseByArtist
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.springframework.stereotype.Service
-import java.math.BigInteger
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.ofPattern
 
 @Service
 @Suppress("MagicNumber")
@@ -28,71 +32,46 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
         val data = scrobbleRepository.getGroupedScrobbles(request)
 
         return data.map {
-            val o = it as Array<Any>
-            val plays = o.get(0) as BigInteger
-            val timeGroup = o.get(1) as String
-            DataByDay(plays.toInt(), timeGroup)
+            DataByDay(it.count, it.timeGroup)
         }
     }
 
     @Logged
     fun getArtistTracksGrouped(request: GroupedArtistScrobbleRequest): GroupedResponseByArtist {
-        val map = mutableMapOf<String, ResponseByArtist>()
+        val artistDataMap = mutableMapOf<String, ResponseByArtist>()
 
-        var start = request.from
-        val dates = mutableListOf(request.from)
-        while (start.isBefore(request.to)) {
-            start = when (request.timeGroup) {
-                TimeGroup.DAY -> start.plusDays(1)
-                TimeGroup.WEEK -> start.plusWeeks(1)
-                TimeGroup.MONTH -> start.plusMonths(1)
-                TimeGroup.YEAR -> start.plusYears(1)
-            }
-            dates.add(start)
-        }
+        val dates = generateDateList(request.from, request.to, request.timeGroup)
+        val formatter = getFormatter(request.timeGroup)
 
-        val formatter = when (request.timeGroup) {
-            TimeGroup.DAY -> DateTimeFormatter.ofPattern("YYYY-MM-dd")
-            TimeGroup.WEEK -> DateTimeFormatter.ofPattern("YYYY-ww")
-            TimeGroup.MONTH -> DateTimeFormatter.ofPattern("YYYY-MM")
-            TimeGroup.YEAR -> DateTimeFormatter.ofPattern("YYYY")
-        }
-
-        val allTimeGroups = dates.map {
-            it.format(formatter)
-        }
-
-        val stuff = scrobbleRepository.getArtistGroupedScrobbles(request)
-        stuff.map {
-            val o = it as Array<Any>
-            val count = o.get(0) as BigInteger
-            val timeGroup = o.get(1) as String
-            val artist = o.get(2) as String
-            val dbd = DataByDay(count.toInt(), timeGroup)
-            if (map.containsKey(artist)) {
-                map.get(artist)!!.data.add(dbd)
-                map.get(artist)!!.total += count.toInt()
-            } else {
-                map.putIfAbsent(
-                    artist, ResponseByArtist(
-                        artistName = artist,
-                        data = mutableListOf(dbd),
-                        total = count.toInt()
-                    )
-                )
+        val artistData = scrobbleRepository.getArtistGroupedScrobbles(request)
+        artistData.forEach {
+            val artist = it.artist
+            val count = it.count
+            val dbd = DataByDay(it.count, it.timeGroup)
+            artistDataMap.compute(artist) { s, t ->
+                if (t == null)
+                    ResponseByArtist(artist, count, mutableListOf(dbd))
+                else {
+                    t.data.add(dbd)
+                    t.total += count
+                    t
+                }
             }
         }
 
-        var listt = map.values
+        var listt = artistDataMap.values
             .sortedByDescending { it.total }
             .toList()
 
         if (request.empties == true) {
+            val allTimeGroups = dates.map {
+                it.format(formatter)
+            }
             val emptyRecords = allTimeGroups.map {
                 DataByDay(0, it)
             }
 
-            listt = listt.map {
+            listt = listt.map { it ->
                 val da = it.data
                 val timeGroupsAdded = da.map { it.timeGroup }
                 val timeGroupsToAdd = emptyRecords.filter { !timeGroupsAdded.contains(it.timeGroup) }
@@ -109,62 +88,41 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
 
     @Logged
     fun getAlbumTracksGrouped(request: GroupedAlbumScrobbleRequest): GroupedResponseByAlbum {
-        val map = mutableMapOf<String, ResponseByAlbum>()
+        val albumDataMap = mutableMapOf<String, ResponseByAlbum>()
 
-        var start = request.from
-        val dates = mutableListOf<LocalDate>(request.from)
-        while (start.isBefore(request.to!!)) {
-            when (request.timeGroup) {
-                TimeGroup.DAY -> start = start.plusDays(1)
-                TimeGroup.WEEK -> start = start.plusWeeks(1)
-                TimeGroup.MONTH -> start = start.plusMonths(1)
-                TimeGroup.YEAR -> start = start.plusYears(1)
-            }
-            dates.add(start)
-        }
-
-        val formatter = when (request.timeGroup) {
-            TimeGroup.DAY -> DateTimeFormatter.ofPattern("YYYY-MM-dd")
-            TimeGroup.WEEK -> DateTimeFormatter.ofPattern("YYYY-ww")
-            TimeGroup.MONTH -> DateTimeFormatter.ofPattern("YYYY-MM")
-            TimeGroup.YEAR -> DateTimeFormatter.ofPattern("YYYY")
-        }
-
-        val allTimeGroups = dates.map {
-            it.format(formatter)
-        }
+        val dates = generateDateList(request.from, request.to, request.timeGroup)
+        val formatter = getFormatter(request.timeGroup)
 
         val albumData = scrobbleRepository.getAlbumGroupedScrobbles(request)
-        albumData.map {
-            val o = it as Array<Any>
-            val count = o.get(0) as BigInteger
-            val timeGroup = o.get(1) as String
-            val album = o.get(2) as String
-            val artist = o.get(3) as String
+        albumData.forEach {
+            val count = it.count
+            val timeGroup = it.timeGroup
+            val album = it.albumName
+            val artist = it.artist
 
             val dbd = DataByDay(count.toInt(), timeGroup)
-            val key = album + " - " + artist
-            if (map.containsKey(key)) {
-                map.get(key)!!.data.add(dbd)
-                map.get(key)!!.total += count.toInt()
-            } else {
-                map.putIfAbsent(
-                    key, ResponseByAlbum(
-                        artistName = artist,
-                        albumName = "$album - $artist",
-                        data = mutableListOf(dbd),
-                        total = count.toInt()
-                    )
-                )
+            val key = "$album - $artist"
+            albumDataMap.compute(key) { k, v ->
+                if (v == null)
+                    ResponseByAlbum(artist, k, count, mutableListOf(dbd))
+                else {
+                    v.data.add(dbd)
+                    v.total += count
+                    v
+                }
             }
         }
 
-        var list = map.values
+        var list = albumDataMap.values
             .sortedByDescending { it.total }
-            .filter { !it.albumName.isNullOrEmpty() }
+            .filter { it.albumName.isNotEmpty() }
             .toList()
 
         if (request.empties == true) {
+
+            val allTimeGroups = dates.map {
+                it.format(formatter)
+            }
             val emptyRecords = allTimeGroups.map {
                 DataByDay(0, it)
             }
@@ -192,5 +150,30 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
     @Logged
     fun getAlbums(userName: String, typed: String): List<String> {
         return scrobbleRepository.suggestAlbums(userName, typed)
+    }
+
+    private fun generateDateList(start: LocalDate, end: LocalDate, timeGroup: TimeGroup): List<LocalDate> {
+        val dates = mutableListOf(start)
+        var currentDate = start
+        while (currentDate.isBefore(end)) {
+            currentDate = when (timeGroup) {
+                TimeGroup.DAY -> currentDate.plusDays(1)
+                TimeGroup.WEEK -> currentDate.plusWeeks(1)
+                TimeGroup.MONTH -> currentDate.plusMonths(1)
+                TimeGroup.YEAR -> currentDate.plusYears(1)
+            }
+            dates.add(currentDate)
+        }
+
+        return dates
+    }
+
+    private fun getFormatter(timeGroup: TimeGroup): DateTimeFormatter {
+        return when (timeGroup) {
+            TimeGroup.DAY -> ofPattern("YYYY-MM-dd")
+            TimeGroup.WEEK -> ofPattern("YYYY-ww")
+            TimeGroup.MONTH -> ofPattern("YYYY-MM")
+            TimeGroup.YEAR -> ofPattern("YYYY")
+        }
     }
 }

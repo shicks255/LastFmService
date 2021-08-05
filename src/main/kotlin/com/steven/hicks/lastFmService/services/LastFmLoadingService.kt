@@ -4,6 +4,7 @@ import com.steven.hicks.lastFmService.aspects.Logged
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -18,7 +19,7 @@ class LastFmLoadingService(
         const val SLEEP_TIME = 2_000L
     }
 
-    val logger = LoggerFactory.getLogger(LastFmLoadingService::class.java)
+    val logger: Logger = LoggerFactory.getLogger(LastFmLoadingService::class.java)
 
     @Logged
     fun loadRecent(userName: String): Int {

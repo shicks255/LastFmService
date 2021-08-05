@@ -11,7 +11,7 @@ class ErrorObject {
     }
 
     companion object {
-        enum class ErrorCode(val code: Int) {
+        enum class ErrorCode(private val code: Int) {
             UNKNOWN_ERROR(0);
 
             override fun toString(): String {

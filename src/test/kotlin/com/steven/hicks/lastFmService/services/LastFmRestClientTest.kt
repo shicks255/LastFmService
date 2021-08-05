@@ -1,35 +1,36 @@
 package com.steven.hicks.lastFmService.services
 
 import com.steven.hicks.lastFmService.entities.LastFmException
-import com.steven.hicks.lastFmService.entities.dto.*
+import com.steven.hicks.lastFmService.entities.dto.Album
+import com.steven.hicks.lastFmService.entities.dto.Artist
+import com.steven.hicks.lastFmService.entities.dto.Attr
+import com.steven.hicks.lastFmService.entities.dto.Datee
+import com.steven.hicks.lastFmService.entities.dto.RecentTrack
+import com.steven.hicks.lastFmService.entities.dto.RecentTracks
+import com.steven.hicks.lastFmService.entities.dto.Track
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Captor
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.doReturn
+import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientRequestException
-import org.springframework.web.util.UriBuilder
 import reactor.core.publisher.Mono
 import java.net.URI
-
 
 @ExtendWith(MockitoExtension::class)
 class LastFmRestClientTest {
 
     @Mock
     lateinit var client: WebClient
-
-    @Captor
-    private var lambdaCaptor: ArgumentCaptor<java.util.function.Function<UriBuilder, URI>?>? = null
 
     @InjectMocks
     val sut = LastFmRestClient()

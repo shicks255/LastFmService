@@ -8,7 +8,7 @@ import org.aspectj.lang.annotation.Pointcut
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.Stack
 
 @Component
 @Aspect
@@ -19,15 +19,9 @@ class OperationLogger {
     }
 
     val logger: Logger = LoggerFactory.getLogger(OperationLogger::class.java)
-
     val logContext = ThreadLocal<Stack<LoggedValueContainer>>()
 
-    data class LoggedValueContainer(
-        val start: Long,
-        val args: Array<Any>,
-        val clazz: String,
-        val operation: String
-    )
+    data class LoggedValueContainer(val start: Long, val args: Array<*>, val clazz: String, val operation: String)
 
     @Pointcut("@annotation(com.steven.hicks.lastFmService.aspects.Logged)")
     fun pointCut() {

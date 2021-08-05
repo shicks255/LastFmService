@@ -13,7 +13,11 @@ import com.steven.hicks.lastFmService.entities.ScrobbleField
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.queryBuilding.Direction
 import com.steven.hicks.lastFmService.services.ScrobbleService
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
 
 @RestController
@@ -22,7 +26,7 @@ class ScrobbleController(
     val scrobbleService: ScrobbleService,
 ) {
 
-    @GetMapping()
+    @GetMapping
     @Logged
     fun getScrobbles(
         @RequestParam userName: String,
@@ -44,7 +48,8 @@ class ScrobbleController(
             sort = sort,
             direction
         )
-        return scrobbleService.getTracks(request)
+        return scrobbleService
+            .getTracks(request)
     }
 
     @GetMapping("/grouped")
@@ -106,7 +111,7 @@ class ScrobbleController(
         val request = GroupedAlbumScrobbleRequest(
             userName = userName,
             from = LocalDate.parse(from),
-            to = if (to != null) LocalDate.parse(to) else null,
+            to = if (to != null) LocalDate.parse(to) else LocalDate.now(),
             albumNames = albumNames,
             timeGroup = timeGroup,
             limit = limit,
