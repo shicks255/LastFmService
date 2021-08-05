@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.math.BigInteger
 import javax.persistence.EntityManager
 
+@Suppress("MagicNumber")
 @Repository
 @Transactional(readOnly = true)
 class CustomScrobbleRepositoryImpl(
