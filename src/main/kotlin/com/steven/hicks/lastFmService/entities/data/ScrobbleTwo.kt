@@ -1,6 +1,12 @@
 package com.steven.hicks.lastFmService.entities.data
 
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.Index
+import javax.persistence.Table
 
 @Entity
 @Table(
@@ -12,7 +18,7 @@ import javax.persistence.*
     ]
 )
 data class ScrobbleTwo(
-    @Id()
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Int?,
     @Column(columnDefinition = "text")

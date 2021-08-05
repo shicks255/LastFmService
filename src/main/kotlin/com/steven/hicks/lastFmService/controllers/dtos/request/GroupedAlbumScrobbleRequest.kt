@@ -2,10 +2,17 @@ package com.steven.hicks.lastFmService.controllers.dtos.request
 
 import com.steven.hicks.lastFmService.controllers.dtos.TimeGroup
 import com.steven.hicks.lastFmService.entities.ScrobbleField
+import com.steven.hicks.lastFmService.entities.ScrobbleField.ALBUM_NAME
+import com.steven.hicks.lastFmService.entities.ScrobbleField.ARTIST_NAME
+import com.steven.hicks.lastFmService.entities.ScrobbleField.COUNT_STAR
+import com.steven.hicks.lastFmService.entities.ScrobbleField.USER_NAME
 import com.steven.hicks.lastFmService.entities.Table
+import com.steven.hicks.lastFmService.entities.Table.SCROBBLE
 import com.steven.hicks.lastFmService.entities.queryBuilding.Condition
 import com.steven.hicks.lastFmService.entities.queryBuilding.QueryBuilder
 import com.steven.hicks.lastFmService.entities.queryBuilding.WhereOperator
+import com.steven.hicks.lastFmService.entities.queryBuilding.WhereOperator.EQ
+import com.steven.hicks.lastFmService.entities.queryBuilding.WhereOperator.IN
 import com.steven.hicks.lastFmService.prepareStrQuery
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate
@@ -15,7 +22,7 @@ data class GroupedAlbumScrobbleRequest(
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     val from: LocalDate,
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    val to: LocalDate?,
+    val to: LocalDate,
     val albumNames: List<String>?,
     val timeGroup: TimeGroup,
     val limit: Int?,
@@ -24,22 +31,22 @@ data class GroupedAlbumScrobbleRequest(
 
     override fun buildQuery(): String {
         return QueryBuilder.build {
-            select(ScrobbleField.COUNT_STAR) {
+            select(COUNT_STAR) {
                 and(getTimeGroup(timeGroup))
-                and(ScrobbleField.ALBUM_NAME)
-                and(ScrobbleField.ARTIST_NAME)
+                and(ALBUM_NAME)
+                and(ARTIST_NAME)
             }
-            from(Table.SCROBBLE)
-            where(Condition(ScrobbleField.ALBUM_NAME, WhereOperator.NE, "''")) {
-                and(Condition(ScrobbleField.USER_NAME, WhereOperator.EQ, userName.prepareStrQuery()))
+            from(SCROBBLE)
+            where(Condition(ALBUM_NAME, WhereOperator.NE, "''")) {
+                and(Condition(USER_NAME, EQ, userName.prepareStrQuery()))
                 if (!albumNames.isNullOrEmpty()) {
                     val inPieces =
                         albumNames.joinToString(separator = ",", prefix = "(", postfix = ")") { it.prepareStrQuery() }
-                    and(Condition(ScrobbleField.ALBUM_NAME, WhereOperator.IN, inPieces))
+                    and(Condition(ALBUM_NAME, IN, inPieces))
                 }
                 andTimeWhere(from, to)
             }
-            groupBy(listOf(getTimeGroup(timeGroup), ScrobbleField.ALBUM_NAME, ScrobbleField.ARTIST_NAME))
+            groupBy(listOf(getTimeGroup(timeGroup), ALBUM_NAME, ARTIST_NAME))
             limit(limit)
         }
     }

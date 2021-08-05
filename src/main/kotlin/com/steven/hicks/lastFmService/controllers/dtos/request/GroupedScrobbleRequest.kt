@@ -6,6 +6,7 @@ import com.steven.hicks.lastFmService.entities.Table
 import com.steven.hicks.lastFmService.entities.queryBuilding.Condition
 import com.steven.hicks.lastFmService.entities.queryBuilding.QueryBuilder
 import com.steven.hicks.lastFmService.entities.queryBuilding.WhereOperator
+import com.steven.hicks.lastFmService.entities.queryBuilding.WhereOperator.EQ
 import com.steven.hicks.lastFmService.prepareStrQuery
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate
@@ -25,11 +26,10 @@ data class GroupedScrobbleRequest(
                 and(getTimeGroup(timeGroup))
             }
             from(Table.SCROBBLE)
-            where(Condition(ScrobbleField.USER_NAME, WhereOperator.EQ, userName.prepareStrQuery())) {
+            where(Condition(ScrobbleField.USER_NAME, EQ, userName.prepareStrQuery())) {
                 andTimeWhere(from, to)
             }
             groupBy(listOf(getTimeGroup(timeGroup)))
         }
     }
 }
-

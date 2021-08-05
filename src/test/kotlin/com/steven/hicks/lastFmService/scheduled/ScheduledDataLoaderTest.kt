@@ -2,7 +2,6 @@ package com.steven.hicks.lastFmService.scheduled
 
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import com.steven.hicks.lastFmService.entities.data.DataLoad
 import com.steven.hicks.lastFmService.entities.data.DataLoadStatus
 import com.steven.hicks.lastFmService.services.DataLoadService
@@ -21,6 +20,7 @@ class ScheduledDataLoaderTest {
 
     @Mock
     lateinit var dataLoadService: DataLoadService
+
     @Mock
     lateinit var lastFmLoadingService: LastFmLoadingService
 
@@ -30,12 +30,14 @@ class ScheduledDataLoaderTest {
     @Test
     fun `should load data`() {
         `when`(dataLoadService.createDataLoad())
-            .thenReturn(DataLoad(
-                timestamp = OffsetDateTime.now(),
-                status = DataLoadStatus.RUNNING,
-                count = 1,
-                error = null
-            ))
+            .thenReturn(
+                DataLoad(
+                    timestamp = OffsetDateTime.now(),
+                    status = DataLoadStatus.RUNNING,
+                    count = 1,
+                    error = null
+                )
+            )
         `when`(lastFmLoadingService.loadRecent("shicks255"))
             .thenReturn(1)
 

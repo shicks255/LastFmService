@@ -41,7 +41,6 @@ class StatsServiceTest {
 
         val result = sut.getStats("shicks255")
 
-
         verify(scrobbleRepository, times(2)).getLongestDormancy(eq("shicks255"), any())
         verify(scrobbleRepository, times(2)).getOldestAndNewestPlay(eq("shicks255"), any())
     }

@@ -3,6 +3,7 @@ package com.steven.hicks.lastFmService.services
 import com.steven.hicks.lastFmService.aspects.Logged
 import com.steven.hicks.lastFmService.entities.LastFmException
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -12,7 +13,7 @@ import org.springframework.web.reactive.function.client.WebClientException
 @Component
 class LastFmRestClient {
 
-    val logger = LoggerFactory.getLogger(LastFmRestClient::class.java)
+    val logger: Logger = LoggerFactory.getLogger(LastFmRestClient::class.java)
 
     var client: WebClient = WebClient
         .builder()

@@ -7,7 +7,6 @@ import com.steven.hicks.lastFmService.entities.data.DataLoadStatus
 import com.steven.hicks.lastFmService.entities.data.LoadStatus
 import com.steven.hicks.lastFmService.repositories.DataLoadRepository
 import com.steven.hicks.lastFmService.repositories.LoadStatusRepository
-import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.OffsetDateTime
@@ -22,8 +21,6 @@ class DataLoadService(
         const val MY_USERNAME = "shicks255"
         const val ONE_HUNDRED_PERCENT = 100
     }
-
-    val logger = LoggerFactory.getLogger(DataLoadService::class.java)
 
     @Logged
     fun createDataLoad(): DataLoad {
