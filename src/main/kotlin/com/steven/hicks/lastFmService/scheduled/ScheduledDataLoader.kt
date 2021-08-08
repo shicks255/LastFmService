@@ -20,14 +20,14 @@ class ScheduledDataLoader(
 ) {
 
     companion object {
-        const val FIVE_MINUTES = (1_000 * 60 * 5).toLong()
+        const val ONE_MINUTE = (1_000 * 60).toLong()
         const val TWELVE_HOURS = (1_000 * 60 * 60 * 12).toLong()
     }
 
     val logger: Logger = LoggerFactory.getLogger(ScheduledDataLoader::class.java)
 
     // Every 12 hours
-    @Scheduled(initialDelay = FIVE_MINUTES, fixedDelay = TWELVE_HOURS)
+    @Scheduled(initialDelay = ONE_MINUTE, fixedDelay = TWELVE_HOURS)
     @Logged
     fun loadDay() {
 

@@ -18,8 +18,8 @@ class ExceptionHandler {
     @ExceptionHandler(Exception::class)
     @Logged
     fun handleAllExceptions(e: java.lang.Exception): ResponseEntity<ErrorObject> {
-        logger.error("Unhandled exception caught: ${e.message}")
-        e.printStackTrace()
+        logger.error("Unhandled exception caught: ${e.message}, ${e.stackTraceToString()}")
+//        e.printStackTrace()
 
         return ResponseEntity(ErrorObject("An exception has occurred"), HttpStatus.INTERNAL_SERVER_ERROR)
     }
