@@ -53,7 +53,7 @@ class OperationLogger {
     }
 
     @AfterReturning("pointCut()", returning = "returnedObject")
-    fun around(returnedObject: Any) {
+    fun around(returnedObject: Any?) {
 
         val loggedValues = logContext.get().pop()
         val latency = System.currentTimeMillis() - loggedValues.start
@@ -61,7 +61,7 @@ class OperationLogger {
         val clazz = loggedValues.clazz
         val operation = loggedValues.operation
 
-        var returnValue = returnedObject.toString()
+        var returnValue = returnedObject?.toString() ?: ""
         if (returnValue.length > MAX_LOG_LENGTH) {
             returnValue = returnValue.substring(0, MAX_LOG_LENGTH)
         }
