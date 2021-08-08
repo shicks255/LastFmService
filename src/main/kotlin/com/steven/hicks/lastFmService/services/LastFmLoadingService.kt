@@ -1,6 +1,7 @@
 package com.steven.hicks.lastFmService.services
 
 import com.steven.hicks.lastFmService.aspects.Logged
+import com.steven.hicks.lastFmService.entities.LastFmException
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
@@ -29,12 +30,13 @@ class LastFmLoadingService(
             from = mostRecent.time + 1
         }
 
-        val recent = client.getRecentTracks(
-            from = from,
-            userName = userName
-        )
-
+        var tracksLoaded = 0
         try {
+            val recent = client.getRecentTracks(
+                from = from,
+                userName = userName
+            )
+
             var pageNumber = recent.recenttracks.attr.totalPages
             dataLoadService.startDataLoadTracking(userName, pageNumber)
             while (pageNumber > 0) {
@@ -43,17 +45,20 @@ class LastFmLoadingService(
                     from = from,
                     userName = userName
                 )
+                tracksLoaded += recentTrax.recenttracks.track.size
                 saveTracks(recentTrax, userName)
                 logger.info("Finished loading page $pageNumber for $userName")
                 pageNumber -= 1
                 dataLoadService.updateDataLoadStatus(userName, pageNumber)
                 Thread.sleep(SLEEP_TIME)
             }
-        } finally {
+        } catch (e: LastFmException) {
             dataLoadService.endDataLoadStatus(userName)
+            throw e
         }
+        dataLoadService.endDataLoadStatus(userName)
 
-        return recent.recenttracks.attr.total
+        return tracksLoaded
     }
 
     @Logged
@@ -74,7 +79,7 @@ class LastFmLoadingService(
             try {
                 scrobbleRepository.save(scrobble)
             } catch (e: Exception) {
-                logger.info("Something went wrong, ${e.message}")
+                logger.error("Something went wrong, ${e.message}, ${e.stackTraceToString()}")
             }
         }
     }
