@@ -45,23 +45,19 @@ val mockedGroupedAlbumScrobbleRequest = GroupedAlbumScrobbleRequest(
     empties = false
 )
 
-val oldestNewestArtist = listOf(
-    arrayOf(
-        "Pink Floyd",
-        1618888555.0,
-        1611118094.0,
-        "",
-    )
+val oldestNewestArtist = arrayOf(
+    "Pink Floyd",
+    1618888555.0,
+    1611118094.0,
+    "",
 )
 
-val oldestNewestAlbum = listOf(
-    arrayOf(
-        "Pink Floyd",
-        1618888555.0,
-        1611118094.0,
-        "",
-        "Animals"
-    )
+val oldestNewestAlbum = arrayOf(
+    "Pink Floyd",
+    1618888555.0,
+    1611118094.0,
+    "",
+    "Animals"
 )
 
 val longestDormancyArtist = listOf(

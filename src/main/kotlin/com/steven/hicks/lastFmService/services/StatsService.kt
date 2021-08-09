@@ -78,14 +78,12 @@ class StatsService(
 
         val result = scrobbleRepository.getOldestAndNewestPlay(userName, field)
 
-        val resu = result.first() as Array<*>
-
-        val name = resu[0] as String
-        val newest = (resu[1] as Double).toLong()
-        val oldest = (resu[2] as Double).toLong()
+        val name = result[0] as String
+        val newest = (result[1] as Double).toLong()
+        val oldest = (result[2] as Double).toLong()
         var extra: String? = null
         if (field == "album_name") {
-            extra = resu[4] as String
+            extra = result[4] as String
         }
 
         val firstDate = LocalDate.ofInstant(Instant.ofEpochSecond(oldest), ZoneOffset.UTC)
