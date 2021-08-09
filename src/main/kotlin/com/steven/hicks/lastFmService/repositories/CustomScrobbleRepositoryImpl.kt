@@ -81,7 +81,7 @@ class CustomScrobbleRepositoryImpl(
         }
     }
 
-    override fun getOldestAndNewestPlay(userName: String, type: String): List<Any> {
+    override fun getOldestAndNewestPlay(userName: String, type: String): Array<*> {
         val extraQuery = if (type == "album_name") ", artist_name " else ""
 
         val query =
@@ -93,10 +93,10 @@ class CustomScrobbleRepositoryImpl(
                 "group by $type $extraQuery" +
                 "order by rang desc limit 1"
 
-        return entityManager.createNativeQuery(query).singleResult as List<Any>
+        return entityManager.createNativeQuery(query).singleResult as Array<*>
     }
 
-    override fun getLongestDormancy(userName: String, type: String): List<Any> {
+    override fun getLongestDormancy(userName: String, type: String): List<*> {
         val extraQuery = if (type == "album_name") ", artist_name " else ""
 
         val query =
@@ -108,6 +108,6 @@ class CustomScrobbleRepositoryImpl(
                 "where user_name = '$userName' " +
                 "order by last_play desc nulls last;"
 
-        return entityManager.createNativeQuery(query).singleResult as List<Any>
+        return entityManager.createNativeQuery(query).resultList as List<*>
     }
 }

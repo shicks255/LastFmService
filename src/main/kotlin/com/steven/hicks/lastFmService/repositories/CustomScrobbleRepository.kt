@@ -17,6 +17,6 @@ interface CustomScrobbleRepository {
     fun getGroupedScrobbles(request: GroupedScrobbleRequest): List<GroupedResultMapper>
     fun suggestArtists(userName: String, typed: String): List<String>
     fun suggestAlbums(userName: String, typed: String): List<String>
-    fun getOldestAndNewestPlay(userName: String, type: String): List<Any>
-    fun getLongestDormancy(userName: String, type: String): List<Any>
+    fun getOldestAndNewestPlay(userName: String, type: String): Array<*>
+    fun getLongestDormancy(userName: String, type: String): List<*>
 }

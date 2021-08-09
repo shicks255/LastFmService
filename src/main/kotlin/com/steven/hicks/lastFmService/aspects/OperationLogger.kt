@@ -1,5 +1,6 @@
 package com.steven.hicks.lastFmService.aspects
 
+import net.logstash.logback.argument.StructuredArguments.kv
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.Aspect
@@ -7,6 +8,8 @@ import org.aspectj.lang.annotation.Before
 import org.aspectj.lang.annotation.Pointcut
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import java.util.Stack
 
@@ -49,7 +52,13 @@ class OperationLogger {
             )
         )
 
-        logger.info("class={} operation={} arguments={} stage={}", clazz, operation, args, "start")
+        logger.info(
+            "{} {} {} {}",
+            kv("class", clazz),
+            kv("operation", operation),
+            kv("args", args),
+            kv("stage", "start")
+        )
     }
 
     @AfterReturning("pointCut()", returning = "returnedObject")
@@ -66,13 +75,32 @@ class OperationLogger {
             returnValue = returnValue.substring(0, MAX_LOG_LENGTH)
         }
 
+        var statusCode: Int? = null
+        var status = "success"
+        if (returnedObject is ResponseEntity<*>) {
+            statusCode = returnedObject.statusCode.value()
+            if (returnedObject.statusCode.is4xxClientError || returnedObject.statusCode.is5xxServerError) {
+                status = "failure"
+            }
+        }
+
+        if (returnedObject is HttpStatus) {
+            statusCode = returnedObject.value()
+        }
+
+        if (statusCode == null && clazz.contains("controller")) {
+            statusCode = HttpStatus.OK.value()
+        }
+
         logger.info(
-            "class={} operation={} stage={} latency={} result={}",
-            clazz,
-            operation,
-            "end",
-            latency,
-            returnValue
+            "{} {} {} {} {} {} {}",
+            kv("class", clazz),
+            kv("operation", operation),
+            kv("stage", "end"),
+            kv("latency", latency),
+            kv("result", returnValue),
+            kv("status", status),
+            kv("statusCode", statusCode)
         )
     }
 }
