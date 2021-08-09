@@ -8,10 +8,10 @@ import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedAlbumResultMapper
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedArtistResultMapper
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedResultMapper
-import java.math.BigInteger
-import javax.persistence.EntityManager
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigInteger
+import javax.persistence.EntityManager
 
 @Suppress("MagicNumber")
 @Repository
@@ -28,8 +28,8 @@ class CustomScrobbleRepositoryImpl(
         return entityManager
             .createNativeQuery(
                 "select distinct " +
-                        "album_name from SCROBBLE where user_name = '$userName' and lower(album_name) " +
-                        "like '%${typed.toLowerCase()}%'  order by album_name"
+                    "album_name from SCROBBLE where user_name = '$userName' and lower(album_name) " +
+                    "like '%${typed.toLowerCase()}%'  order by album_name"
             )
             .resultList as List<String>
     }
@@ -38,8 +38,8 @@ class CustomScrobbleRepositoryImpl(
         return entityManager
             .createNativeQuery(
                 "select distinct artist_name from SCROBBLE " +
-                        "where user_name = '$userName' and lower(artist_name) like '%${typed.toLowerCase()}%'  " +
-                        "order by artist_name"
+                    "where user_name = '$userName' and lower(artist_name) like '%${typed.toLowerCase()}%'  " +
+                    "order by artist_name"
             )
             .resultList as List<String>
     }
@@ -86,12 +86,12 @@ class CustomScrobbleRepositoryImpl(
 
         val query =
             "select $type, max(scrobble.time), min(time), " +
-                    "max(time)-min(time) as rang " +
-                    extraQuery +
-                    "from scrobble " +
-                    "where user_name = '$userName' " +
-                    "group by $type $extraQuery" +
-                    "order by rang desc limit 1"
+                "max(time)-min(time) as rang " +
+                extraQuery +
+                "from scrobble " +
+                "where user_name = '$userName' " +
+                "group by $type $extraQuery" +
+                "order by rang desc limit 1"
 
         return entityManager.createNativeQuery(query).singleResult as Array<*>
     }
@@ -101,12 +101,12 @@ class CustomScrobbleRepositoryImpl(
 
         val query =
             "select $type, time, " +
-                    "lag(time) over (partition by $type order by time) as pp, " +
-                    "time - lag(time) over (partition by $type order by time) as last_play " +
-                    extraQuery +
-                    "from scrobble " +
-                    "where user_name = '$userName' " +
-                    "order by last_play desc nulls last;"
+                "lag(time) over (partition by $type order by time) as pp, " +
+                "time - lag(time) over (partition by $type order by time) as last_play " +
+                extraQuery +
+                "from scrobble " +
+                "where user_name = '$userName' " +
+                "order by last_play desc nulls last;"
 
         return entityManager.createNativeQuery(query).resultList as List<*>
     }
