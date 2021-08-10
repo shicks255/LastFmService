@@ -1,3 +1,3 @@
 # LastFmService
 
-[![Build Status](https://jenkins.shicks255.com/job/LastFmService2/badge/icon)](https://jenkins.shicks255.com/job/LastFmService2/)
+[![Build Status](https://jenkins.shicks255.com/job/LastFmServiceAll/badge/icon)](https://jenkins.shicks255.com/job/LastFmServiceAll/)
