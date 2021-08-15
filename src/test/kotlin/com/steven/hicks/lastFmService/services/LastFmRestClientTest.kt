@@ -8,7 +8,6 @@ import com.steven.hicks.lastFmService.entities.dto.Datee
 import com.steven.hicks.lastFmService.entities.dto.RecentTrack
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import com.steven.hicks.lastFmService.entities.dto.Track
-import java.net.URI
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Condition
@@ -26,6 +25,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientRequestException
 import reactor.core.publisher.Mono
+import java.net.URI
 
 @ExtendWith(MockitoExtension::class)
 class LastFmRestClientTest {
