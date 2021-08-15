@@ -1,6 +1,5 @@
 package com.steven.hicks.lastFmService.services
 
-import com.nhaarman.mockitokotlin2.doNothing
 import com.steven.hicks.lastFmService.entities.data.DataLoad
 import com.steven.hicks.lastFmService.entities.data.DataLoadStatus
 import com.steven.hicks.lastFmService.entities.data.LoadStatus
@@ -10,6 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
@@ -19,10 +19,6 @@ import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.jupiter.MockitoExtension
 import java.time.OffsetDateTime
 import java.util.Optional
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito
-import org.mockito.Mockito.doNothing
-import org.springframework.data.repository.findByIdOrNull
 
 @ExtendWith(MockitoExtension::class)
 class DataLoadServiceTest {
