@@ -12,9 +12,11 @@ import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseB
 import com.steven.hicks.lastFmService.controllers.dtos.response.ResponseByAlbum
 import com.steven.hicks.lastFmService.controllers.dtos.response.ResponseByArtist
 import com.steven.hicks.lastFmService.entities.data.Scrobble
+import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import com.steven.hicks.lastFmService.services.ScrobbleService
 import com.steven.hicks.lastFmService.services.StatsService
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
@@ -42,8 +44,18 @@ class ScrobbleControllerTest {
     @MockBean
     lateinit var scrobbleService: ScrobbleService
 
+    // needed for filter
+    @MockBean
+    lateinit var scrobbleRepository: ScrobbleRepository
+
     @MockBean
     lateinit var statService: StatsService
+
+    @BeforeEach
+    fun setupUser() {
+        `when`(scrobbleRepository.findDistinctByUserName())
+            .thenReturn(listOf("shicks255"))
+    }
 
     @Test
     fun `should get scrobbles`() {

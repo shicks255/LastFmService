@@ -70,9 +70,8 @@ class DataLoadService(
         if (tracking != null) {
 
             var currentPage = tracking.totalPages - tracking.currentPage
-            if (currentPage == 0) currentPage = 1
-            var percentDone = currentPage.toDouble() / tracking.totalPages.toDouble()
-            if (percentDone >= 1) percentDone = (currentPage - 1).toDouble() / tracking.totalPages.toDouble()
+            if (currentPage < 1) currentPage = 1
+            val percentDone = currentPage.toDouble() / tracking.totalPages.toDouble()
             val percent = (percentDone * ONE_HUNDRED_PERCENT).toInt()
             val message = "$percent%  done.  Working on page $currentPage of ${tracking.totalPages}"
 

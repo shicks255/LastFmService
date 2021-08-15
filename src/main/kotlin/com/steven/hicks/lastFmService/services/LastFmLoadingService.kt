@@ -80,6 +80,7 @@ class LastFmLoadingService(
                 scrobbleRepository.save(scrobble)
             } catch (e: Exception) {
                 logger.error("Something went wrong, ${e.message}, ${e.stackTraceToString()}")
+                throw LastFmException(5001, "There was a problem saving track data")
             }
         }
     }

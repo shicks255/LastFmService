@@ -1,5 +1,6 @@
 package com.steven.hicks.lastFmService.services
 
+import com.steven.hicks.lastFmService.entities.LastFmException
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.dto.Album
 import com.steven.hicks.lastFmService.entities.dto.Artist
@@ -10,6 +11,7 @@ import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import com.steven.hicks.lastFmService.entities.dto.Track
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
@@ -79,6 +81,34 @@ class LastFmLoadingServiceTest {
             .save(any())
         verifyNoMoreInteractions(scrobbleRepository)
         verifyNoMoreInteractions(client)
+    }
+
+    @Test
+    fun `should throw exception when calling last fm`() {
+        `when`(scrobbleRepository.existsScrobbleByUserNameEquals("shicks255"))
+            .thenReturn(false)
+        `when`(client.getRecentTracks("shicks255"))
+            .then { throw LastFmException(5000) }
+
+        assertThatThrownBy { sut.loadRecent("shicks255") }
+            .isInstanceOf(LastFmException::class.java)
+    }
+
+    @Test
+    fun `should throw exception when saving tracks`() {
+        `when`(scrobbleRepository.existsScrobbleByUserNameEquals("shicks255"))
+            .thenReturn(false)
+        `when`(client.getRecentTracks(from = null, to = null, page = null, userName = "shicks255"))
+            .thenReturn(createRecentTracks())
+        `when`(client.getRecentTracks(from = null, to = null, page = 1, userName = "shicks255"))
+            .thenReturn(createRecentTracks())
+        `when`(scrobbleRepository.save(any()))
+            .then { throw Exception() }
+
+        assertThatThrownBy { sut.loadRecent("shicks255") }
+            .isInstanceOf(LastFmException::class.java)
+            .hasMessageContaining("There was a problem saving track data")
+
     }
 
     private fun createRecentTracks(): RecentTracks = RecentTracks(

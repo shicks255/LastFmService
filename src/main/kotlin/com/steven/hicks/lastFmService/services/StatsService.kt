@@ -1,8 +1,7 @@
 package com.steven.hicks.lastFmService.services
 
 import com.steven.hicks.lastFmService.aspects.Logged
-import com.steven.hicks.lastFmService.controllers.dtos.response.LongestDormancyStat
-import com.steven.hicks.lastFmService.controllers.dtos.response.OldestAndNewestStat
+import com.steven.hicks.lastFmService.controllers.dtos.response.TimePeriodStat
 import com.steven.hicks.lastFmService.controllers.dtos.response.TimeStat
 import com.steven.hicks.lastFmService.controllers.dtos.response.UserStats
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
@@ -43,26 +42,20 @@ class StatsService(
         return stats
     }
 
-    @Logged
-    suspend fun getLongestDormancy(userName: String, field: String): LongestDormancyStat {
-        val result = scrobbleRepository.getLongestDormancy(userName, field)
-
-        val resu = result.first() as Array<*>
-
-        val name = resu[0] as String
-        val newest = (resu[1] as Double).toLong()
-        val oldest = (resu[2] as Double).toLong()
+    private fun createStatsFromFields(result: Array<*>, field: String): TimePeriodStat {
+        val name = result[0] as String
+        val newest = (result[1] as Double).toLong()
+        val oldest = (result[2] as Double).toLong()
         var extra: String? = null
         if (field == "album_name") {
-            extra = resu[4] as String
+            extra = result[4] as String
         }
 
         val firstDate = LocalDate.ofInstant(Instant.ofEpochSecond(oldest), ZoneOffset.UTC)
         val lastDate = LocalDate.ofInstant(Instant.ofEpochSecond(newest), ZoneOffset.UTC)
-
         val period = Period.between(firstDate, lastDate)
 
-        return LongestDormancyStat(
+        return TimePeriodStat(
             name = name,
             extra = extra,
             timeStat = TimeStat(
@@ -74,31 +67,17 @@ class StatsService(
     }
 
     @Logged
-    suspend fun getOldestAndNewest(userName: String, field: String): OldestAndNewestStat {
+    suspend fun getLongestDormancy(userName: String, field: String): TimePeriodStat {
+
+        val result = scrobbleRepository.getLongestDormancy(userName, field)
+        val resu = result.first() as Array<*>
+        return createStatsFromFields(resu, field)
+    }
+
+    @Logged
+    suspend fun getOldestAndNewest(userName: String, field: String): TimePeriodStat {
 
         val result = scrobbleRepository.getOldestAndNewestPlay(userName, field)
-
-        val name = result[0] as String
-        val newest = (result[1] as Double).toLong()
-        val oldest = (result[2] as Double).toLong()
-        var extra: String? = null
-        if (field == "album_name") {
-            extra = result[4] as String
-        }
-
-        val firstDate = LocalDate.ofInstant(Instant.ofEpochSecond(oldest), ZoneOffset.UTC)
-        val lastDate = LocalDate.ofInstant(Instant.ofEpochSecond(newest), ZoneOffset.UTC)
-
-        val period = Period.between(firstDate, lastDate)
-
-        return OldestAndNewestStat(
-            name = name,
-            extra = extra,
-            timeStat = TimeStat(
-                oldest = firstDate,
-                newest = lastDate,
-                difference = period
-            )
-        )
+        return createStatsFromFields(result, field)
     }
 }

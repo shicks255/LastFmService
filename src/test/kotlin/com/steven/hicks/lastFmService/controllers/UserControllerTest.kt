@@ -2,14 +2,15 @@ package com.steven.hicks.lastFmService.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.steven.hicks.lastFmService.controllers.dtos.response.LoadStatusResponse
-import com.steven.hicks.lastFmService.controllers.dtos.response.LongestDormancyStat
-import com.steven.hicks.lastFmService.controllers.dtos.response.OldestAndNewestStat
+import com.steven.hicks.lastFmService.controllers.dtos.response.TimePeriodStat
 import com.steven.hicks.lastFmService.controllers.dtos.response.TimeStat
 import com.steven.hicks.lastFmService.controllers.dtos.response.UserStats
+import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import com.steven.hicks.lastFmService.services.DataLoadService
 import com.steven.hicks.lastFmService.services.LastFmLoadingService
 import com.steven.hicks.lastFmService.services.StatsService
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
@@ -45,10 +46,20 @@ class UserControllerTest {
     @MockBean
     lateinit var lastFmLoadingService: LastFmLoadingService
 
+    // needed for filter
+    @MockBean
+    lateinit var scrobbleRepository: ScrobbleRepository
+
+    @BeforeEach
+    fun setupUser() {
+        `when`(scrobbleRepository.findDistinctByUserName())
+            .thenReturn(listOf("shicks255"))
+    }
+
     @Test
     fun `should get stats`() {
 
-        val oldestAndNewestStat = OldestAndNewestStat(
+        val oldestAndNewestStat = TimePeriodStat(
             name = "Pink Floyd",
             extra = null,
             timeStat = TimeStat(
@@ -58,7 +69,7 @@ class UserControllerTest {
             )
         )
 
-        val longestDormancyStat = LongestDormancyStat(
+        val longestDormancyStat = TimePeriodStat(
             name = "Pink Floyd",
             extra = null,
             timeStat = TimeStat(

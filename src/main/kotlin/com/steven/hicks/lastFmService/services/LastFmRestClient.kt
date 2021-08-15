@@ -28,6 +28,7 @@ class LastFmRestClient {
     companion object {
         const val LAST_FM_URL = "https://ws.audioscrobbler.com"
         const val PAGE_LIMIT = 200
+        const val LAST_FM_EXCEPTION_CODE = 5000
     }
 
     @Logged
@@ -46,15 +47,15 @@ class LastFmRestClient {
                 .bodyToMono(RecentTracks::class.java)
                 .block()
 
-            recentTracks ?: throw LastFmException("Problem calling last FM")
+            recentTracks!!
         } catch (e: Exception) {
             logger.error("Problem calling last FM ${e.localizedMessage}, ${e.stackTraceToString()}")
-            throw LastFmException("Problem calling last FM", e)
+            throw LastFmException(LAST_FM_EXCEPTION_CODE, "Problem calling last FM", e)
         }
     }
 
     @Logged
-    private fun createUrl(userName: String, page: Int? = null, from: Long? = null, to: Long? = null): String {
+    fun createUrl(userName: String, page: Int? = null, from: Long? = null, to: Long? = null): String {
         var url =
             "/2.0/?method=user.getrecenttracks&user=$userName&limit=$PAGE_LIMIT&format=json&api_key=$lastFmKey"
 
