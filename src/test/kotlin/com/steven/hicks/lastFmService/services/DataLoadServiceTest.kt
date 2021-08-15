@@ -1,5 +1,7 @@
 package com.steven.hicks.lastFmService.services
 
+import com.steven.hicks.lastFmService.entities.data.DataLoad
+import com.steven.hicks.lastFmService.entities.data.DataLoadStatus
 import com.steven.hicks.lastFmService.entities.data.LoadStatus
 import com.steven.hicks.lastFmService.repositories.DataLoadRepository
 import com.steven.hicks.lastFmService.repositories.LoadStatusRepository
@@ -7,6 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
@@ -28,6 +31,26 @@ class DataLoadServiceTest {
 
     @InjectMocks
     lateinit var sut: DataLoadService
+
+    @Test
+    fun `should create a data load event`() {
+        `when`(dataLoadRepository.save(any()))
+            .thenReturn(any())
+
+        val result = sut.createDataLoad()
+        verify(dataLoadRepository, times(1)).save(any())
+        assertThat(result.status).isEqualTo(DataLoadStatus.RUNNING)
+        assertThat(result.timestamp).isBefore(OffsetDateTime.now())
+    }
+
+    @Test
+    fun `should save a data load event`() {
+        `when`(dataLoadRepository.save(any()))
+            .thenReturn(any())
+
+        sut.saveDataLoad(DataLoad(OffsetDateTime.now(), DataLoadStatus.RUNNING, 0))
+        verify(dataLoadRepository, times(1)).save(any())
+    }
 
     @Test
     fun `should start data load status`() {
@@ -97,6 +120,32 @@ class DataLoadServiceTest {
     }
 
     @Test
+    fun `should get a user's load status replacing zero current page and percent done`() {
+
+        val loadStatus = LoadStatus(
+            userName = "shicks255",
+            totalPages = 4,
+            currentPage = 4,
+            timestamp = OffsetDateTime.now()
+        )
+
+        `when`(loadStatusRepository.findById("shicks255"))
+            .thenReturn(Optional.of(loadStatus))
+
+        val response = sut.getDataLoadStatus("shicks255")
+
+        assertThat(response.currentPage)
+            .isEqualTo(1)
+        assertThat(response.totalPages)
+            .isEqualTo(4)
+        assertThat(response.message)
+            .contains("25%")
+        verify(loadStatusRepository, times(1))
+            .findById("shicks255")
+        verifyNoMoreInteractions(loadStatusRepository)
+    }
+
+    @Test
     fun `should return empty response`() {
         val response = sut.getDataLoadStatus("shicks255")
 
@@ -109,5 +158,16 @@ class DataLoadServiceTest {
         verify(loadStatusRepository, times(1))
             .findById("shicks255")
         verifyNoMoreInteractions(loadStatusRepository)
+    }
+
+    @Test
+    fun `should end a data load status`() {
+        `when`(loadStatusRepository.deleteById(anyString()))
+            .then { }
+
+        sut.endDataLoadStatus(anyString())
+
+        verify(loadStatusRepository, times(1))
+            .deleteById(anyString())
     }
 }

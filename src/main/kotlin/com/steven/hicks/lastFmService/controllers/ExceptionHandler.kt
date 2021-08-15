@@ -1,7 +1,8 @@
 package com.steven.hicks.lastFmService.controllers
 
 import com.steven.hicks.lastFmService.aspects.Logged
-import com.steven.hicks.lastFmService.controllers.dtos.ErrorObject
+import com.steven.hicks.lastFmService.controllers.dtos.ErrorResponse
+import com.steven.hicks.lastFmService.entities.LastFmException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -17,10 +18,20 @@ class ExceptionHandler {
 
     @ExceptionHandler(Exception::class)
     @Logged
-    fun handleAllExceptions(e: java.lang.Exception): ResponseEntity<ErrorObject> {
+    fun handleAllExceptions(
+        e: java.lang.Exception,
+    ): ResponseEntity<ErrorResponse> {
         logger.error("Unhandled exception caught: ${e.message}, ${e.stackTraceToString()}")
-//        e.printStackTrace()
+        val er = ErrorResponse(0, "Unknown Error")
+        return ResponseEntity(er, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
 
-        return ResponseEntity(ErrorObject("An exception has occurred"), HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(LastFmException::class)
+    @Logged
+    fun handleServiceException(
+        e: LastFmException
+    ): ResponseEntity<ErrorResponse> {
+        logger.error("Service exception caught: ${e.message}, ${e.stackTraceToString()}")
+        return ResponseEntity(e.errorResponse, e.status)
     }
 }

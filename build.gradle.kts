@@ -68,7 +68,7 @@ tasks.jacocoTestCoverageVerification {
                     exclude(
                         "com/steven/hicks/lastFmService/entities/**",
                         "com/steven/hicks/lastFmService/repositories/**",
-                        "com/steven/hicks/lastFmService/controllers/dtos/**",
+                        "com/steven/hicks/lastFmService/controllers/dtos/request/**",
                         "com/steven/hicks/lastFmService/aspects/**",
                         "com/steven/hicks/lastFmService/entities/**"
                     )
@@ -79,7 +79,7 @@ tasks.jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = BigDecimal("0.82")
+                minimum = BigDecimal("0.85")
             }
         }
     }

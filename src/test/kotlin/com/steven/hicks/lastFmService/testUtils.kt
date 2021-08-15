@@ -7,7 +7,7 @@ import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRe
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
 import java.time.LocalDate
 
-val mockScrobbleRequest = ScrobbleRequest(
+val mockedScrobbleRequest = ScrobbleRequest(
     userName = "shicks255",
     artistName = "",
     albumName = "",
@@ -18,7 +18,7 @@ val mockScrobbleRequest = ScrobbleRequest(
     direction = null
 )
 
-val mockGroupedScrobbleRequest = GroupedScrobbleRequest(
+val mockedGroupedScrobbleRequest = GroupedScrobbleRequest(
     userName = "shicks255",
     from = null,
     to = null,
@@ -53,11 +53,11 @@ val oldestNewestArtist = arrayOf(
 )
 
 val oldestNewestAlbum = arrayOf(
-    "Pink Floyd",
+    "Animals",
     1618888555.0,
     1611118094.0,
     "",
-    "Animals"
+    "Pink Floyd"
 )
 
 val longestDormancyArtist = listOf(
@@ -71,10 +71,10 @@ val longestDormancyArtist = listOf(
 
 val longestDormancyAlbum = listOf(
     arrayOf(
-        "Pink Floyd",
+        "Animals",
         1618888555.0,
         1611118094.0,
         "",
-        "Animals"
+        "Pink Floyd"
     )
 )

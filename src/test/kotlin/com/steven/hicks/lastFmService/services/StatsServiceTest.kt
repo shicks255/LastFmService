@@ -54,9 +54,9 @@ class StatsServiceTest {
             val result = sut.getLongestDormancy("shicks255", "album_name")
 
             assertThat(result.name)
-                .isEqualTo("Pink Floyd")
-            assertThat(result.extra)
                 .isEqualTo("Animals")
+            assertThat(result.extra)
+                .isEqualTo("Pink Floyd")
             assertThat(result.timeStat.newest)
                 .isEqualTo("2021-04-20")
             assertThat(result.timeStat.oldest)
@@ -94,9 +94,9 @@ class StatsServiceTest {
         runBlocking {
             val result = sut.getOldestAndNewest("shicks255", "album_name")
             assertThat(result.name)
-                .isEqualTo("Pink Floyd")
-            assertThat(result.extra)
                 .isEqualTo("Animals")
+            assertThat(result.extra)
+                .isEqualTo("Pink Floyd")
             assertThat(result.timeStat.newest)
                 .isEqualTo("2021-04-20")
             assertThat(result.timeStat.oldest)

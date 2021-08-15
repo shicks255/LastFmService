@@ -5,10 +5,10 @@ import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedAlbumResultMapper
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedArtistResultMapper
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedResultMapper
-import com.steven.hicks.lastFmService.mockGroupedScrobbleRequest
-import com.steven.hicks.lastFmService.mockScrobbleRequest
 import com.steven.hicks.lastFmService.mockedGroupedAlbumScrobbleRequest
 import com.steven.hicks.lastFmService.mockedGroupedArtistScrobbleRequest
+import com.steven.hicks.lastFmService.mockedGroupedScrobbleRequest
+import com.steven.hicks.lastFmService.mockedScrobbleRequest
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -32,7 +32,7 @@ class ScrobbleServiceTest {
     @Test
     fun `should get tracks`() {
         `when`(
-            scrobbleRepository.getScrobbles(mockScrobbleRequest)
+            scrobbleRepository.getScrobbles(mockedScrobbleRequest)
         )
             .thenReturn(
                 listOf(
@@ -49,10 +49,10 @@ class ScrobbleServiceTest {
                 )
             )
 
-        val results = sut.getTracks(mockScrobbleRequest)
+        val results = sut.getTracks(mockedScrobbleRequest)
 
         verify(scrobbleRepository, times(1))
-            .getScrobbles(mockScrobbleRequest)
+            .getScrobbles(mockedScrobbleRequest)
 
         assertThat(results).hasSize(1)
         assertThat(results.first().name).isEqualTo("Test")
@@ -61,7 +61,7 @@ class ScrobbleServiceTest {
     @Test
     fun `should get tracks grouped`() {
         `when`(
-            scrobbleRepository.getGroupedScrobbles(mockGroupedScrobbleRequest)
+            scrobbleRepository.getGroupedScrobbles(mockedGroupedScrobbleRequest)
         )
             .thenReturn(
                 listOf(
@@ -70,12 +70,12 @@ class ScrobbleServiceTest {
             )
 
         val results = sut.getTracksGrouped(
-            mockGroupedScrobbleRequest
+            mockedGroupedScrobbleRequest
         )
 
         verify(scrobbleRepository, times(1))
             .getGroupedScrobbles(
-                mockGroupedScrobbleRequest
+                mockedGroupedScrobbleRequest
             )
 
         assertThat(results).hasSize(1)

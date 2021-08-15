@@ -10,6 +10,7 @@ import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import com.steven.hicks.lastFmService.entities.dto.Track
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Condition
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyString
@@ -48,7 +49,16 @@ class LastFmRestClientTest {
 
         assertThatThrownBy { sut.getRecentTracks("shicks255") }
             .isInstanceOf(LastFmException::class.java)
-            .hasMessageContaining("Problem calling last FM")
+            .has(
+                Condition(
+                    { t ->
+                        val e = t as LastFmException
+                        e.errorResponse.errorCode == 5000 && e.errorResponse.msg == "Problem calling Last.FM api"
+                    },
+                    ""
+                )
+            )
+//            .hasMessageContaining("Problem calling last FM")
     }
 
     @Test
@@ -77,6 +87,19 @@ class LastFmRestClientTest {
         val tracks = sut.getRecentTracks("shicks255", 1, 2, 3)
 
         assertThat(tracks).isEqualTo(createRecentTracks())
+    }
+
+    @Test
+    fun `should build url`() {
+        val url = sut.createUrl("shicks255", 1, 122, 122)
+        assertThat(url).contains("/2.0/?method=user.getrecenttracks&user=shicks255&limit=200&format=json")
+        assertThat(url).contains("&page=1&from=122&to=122")
+    }
+
+    @Test
+    fun `should build url 2`() {
+        val url = sut.createUrl("shicks255")
+        assertThat(url).contains("/2.0/?method=user.getrecenttracks&user=shicks255&limit=200&format=json")
     }
 
     private fun createRecentTracks(): RecentTracks = RecentTracks(

@@ -18,6 +18,7 @@ class LastFmLoadingService(
 
     companion object {
         const val SLEEP_TIME = 2_000L
+        const val SAVING_TRACKS_ERROR_CODE = 5001
     }
 
     val logger: Logger = LoggerFactory.getLogger(LastFmLoadingService::class.java)
@@ -80,6 +81,7 @@ class LastFmLoadingService(
                 scrobbleRepository.save(scrobble)
             } catch (e: Exception) {
                 logger.error("Something went wrong, ${e.message}, ${e.stackTraceToString()}")
+                throw LastFmException(SAVING_TRACKS_ERROR_CODE, "There was a problem saving track data")
             }
         }
     }
