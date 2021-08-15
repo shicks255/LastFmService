@@ -7,11 +7,11 @@ import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRe
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
 import com.steven.hicks.lastFmService.entities.ScrobbleField
 import com.steven.hicks.lastFmService.entities.queryBuilding.Direction
-import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.junit.jupiter.MockitoExtension
+import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class QueryBuildingTest {
@@ -180,7 +180,6 @@ class QueryBuildingTest {
             .isEqualTo("select count(*), to_char(to_timestamp(time), 'YYYY-MM-DD'), scrobble.artist_name from SCROBBLE where scrobble.user_name = 'shicks255' and scrobble.time >= 1635660000 and scrobble.time < 1635746400 group by to_char(to_timestamp(time), 'YYYY-MM-DD'),scrobble.artist_name limit 10")
     }
 
-
     @Test
     fun `should build query from GroupedScrobbleRequest`() {
         val groupedScrobbleRequest = GroupedScrobbleRequest(
@@ -193,5 +192,4 @@ class QueryBuildingTest {
         assertThat(query)
             .isEqualTo("select count(*), to_char(to_timestamp(time), 'YYYY-MM-DD') from SCROBBLE where scrobble.user_name = 'shicks255' and scrobble.time >= 1635660000 and scrobble.time < 1635746400 group by to_char(to_timestamp(time), 'YYYY-MM-DD')")
     }
-
 }

@@ -108,7 +108,6 @@ class LastFmLoadingServiceTest {
         assertThatThrownBy { sut.loadRecent("shicks255") }
             .isInstanceOf(LastFmException::class.java)
             .hasMessageContaining("There was a problem saving track data")
-
     }
 
     private fun createRecentTracks(): RecentTracks = RecentTracks(

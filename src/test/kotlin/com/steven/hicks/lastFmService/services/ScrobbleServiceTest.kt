@@ -5,10 +5,10 @@ import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedAlbumResultMapper
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedArtistResultMapper
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedResultMapper
-import com.steven.hicks.lastFmService.mockedGroupedScrobbleRequest
-import com.steven.hicks.lastFmService.mockedScrobbleRequest
 import com.steven.hicks.lastFmService.mockedGroupedAlbumScrobbleRequest
 import com.steven.hicks.lastFmService.mockedGroupedArtistScrobbleRequest
+import com.steven.hicks.lastFmService.mockedGroupedScrobbleRequest
+import com.steven.hicks.lastFmService.mockedScrobbleRequest
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
