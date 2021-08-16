@@ -2,6 +2,7 @@ package com.steven.hicks.lastFmService.controllers
 
 import com.steven.hicks.lastFmService.aspects.Logged
 import com.steven.hicks.lastFmService.services.ScrobbleService
+import io.micrometer.core.annotation.Timed
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -15,6 +16,7 @@ class TypeAheadController(
 
     @GetMapping("/artists")
     @Logged
+    @Timed
     fun getArtists(
         @RequestParam userName: String,
         @RequestParam query: String
@@ -24,6 +26,7 @@ class TypeAheadController(
 
     @GetMapping("/albums")
     @Logged
+    @Timed
     fun getAlbums(
         @RequestParam userName: String,
         @RequestParam query: String

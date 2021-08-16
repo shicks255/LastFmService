@@ -6,6 +6,7 @@ import com.steven.hicks.lastFmService.controllers.dtos.response.UserStats
 import com.steven.hicks.lastFmService.services.DataLoadService
 import com.steven.hicks.lastFmService.services.LastFmLoadingService
 import com.steven.hicks.lastFmService.services.StatsService
+import io.micrometer.core.annotation.Timed
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
@@ -27,6 +28,7 @@ class UserController(
     @GetMapping("/stats")
     @CrossOrigin("http://localhost:3000")
     @Logged
+    @Timed
     fun getUserStats(
         @RequestParam userName: String
     ): UserStats {
@@ -38,6 +40,7 @@ class UserController(
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @CrossOrigin("http://localhost:3000")
     @Logged
+    @Timed
     fun loadScrobbles(
         @RequestParam userName: String
     ): HttpStatus {
@@ -51,6 +54,7 @@ class UserController(
     @GetMapping("/loadStatus")
     @CrossOrigin("http://localhost:3000")
     @Logged
+    @Timed
     fun getLoadStatus(
         @RequestParam userName: String
     ): LoadStatusResponse {
