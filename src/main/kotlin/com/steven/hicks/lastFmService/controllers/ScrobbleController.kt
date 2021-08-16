@@ -13,6 +13,7 @@ import com.steven.hicks.lastFmService.entities.ScrobbleField
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.queryBuilding.Direction
 import com.steven.hicks.lastFmService.services.ScrobbleService
+import io.micrometer.core.annotation.Timed
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -28,6 +29,7 @@ class ScrobbleController(
 
     @GetMapping
     @Logged
+    @Timed
     fun getScrobbles(
         @RequestParam userName: String,
         @RequestParam artistName: String?,
@@ -55,6 +57,7 @@ class ScrobbleController(
     @GetMapping("/grouped")
     @CrossOrigin("http://localhost:3000")
     @Logged
+    @Timed
     fun getScrobblesGrouped(
         @RequestParam userName: String,
         @RequestParam from: String?,
@@ -74,6 +77,7 @@ class ScrobbleController(
     @GetMapping("/artistsGrouped")
     @CrossOrigin("http://localhost:3000")
     @Logged
+    @Timed
     fun getArtistScrobblesGrouped(
         @RequestParam userName: String,
         @RequestParam from: String?,
@@ -99,6 +103,7 @@ class ScrobbleController(
     @GetMapping("/albumsGrouped")
     @CrossOrigin("http://localhost:3000")
     @Logged
+    @Timed
     fun getAlbumScrobblesGrouped(
         @RequestParam userName: String,
         @RequestParam from: String?,
