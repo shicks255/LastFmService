@@ -59,8 +59,9 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
             }
         }
 
-        var listt = artistDataMap.values
+        var list = artistDataMap.values
             .sortedByDescending { it.total }
+            .take(request.limit ?: artistDataMap.size)
             .toList()
 
         if (request.empties == true) {
@@ -71,7 +72,7 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
                 DataByDay(0, it)
             }
 
-            listt = listt.map { it ->
+            list = list.map { it ->
                 val da = it.data
                 val timeGroupsAdded = da.map { it.timeGroup }
                 val timeGroupsToAdd = emptyRecords.filter { !timeGroupsAdded.contains(it.timeGroup) }
@@ -83,7 +84,7 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
             }
         }
 
-        return GroupedResponseByArtist(listt)
+        return GroupedResponseByArtist(list)
     }
 
     @Logged
@@ -116,6 +117,7 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
         var list = albumDataMap.values
             .sortedByDescending { it.total }
             .filter { it.albumName.isNotEmpty() }
+            .take(request.limit ?: albumDataMap.size)
             .toList()
 
         if (request.empties == true) {

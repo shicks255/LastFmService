@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
 import java.time.Period
+import org.junit.jupiter.api.Disabled
 
 @WebMvcTest(controllers = [UserController::class])
 @ExtendWith(MockitoExtension::class)
@@ -113,6 +114,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Disabled
     fun `should return loadStatus`() {
         `when`(dataLoadService.getDataLoadStatus("shicks255"))
             .thenReturn(
