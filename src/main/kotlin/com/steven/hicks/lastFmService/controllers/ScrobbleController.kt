@@ -28,7 +28,7 @@ class ScrobbleController(
 ) {
 
     @GetMapping
-    @CrossOrigin(origins = ["compassionate-roentgen-0f4e10.netlify.app"])
+    @CrossOrigin(origins = ["music.shicks255.com"])
     @Logged
     @Timed
     fun getScrobbles(
@@ -56,7 +56,7 @@ class ScrobbleController(
     }
 
     @GetMapping("/grouped")
-    @CrossOrigin(origins = ["compassionate-roentgen-0f4e10.netlify.app"])
+    @CrossOrigin(origins = ["music.shicks255.com"])
     @Logged
     @Timed
     fun getScrobblesGrouped(
@@ -76,7 +76,7 @@ class ScrobbleController(
     }
 
     @GetMapping("/artistsGrouped")
-    @CrossOrigin(origins = ["compassionate-roentgen-0f4e10.netlify.app"])
+    @CrossOrigin(origins = ["music.shicks255.com"])
     @Logged
     @Timed
     fun getArtistScrobblesGrouped(
@@ -102,7 +102,7 @@ class ScrobbleController(
     }
 
     @GetMapping("/albumsGrouped")
-    @CrossOrigin(origins = ["compassionate-roentgen-0f4e10.netlify.app"])
+    @CrossOrigin(origins = ["music.shicks255.com"])
     @Logged
     @Timed
     fun getAlbumScrobblesGrouped(

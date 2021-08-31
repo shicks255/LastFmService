@@ -26,7 +26,7 @@ class UserController(
 ) {
 
     @GetMapping("/stats")
-    @CrossOrigin(origins = ["compassionate-roentgen-0f4e10.netlify.app"])
+    @CrossOrigin(origins = ["music.shicks255.com"])
     @Logged
     @Timed
     fun getUserStats(
@@ -38,7 +38,7 @@ class UserController(
 
     @PostMapping("/load")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @CrossOrigin(origins = ["compassionate-roentgen-0f4e10.netlify.app"])
+    @CrossOrigin(origins = ["music.shicks255.com"])
     @Logged
     @Timed
     fun loadScrobbles(
@@ -52,7 +52,7 @@ class UserController(
     }
 
     @GetMapping("/loadStatus")
-    @CrossOrigin(origins = ["compassionate-roentgen-0f4e10.netlify.app"])
+    @CrossOrigin(origins = ["music.shicks255.com"])
     @Logged
     @Timed
     fun getLoadStatus(
