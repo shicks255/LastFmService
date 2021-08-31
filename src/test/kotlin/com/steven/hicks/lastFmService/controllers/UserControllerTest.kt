@@ -11,6 +11,7 @@ import com.steven.hicks.lastFmService.services.LastFmLoadingService
 import com.steven.hicks.lastFmService.services.StatsService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
@@ -113,6 +114,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Disabled
     fun `should return loadStatus`() {
         `when`(dataLoadService.getDataLoadStatus("shicks255"))
             .thenReturn(

@@ -38,7 +38,6 @@ data class GroupedArtistScrobbleRequest(
                 andTimeWhere(from, to)
             }
             groupBy(listOf(getTimeGroup(timeGroup), ScrobbleField.ARTIST_NAME))
-            limit(limit)
         }
     }
 }

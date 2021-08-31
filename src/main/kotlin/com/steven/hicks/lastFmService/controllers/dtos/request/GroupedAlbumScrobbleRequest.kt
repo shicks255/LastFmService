@@ -45,7 +45,6 @@ data class GroupedAlbumScrobbleRequest(
                 andTimeWhere(from, to)
             }
             groupBy(listOf(getTimeGroup(timeGroup), ALBUM_NAME, ARTIST_NAME))
-            limit(limit)
         }
     }
 }
