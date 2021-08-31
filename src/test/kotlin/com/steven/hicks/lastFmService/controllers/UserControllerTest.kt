@@ -11,6 +11,7 @@ import com.steven.hicks.lastFmService.services.LastFmLoadingService
 import com.steven.hicks.lastFmService.services.StatsService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
@@ -26,7 +27,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
 import java.time.Period
-import org.junit.jupiter.api.Disabled
 
 @WebMvcTest(controllers = [UserController::class])
 @ExtendWith(MockitoExtension::class)

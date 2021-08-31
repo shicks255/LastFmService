@@ -4,7 +4,6 @@ import com.steven.hicks.lastFmService.controllers.dtos.TimeGroup
 import com.steven.hicks.lastFmService.entities.ScrobbleField
 import com.steven.hicks.lastFmService.entities.Table
 import com.steven.hicks.lastFmService.entities.queryBuilding.Condition
-import com.steven.hicks.lastFmService.entities.queryBuilding.Direction
 import com.steven.hicks.lastFmService.entities.queryBuilding.QueryBuilder
 import com.steven.hicks.lastFmService.entities.queryBuilding.WhereOperator
 import com.steven.hicks.lastFmService.prepareStrQuery
