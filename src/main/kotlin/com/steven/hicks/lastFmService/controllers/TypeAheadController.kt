@@ -16,7 +16,7 @@ class TypeAheadController(
 ) {
 
     @GetMapping("/artists")
-    @CrossOrigin(origins = ["compassionate-roentgen-0f4e10.netlify.app"])
+    @CrossOrigin(origins = ["music.shicks255.com"])
     @Logged
     @Timed
     fun getArtists(
@@ -27,7 +27,7 @@ class TypeAheadController(
     }
 
     @GetMapping("/albums")
-    @CrossOrigin(origins = ["compassionate-roentgen-0f4e10.netlify.app"])
+    @CrossOrigin(origins = ["music.shicks255.com"])
     @Logged
     @Timed
     fun getAlbums(
