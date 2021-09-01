@@ -14,7 +14,6 @@ import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.queryBuilding.Direction
 import com.steven.hicks.lastFmService.services.ScrobbleService
 import io.micrometer.core.annotation.Timed
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -28,7 +27,6 @@ class ScrobbleController(
 ) {
 
     @GetMapping
-    @CrossOrigin(origins = ["https://music.shicks255.com"])
     @Logged
     @Timed
     fun getScrobbles(
@@ -56,7 +54,6 @@ class ScrobbleController(
     }
 
     @GetMapping("/grouped")
-    @CrossOrigin(origins = ["https://music.shicks255.com"])
     @Logged
     @Timed
     fun getScrobblesGrouped(
@@ -76,7 +73,6 @@ class ScrobbleController(
     }
 
     @GetMapping("/artistsGrouped")
-    @CrossOrigin(origins = ["https://music.shicks255.com"])
     @Logged
     @Timed
     fun getArtistScrobblesGrouped(
@@ -102,7 +98,6 @@ class ScrobbleController(
     }
 
     @GetMapping("/albumsGrouped")
-    @CrossOrigin(origins = ["https://music.shicks255.com"])
     @Logged
     @Timed
     fun getAlbumScrobblesGrouped(
