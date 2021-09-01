@@ -8,7 +8,6 @@ import com.steven.hicks.lastFmService.services.LastFmLoadingService
 import com.steven.hicks.lastFmService.services.StatsService
 import io.micrometer.core.annotation.Timed
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -26,7 +25,6 @@ class UserController(
 ) {
 
     @GetMapping("/stats")
-    @CrossOrigin(origins = ["https://music.shicks255.com"])
     @Logged
     @Timed
     fun getUserStats(
@@ -38,7 +36,6 @@ class UserController(
 
     @PostMapping("/load")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @CrossOrigin(origins = ["https://music.shicks255.com"])
     @Logged
     @Timed
     fun loadScrobbles(
@@ -52,7 +49,6 @@ class UserController(
     }
 
     @GetMapping("/loadStatus")
-    @CrossOrigin(origins = ["https://music.shicks255.com"])
     @Logged
     @Timed
     fun getLoadStatus(

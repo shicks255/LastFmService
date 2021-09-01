@@ -3,7 +3,6 @@ package com.steven.hicks.lastFmService.controllers
 import com.steven.hicks.lastFmService.aspects.Logged
 import com.steven.hicks.lastFmService.services.ScrobbleService
 import io.micrometer.core.annotation.Timed
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -16,7 +15,6 @@ class TypeAheadController(
 ) {
 
     @GetMapping("/artists")
-    @CrossOrigin(origins = ["https://music.shicks255.com"])
     @Logged
     @Timed
     fun getArtists(
@@ -27,7 +25,6 @@ class TypeAheadController(
     }
 
     @GetMapping("/albums")
-    @CrossOrigin(origins = ["https://music.shicks255.com"])
     @Logged
     @Timed
     fun getAlbums(
