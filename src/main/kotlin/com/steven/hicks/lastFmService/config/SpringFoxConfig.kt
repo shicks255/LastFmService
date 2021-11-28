@@ -3,15 +3,20 @@ package com.steven.hicks.lastFmService.config
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.info.License
+import io.swagger.v3.oas.models.servers.Server
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import java.net.InetAddress
 
 @Configuration
 class SpringFoxConfig {
 
     @Bean
     fun api(): OpenAPI {
+        val host = InetAddress.getLocalHost().hostAddress
+        println(host)
         return OpenAPI()
+            .addServersItem(Server().url("/"))
             .info(
                 Info()
                     .title("shicks255.com Last FM API")
