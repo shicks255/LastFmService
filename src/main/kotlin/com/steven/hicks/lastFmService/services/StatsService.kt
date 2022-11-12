@@ -24,10 +24,10 @@ class StatsService(
     @Logged
     fun getStats(userName: String): UserStats {
 
-        val oldestAndNewestArtist = GlobalScope.async { getOldestAndNewest(userName, "artist_name") }
-        val longestDormancyArtist = GlobalScope.async { getLongestDormancy(userName, "artist_name") }
-        val oldestAndNewestAlbum = GlobalScope.async { getOldestAndNewest(userName, "album_name") }
-        val longestDormancyAlbum = GlobalScope.async { getLongestDormancy(userName, "album_name") }
+        val oldestAndNewestArtist = GlobalScope.async { getOldestAndNewest(userName.toLowerCase(), "artist_name") }
+        val longestDormancyArtist = GlobalScope.async { getLongestDormancy(userName.toLowerCase(), "artist_name") }
+        val oldestAndNewestAlbum = GlobalScope.async { getOldestAndNewest(userName.toLowerCase(), "album_name") }
+        val longestDormancyAlbum = GlobalScope.async { getLongestDormancy(userName.toLowerCase(), "album_name") }
 
         val stats: UserStats = runBlocking {
             awaitAll(oldestAndNewestAlbum, longestDormancyAlbum, oldestAndNewestArtist, longestDormancyArtist)
@@ -69,7 +69,7 @@ class StatsService(
     @Logged
     suspend fun getLongestDormancy(userName: String, field: String): TimePeriodStat {
 
-        val result = scrobbleRepository.getLongestDormancy(userName, field)
+        val result = scrobbleRepository.getLongestDormancy(userName.toLowerCase(), field)
         val resu = result.first() as Array<*>
         return createStatsFromFields(resu, field)
     }
@@ -77,7 +77,7 @@ class StatsService(
     @Logged
     suspend fun getOldestAndNewest(userName: String, field: String): TimePeriodStat {
 
-        val result = scrobbleRepository.getOldestAndNewestPlay(userName, field)
+        val result = scrobbleRepository.getOldestAndNewestPlay(userName.toLowerCase(), field)
         return createStatsFromFields(result, field)
     }
 }

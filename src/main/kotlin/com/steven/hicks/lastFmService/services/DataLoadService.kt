@@ -40,7 +40,7 @@ class DataLoadService(
     @Logged
     fun startDataLoadTracking(userName: String, totalPages: Int): LoadStatus {
         val newTracking = LoadStatus(
-            userName = userName,
+            userName = userName.toLowerCase(),
             totalPages = totalPages,
             currentPage = totalPages,
             timestamp = OffsetDateTime.now()
@@ -51,7 +51,7 @@ class DataLoadService(
 
     @Logged
     fun updateDataLoadStatus(userName: String, page: Int): LoadStatus? {
-        val tracking = loadStatusRepository.findByIdOrNull(userName)
+        val tracking = loadStatusRepository.findByIdOrNull(userName.toLowerCase())
         if (tracking != null) {
             tracking.currentPage = page
             return loadStatusRepository.save(tracking)
@@ -61,12 +61,12 @@ class DataLoadService(
 
     @Logged
     fun endDataLoadStatus(userName: String) {
-        loadStatusRepository.deleteById(userName)
+        loadStatusRepository.deleteById(userName.toLowerCase())
     }
 
     @Logged
     fun getDataLoadStatus(userName: String): LoadStatusResponse {
-        val tracking = loadStatusRepository.findByIdOrNull(userName)
+        val tracking = loadStatusRepository.findByIdOrNull(userName.toLowerCase())
         if (tracking != null) {
 
             var currentPage = tracking.totalPages - tracking.currentPage

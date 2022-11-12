@@ -36,7 +36,7 @@ data class GroupedAlbumScrobbleRequest(
             }
             from(SCROBBLE)
             where(Condition(ALBUM_NAME, WhereOperator.NE, "''")) {
-                and(Condition(USER_NAME, EQ, userName.prepareStrQuery()))
+                and(Condition(USER_NAME, EQ, userName.prepareStrQuery().toLowerCase()))
                 if (!albumNames.isNullOrEmpty()) {
                     val inPieces =
                         albumNames.joinToString(separator = ",", prefix = "(", postfix = ")") { it.prepareStrQuery() }

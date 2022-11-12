@@ -56,7 +56,7 @@ data class ScrobbleRequest(
                 and(USER_NAME)
             }
             from(Table.SCROBBLE)
-            where(Condition(USER_NAME, EQ, userName.prepareStrQuery())) {
+            where(Condition(USER_NAME, EQ, userName.prepareStrQuery().toLowerCase())) {
                 if (!albumName.isNullOrEmpty())
                     and(Condition(ALBUM_NAME1, EQ, albumName.prepareStrQuery()))
                 if (!artistName.isNullOrEmpty())

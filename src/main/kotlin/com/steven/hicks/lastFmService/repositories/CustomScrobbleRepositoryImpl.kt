@@ -28,7 +28,7 @@ class CustomScrobbleRepositoryImpl(
         return entityManager
             .createNativeQuery(
                 "select distinct " +
-                    "album_name from SCROBBLE where user_name = '$userName' and lower(album_name) " +
+                    "album_name from SCROBBLE where user_name = '${userName.toLowerCase()}' and lower(album_name) " +
                     "like '%${typed.toLowerCase()}%'  order by album_name"
             )
             .resultList as List<String>
@@ -38,7 +38,7 @@ class CustomScrobbleRepositoryImpl(
         return entityManager
             .createNativeQuery(
                 "select distinct artist_name from SCROBBLE " +
-                    "where user_name = '$userName' and lower(artist_name) like '%${typed.toLowerCase()}%'  " +
+                    "where user_name = '${userName.toLowerCase()}' and lower(artist_name) like '%${typed.toLowerCase()}%'  " +
                     "order by artist_name"
             )
             .resultList as List<String>
@@ -89,7 +89,7 @@ class CustomScrobbleRepositoryImpl(
                 "max(time)-min(time) as rang " +
                 extraQuery +
                 "from scrobble " +
-                "where user_name = '$userName' " +
+                "where user_name = '${userName.toLowerCase()}' " +
                 "group by $type $extraQuery" +
                 "order by rang desc limit 1"
 
@@ -105,7 +105,7 @@ class CustomScrobbleRepositoryImpl(
                 "time - lag(time) over (partition by $type order by time) as last_play " +
                 extraQuery +
                 "from scrobble " +
-                "where user_name = '$userName' " +
+                "where user_name = '${userName.toLowerCase()}' " +
                 "order by last_play desc nulls last;"
 
         return entityManager.createNativeQuery(query).resultList as List<*>

@@ -29,7 +29,7 @@ data class GroupedArtistScrobbleRequest(
                 and(ScrobbleField.ARTIST_NAME)
             }
             from(Table.SCROBBLE)
-            where(Condition(ScrobbleField.USER_NAME, WhereOperator.EQ, userName.prepareStrQuery())) {
+            where(Condition(ScrobbleField.USER_NAME, WhereOperator.EQ, userName.prepareStrQuery().toLowerCase())) {
                 if (!artistNames.isNullOrEmpty()) {
                     val inPieces =
                         artistNames.joinToString(separator = ",", prefix = "(", postfix = ")") { it.prepareStrQuery() }

@@ -26,7 +26,7 @@ class UserNameCheckingFilter(val scrobbleRepository: ScrobbleRepository, val obj
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
 
         val userName = request?.getParameter("userName") ?: ""
-        if (!scrobbleRepository.findDistinctByUserName().contains(userName)) {
+        if (!scrobbleRepository.findDistinctByUserName().contains(userName.toLowerCase())) {
             val httpResponse = response as HttpServletResponse
             val typeAndResponseStatus = LastFmException.getTypeAndStatus(BAD_REQUEST_ERROR_CODE)
 

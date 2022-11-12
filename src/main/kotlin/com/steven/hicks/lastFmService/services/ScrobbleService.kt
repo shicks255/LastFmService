@@ -146,12 +146,12 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
 
     @Logged
     fun getArtists(userName: String, typed: String): List<String> {
-        return scrobbleRepository.suggestArtists(userName, typed)
+        return scrobbleRepository.suggestArtists(userName.toLowerCase(), typed)
     }
 
     @Logged
     fun getAlbums(userName: String, typed: String): List<String> {
-        return scrobbleRepository.suggestAlbums(userName, typed)
+        return scrobbleRepository.suggestAlbums(userName.toLowerCase(), typed)
     }
 
     private fun generateDateList(start: LocalDate, end: LocalDate, timeGroup: TimeGroup): List<LocalDate> {

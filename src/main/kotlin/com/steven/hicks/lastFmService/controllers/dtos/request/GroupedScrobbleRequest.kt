@@ -25,7 +25,7 @@ data class GroupedScrobbleRequest(
                 and(getTimeGroup(timeGroup))
             }
             from(Table.SCROBBLE)
-            where(Condition(ScrobbleField.USER_NAME, EQ, userName.prepareStrQuery())) {
+            where(Condition(ScrobbleField.USER_NAME, EQ, userName.prepareStrQuery().toLowerCase())) {
                 andTimeWhere(from, to)
             }
             groupBy(listOf(getTimeGroup(timeGroup)))

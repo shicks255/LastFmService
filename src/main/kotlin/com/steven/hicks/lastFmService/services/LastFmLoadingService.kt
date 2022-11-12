@@ -26,8 +26,8 @@ class LastFmLoadingService(
     @Logged
     fun loadRecent(userName: String): Int {
         var from: Long? = null
-        if (scrobbleRepository.existsScrobbleByUserNameEquals(userName)) {
-            val mostRecent = scrobbleRepository.findTopByUserNameOrderByTimeDesc(userName)
+        if (scrobbleRepository.existsScrobbleByUserNameEquals(userName.toLowerCase())) {
+            val mostRecent = scrobbleRepository.findTopByUserNameOrderByTimeDesc(userName.toLowerCase())
             from = mostRecent.time + 1
         }
 
@@ -35,22 +35,22 @@ class LastFmLoadingService(
         try {
             val recent = client.getRecentTracks(
                 from = from,
-                userName = userName
+                userName = userName.toLowerCase()
             )
 
             var pageNumber = recent.recenttracks.attr.totalPages
-            dataLoadService.startDataLoadTracking(userName, pageNumber)
+            dataLoadService.startDataLoadTracking(userName.toLowerCase(), pageNumber)
             while (pageNumber > 0) {
                 val recentTrax = client.getRecentTracks(
                     page = pageNumber,
                     from = from,
-                    userName = userName
+                    userName = userName.toLowerCase()
                 )
                 tracksLoaded += recentTrax.recenttracks.track.size
-                saveTracks(recentTrax, userName)
+                saveTracks(recentTrax, userName.toLowerCase())
                 logger.info("Finished loading page $pageNumber for $userName")
                 pageNumber -= 1
-                dataLoadService.updateDataLoadStatus(userName, pageNumber)
+                dataLoadService.updateDataLoadStatus(userName.toLowerCase(), pageNumber)
                 Thread.sleep(SLEEP_TIME)
             }
         } catch (e: LastFmException) {
@@ -69,7 +69,7 @@ class LastFmLoadingService(
             val scrobble = Scrobble(
                 id = 0,
                 name = it.name,
-                userName = userName,
+                userName = userName.toLowerCase(),
                 artistMbid = it.artist.mbid,
                 artistName = it.artist.text,
                 albumMbid = it.album.mbid,
