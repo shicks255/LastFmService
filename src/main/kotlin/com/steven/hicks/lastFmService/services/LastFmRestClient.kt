@@ -5,7 +5,6 @@ import com.steven.hicks.lastFmService.entities.LastFmException
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 
@@ -20,10 +19,10 @@ class LastFmRestClient {
         .build()
 
 //    @Value("\${lastfm.user}")
-    var lastFmDefaultUser: String = System.getenv("lastfm.user")
+    var lastFmDefaultUser: String = System.getenv("lastfm.user") ?: ""
 
 //    @Value("\${lastfm.apiKey}")
-    var lastFmKey: String = System.getenv("lastfm.apiKey")
+    var lastFmKey: String = System.getenv("lastfm.apiKey") ?: ""
 
     companion object {
         const val LAST_FM_URL = "https://ws.audioscrobbler.com"
