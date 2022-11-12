@@ -38,8 +38,8 @@ class CustomScrobbleRepositoryImpl(
         return entityManager
             .createNativeQuery(
                 "select distinct artist_name from SCROBBLE " +
-                    "where user_name = '${userName.toLowerCase()}' and lower(artist_name) like '%${typed.toLowerCase()}%'  " +
-                    "order by artist_name"
+                    "where user_name = '${userName.toLowerCase()}' and lower(artist_name) " +
+                    "like '%${typed.toLowerCase()}%' order by artist_name"
             )
             .resultList as List<String>
     }
