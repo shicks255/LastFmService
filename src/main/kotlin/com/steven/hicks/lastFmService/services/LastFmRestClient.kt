@@ -19,11 +19,11 @@ class LastFmRestClient {
         .baseUrl(LAST_FM_URL)
         .build()
 
-    @Value("\${lastfm.user}")
-    lateinit var lastFmDefaultUser: String
+//    @Value("\${lastfm.user}")
+    var lastFmDefaultUser: String = System.getenv("lastfm.user")
 
-    @Value("\${lastfm.apiKey}")
-    lateinit var lastFmKey: String
+//    @Value("\${lastfm.apiKey}")
+    var lastFmKey: String = System.getenv("lastfm.apiKey")
 
     companion object {
         const val LAST_FM_URL = "https://ws.audioscrobbler.com"

@@ -72,8 +72,7 @@ tasks.jacocoTestCoverageVerification {
                         "com/steven/hicks/lastFmService/entities/**",
                         "com/steven/hicks/lastFmService/repositories/**",
                         "com/steven/hicks/lastFmService/controllers/dtos/request/**",
-                        "com/steven/hicks/lastFmService/aspects/**",
-                        "com/steven/hicks/lastFmService/entities/**"
+                        "com/steven/hicks/lastFmService/aspects/**"
                     )
                 }
             }
