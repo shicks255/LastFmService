@@ -29,10 +29,11 @@ class ScheduledDataLoaderTest {
 
     @Test
     fun `should load data`() {
-        `when`(dataLoadService.createDataLoad())
+        `when`(dataLoadService.createDataLoad("shicks255"))
             .thenReturn(
                 DataLoad(
                     timestamp = OffsetDateTime.now(),
+                    userName = "shicks255",
                     status = DataLoadStatus.RUNNING,
                     count = 1,
                     error = null
@@ -43,7 +44,7 @@ class ScheduledDataLoaderTest {
 
         sut.loadDay()
 
-        verify(dataLoadService, times(1)).createDataLoad()
+        verify(dataLoadService, times(1)).createDataLoad("shicks255")
         verify(lastFmLoadingService, times(1)).loadRecent("shicks255")
         verify(dataLoadService, times(1)).saveDataLoad(any())
     }

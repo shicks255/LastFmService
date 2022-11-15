@@ -12,6 +12,7 @@ data class DataLoad(
     @Id
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var timestamp: OffsetDateTime,
+    var userName: String,
     @Enumerated(EnumType.STRING)
     var status: DataLoadStatus,
     var count: Int,

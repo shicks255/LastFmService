@@ -37,7 +37,7 @@ class DataLoadServiceTest {
         `when`(dataLoadRepository.save(any()))
             .thenReturn(any())
 
-        val result = sut.createDataLoad()
+        val result = sut.createDataLoad("shicks255")
         verify(dataLoadRepository, times(1)).save(any())
         assertThat(result.status).isEqualTo(DataLoadStatus.RUNNING)
         // assertThat(result.timestamp).isBefore(OffsetDateTime.now())
@@ -48,7 +48,7 @@ class DataLoadServiceTest {
         `when`(dataLoadRepository.save(any()))
             .thenReturn(any())
 
-        sut.saveDataLoad(DataLoad(OffsetDateTime.now(), DataLoadStatus.RUNNING, 0))
+        sut.saveDataLoad(DataLoad(OffsetDateTime.now(), "shicks255", DataLoadStatus.RUNNING, 0))
         verify(dataLoadRepository, times(1)).save(any())
     }
 

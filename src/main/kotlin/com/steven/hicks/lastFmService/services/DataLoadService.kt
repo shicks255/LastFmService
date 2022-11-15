@@ -23,9 +23,14 @@ class DataLoadService(
     }
 
     @Logged
-    fun createDataLoad(): DataLoad {
+    fun getMostRecentDataLoad(userName: String): DataLoad? {
+        return dataLoadRepository.getLastSuccessfull(userName.toLowerCase())
+    }
+
+    @Logged
+    fun createDataLoad(userName: String): DataLoad {
         val loadEvent = DataLoad(
-            OffsetDateTime.now(), DataLoadStatus.RUNNING, 0
+            OffsetDateTime.now(), userName.toLowerCase(), DataLoadStatus.RUNNING, 0
         )
 
         dataLoadRepository.save(loadEvent)

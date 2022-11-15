@@ -1,6 +1,8 @@
 package com.steven.hicks.lastFmService.services
 
 import com.steven.hicks.lastFmService.entities.LastFmException
+import com.steven.hicks.lastFmService.entities.data.DataLoad
+import com.steven.hicks.lastFmService.entities.data.DataLoadStatus
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.dto.Album
 import com.steven.hicks.lastFmService.entities.dto.Artist
@@ -22,6 +24,7 @@ import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.jupiter.MockitoExtension
+import java.time.OffsetDateTime
 
 @ExtendWith(MockitoExtension::class)
 class LastFmLoadingServiceTest {
@@ -60,6 +63,15 @@ class LastFmLoadingServiceTest {
             .thenReturn(createRecentTracks())
         `when`(client.getRecentTracks(from = 12345679L, to = null, page = null, userName = "shicks255"))
             .thenReturn(createRecentTracks())
+        `when`(dataLoadService.createDataLoad("shicks255"))
+            .thenReturn(
+                DataLoad(
+                    timestamp = OffsetDateTime.now(),
+                    userName = "shicks255",
+                    status = DataLoadStatus.RUNNING,
+                    count = 0
+                )
+            )
 
         val result = sut.loadRecent("shicks255")
 
@@ -87,6 +99,15 @@ class LastFmLoadingServiceTest {
     fun `should throw exception when calling last fm`() {
         `when`(scrobbleRepository.existsScrobbleByUserNameEquals("shicks255"))
             .thenReturn(false)
+        `when`(dataLoadService.createDataLoad("shicks255"))
+            .thenReturn(
+                DataLoad(
+                    timestamp = OffsetDateTime.now(),
+                    userName = "shicks255",
+                    status = DataLoadStatus.RUNNING,
+                    count = 0
+                )
+            )
         `when`(client.getRecentTracks("shicks255"))
             .then { throw LastFmException(5000) }
 
@@ -104,6 +125,15 @@ class LastFmLoadingServiceTest {
             .thenReturn(createRecentTracks())
         `when`(scrobbleRepository.save(any()))
             .then { throw Exception() }
+        `when`(dataLoadService.createDataLoad("shicks255"))
+            .thenReturn(
+                DataLoad(
+                    timestamp = OffsetDateTime.now(),
+                    userName = "shicks255",
+                    status = DataLoadStatus.RUNNING,
+                    count = 0
+                )
+            )
 
         assertThatThrownBy { sut.loadRecent("shicks255") }
             .isInstanceOf(LastFmException::class.java)

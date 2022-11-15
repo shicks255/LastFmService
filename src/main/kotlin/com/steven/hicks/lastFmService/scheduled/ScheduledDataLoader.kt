@@ -33,7 +33,7 @@ class ScheduledDataLoader(
 
         val time = measureTimeMillis {
             logger.info("Starting scheduled data load")
-            val loadEvent = dataLoadService.createDataLoad()
+            val loadEvent = dataLoadService.createDataLoad("shicks255")
             val finishedEvent: DataLoad = try {
                 val result = lastFmLoadingService.loadRecent(DataLoadService.MY_USERNAME)
                 loadEvent.copy(

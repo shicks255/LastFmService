@@ -2,9 +2,13 @@ package com.steven.hicks.lastFmService.services
 
 import com.steven.hicks.lastFmService.aspects.Logged
 import com.steven.hicks.lastFmService.entities.LastFmException
+import com.steven.hicks.lastFmService.entities.data.DataLoadStatus
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
+import java.time.Duration
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -19,6 +23,7 @@ class LastFmLoadingService(
     companion object {
         const val SLEEP_TIME = 2_000L
         const val SAVING_TRACKS_ERROR_CODE = 5001
+        const val RELOAD_THRESHOLD = 4
     }
 
     val logger: Logger = LoggerFactory.getLogger(LastFmLoadingService::class.java)
@@ -30,8 +35,15 @@ class LastFmLoadingService(
             val mostRecent = scrobbleRepository.findTopByUserNameOrderByTimeDesc(userName.toLowerCase())
             from = mostRecent.time + 1
         }
-
         var tracksLoaded = 0
+
+        val now = ZonedDateTime.now(ZoneId.systemDefault())
+        val lastDataLoad = dataLoadService.getMostRecentDataLoad(userName.toLowerCase())
+        if (lastDataLoad != null && Duration.between(lastDataLoad.timestamp, now).toHours() < RELOAD_THRESHOLD) {
+            return tracksLoaded
+        }
+
+        val loadEvent = dataLoadService.createDataLoad(userName.toLowerCase())
         try {
             val recent = client.getRecentTracks(
                 from = from,
@@ -54,10 +66,20 @@ class LastFmLoadingService(
                 Thread.sleep(SLEEP_TIME)
             }
         } catch (e: LastFmException) {
+            val finishedEvent = loadEvent.copy(
+                status = DataLoadStatus.ERROR,
+                count = tracksLoaded
+            )
             dataLoadService.endDataLoadStatus(userName)
+            dataLoadService.saveDataLoad(finishedEvent)
             throw e
         }
         dataLoadService.endDataLoadStatus(userName)
+        val finishedEvent = loadEvent.copy(
+            status = DataLoadStatus.SUCCESS,
+            count = tracksLoaded
+        )
+        dataLoadService.saveDataLoad(finishedEvent)
 
         return tracksLoaded
     }
