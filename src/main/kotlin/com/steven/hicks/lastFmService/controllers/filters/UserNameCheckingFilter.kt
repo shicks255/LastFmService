@@ -6,7 +6,6 @@ import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
-import org.springframework.stereotype.Component
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
@@ -14,7 +13,7 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-//@Component
+// @Component
 class UserNameCheckingFilter(val scrobbleRepository: ScrobbleRepository, val objectMapper: ObjectMapper) : Filter {
 
     companion object {
