@@ -5,7 +5,6 @@ import com.steven.hicks.lastFmService.entities.LastFmException
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.http.MediaType
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
@@ -29,16 +28,16 @@ class UserNameCheckingFilter(val scrobbleRepository: ScrobbleRepository, val obj
             val httpResponse = response as HttpServletResponse
             val typeAndResponseStatus = LastFmException.getTypeAndStatus(BAD_REQUEST_ERROR_CODE)
 
-            httpResponse.status = typeAndResponseStatus.second.value()
-            httpResponse.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-            httpResponse.outputStream.apply {
-                write(objectMapper.writeValueAsBytes(typeAndResponseStatus.first))
-                flush()
-                close()
-            }
+//            httpResponse.status = typeAndResponseStatus.second.value()
+//            httpResponse.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+//            httpResponse.outputStream.apply {
+//                write(objectMapper.writeValueAsBytes(typeAndResponseStatus.first))
+//                flush()
+//                close()
+//            }
 
             logger.info((request as HttpServletRequest).servletPath + " called with unknown user: $userName")
-            return
+//            return
         }
 
         chain!!.doFilter(request, response)
