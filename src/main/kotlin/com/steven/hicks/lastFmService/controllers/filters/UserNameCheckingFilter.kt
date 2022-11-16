@@ -14,7 +14,7 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-@Component
+//@Component
 class UserNameCheckingFilter(val scrobbleRepository: ScrobbleRepository, val objectMapper: ObjectMapper) : Filter {
 
     companion object {
