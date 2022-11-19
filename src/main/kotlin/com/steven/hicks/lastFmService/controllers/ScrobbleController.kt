@@ -135,7 +135,7 @@ class ScrobbleController(
     ): RunningTotalResponse {
         val fromm = if (from != null) LocalDate.parse(from) else LocalDate.of(2000, 1, 1)
         val too = if (to != null) LocalDate.parse(to) else LocalDate.now()
-        val request = ScrobbleRunningTotalRequest(userName, fromm, too, timeGroup)
+        val request = ScrobbleRunningTotalRequest(userName.toLowerCase(), fromm, too, timeGroup)
 
         return scrobbleService.getScrobbleRunningTotals(request)
     }
