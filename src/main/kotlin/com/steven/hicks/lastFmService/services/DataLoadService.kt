@@ -28,6 +28,11 @@ class DataLoadService(
     }
 
     @Logged
+    fun getRunningOrErrorDataLoad(userName: String): DataLoad? {
+        return dataLoadRepository.getFailedOrRunningDataLoad(userName.toLowerCase())
+    }
+
+    @Logged
     fun createDataLoad(userName: String): DataLoad {
         val loadEvent = DataLoad(
             OffsetDateTime.now(), userName.toLowerCase(), DataLoadStatus.RUNNING, 0
@@ -59,6 +64,7 @@ class DataLoadService(
         val tracking = loadStatusRepository.findByIdOrNull(userName.toLowerCase())
         if (tracking != null) {
             tracking.currentPage = page
+            tracking.timestamp = OffsetDateTime.now()
             return loadStatusRepository.save(tracking)
         }
         return null
@@ -83,12 +89,13 @@ class DataLoadService(
             return LoadStatusResponse(
                 currentPage = currentPage,
                 totalPages = tracking.totalPages,
-                message = message
+                message = message,
+                timestamp = tracking.timestamp
             )
         }
 
         return LoadStatusResponse(
-            0, 0, ""
+            0, 0, "", OffsetDateTime.now()
         )
     }
 }

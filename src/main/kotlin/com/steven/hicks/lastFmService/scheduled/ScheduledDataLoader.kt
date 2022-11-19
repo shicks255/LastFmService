@@ -8,7 +8,6 @@ import com.steven.hicks.lastFmService.services.LastFmLoadingService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import kotlin.system.measureTimeMillis
 
@@ -27,7 +26,7 @@ class ScheduledDataLoader(
     val logger: Logger = LoggerFactory.getLogger(ScheduledDataLoader::class.java)
 
     // Every 12 hours
-    @Scheduled(initialDelay = FIVE_MINUTE, fixedDelay = TWELVE_HOURS)
+//    @Scheduled(initialDelay = FIVE_MINUTE, fixedDelay = TWELVE_HOURS)
     @Logged
     fun loadDay() {
 

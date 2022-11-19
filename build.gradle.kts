@@ -54,7 +54,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
     testLogging {
         events = setOf(
-            org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED,
+//            org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED,
             org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
             org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
             org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED

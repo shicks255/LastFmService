@@ -4,6 +4,7 @@ import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedAlbumScrob
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedArtistScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
+import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRunningTotalRequest
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedAlbumResultMapper
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedArtistResultMapper
@@ -107,6 +108,21 @@ class CustomScrobbleRepositoryImpl(
                 "from scrobble " +
                 "where user_name = '${userName.toLowerCase()}' " +
                 "order by last_play desc nulls last;"
+
+        return entityManager.createNativeQuery(query).resultList as List<*>
+    }
+
+    override fun getScrobbleRunningTotals(request: ScrobbleRunningTotalRequest): List<*> {
+
+        val query =
+            "with data as (" +
+                "select to_char(to_timestamp(time), 'IYYY') as year," +
+                "count(*) " +
+                "from scrobble where user_name = '${request.userName}'" +
+                "group by to_char(to_timestamp(time), 'IYYY')) " +
+                "select year, sum(count) over (order by year " +
+                "asc rows between unbounded preceding and current row)" +
+                "from data;"
 
         return entityManager.createNativeQuery(query).resultList as List<*>
     }

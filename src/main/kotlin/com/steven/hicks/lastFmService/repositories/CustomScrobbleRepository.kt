@@ -4,6 +4,7 @@ import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedAlbumScrob
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedArtistScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
+import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRunningTotalRequest
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedAlbumResultMapper
 import com.steven.hicks.lastFmService.entities.resultMappers.GroupedArtistResultMapper
@@ -19,4 +20,5 @@ interface CustomScrobbleRepository {
     fun suggestAlbums(userName: String, typed: String): List<String>
     fun getOldestAndNewestPlay(userName: String, type: String): Array<*>
     fun getLongestDormancy(userName: String, type: String): List<*>
+    fun getScrobbleRunningTotals(request: ScrobbleRunningTotalRequest): List<*>
 }

@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import java.time.Period
 
 @WebMvcTest(controllers = [UserController::class])
@@ -121,7 +122,8 @@ class UserControllerTest {
                 LoadStatusResponse(
                     currentPage = 1,
                     totalPages = 1,
-                    message = "almost done"
+                    message = "almost done",
+                    timestamp = OffsetDateTime.now()
                 )
             )
 

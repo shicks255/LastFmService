@@ -6,15 +6,20 @@ import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedAlbumScrob
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedArtistScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
+import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRunningTotalRequest
 import com.steven.hicks.lastFmService.controllers.dtos.response.DataByDay
 import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByAlbum
 import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByArtist
 import com.steven.hicks.lastFmService.controllers.dtos.response.ResponseByAlbum
 import com.steven.hicks.lastFmService.controllers.dtos.response.ResponseByArtist
+import com.steven.hicks.lastFmService.controllers.dtos.response.RunningTotalResponse
+import com.steven.hicks.lastFmService.controllers.dtos.response.RunningTotals
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.Year
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.ofPattern
 
@@ -85,6 +90,45 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
         }
 
         return GroupedResponseByArtist(list)
+    }
+
+    @Logged
+    fun getScrobbleRunningTotals(request: ScrobbleRunningTotalRequest): RunningTotalResponse {
+        val data = scrobbleRepository.getScrobbleRunningTotals(request)
+
+        println(data)
+
+        val x = data.map {
+            val thi = it as Array<java.lang.Object>
+            RunningTotals(thi.get(0) as String, (thi.get(1) as BigDecimal).toInt())
+        }
+            .toMutableList()
+
+        val start = Year.parse(x.get(0).timeGroup)
+
+        val years = x.map { it.timeGroup }
+        for (i in start.value - 1..Year.now().value) {
+            val year = Year.of(i)
+            if (!years.contains(year.toString())) {
+                x.add(
+                    RunningTotals(year.toString(), 0)
+                )
+            }
+        }
+
+        var runningTotal = 0
+        x.sortBy { it.timeGroup }
+
+        val y = x.map {
+            if (it.count == 0) {
+                it.copy(count = runningTotal)
+            } else {
+                runningTotal = it.count
+                it
+            }
+        }
+
+        return RunningTotalResponse(y)
     }
 
     @Logged

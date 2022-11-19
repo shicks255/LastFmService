@@ -6,9 +6,11 @@ import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedAlbumScrob
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedArtistScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
+import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRunningTotalRequest
 import com.steven.hicks.lastFmService.controllers.dtos.response.DataByDay
 import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByAlbum
 import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByArtist
+import com.steven.hicks.lastFmService.controllers.dtos.response.RunningTotalResponse
 import com.steven.hicks.lastFmService.entities.ScrobbleField
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.queryBuilding.Direction
@@ -22,6 +24,7 @@ import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/v1/scrobbles")
+@Suppress("MagicNumber")
 class ScrobbleController(
     val scrobbleService: ScrobbleService,
 ) {
@@ -119,5 +122,21 @@ class ScrobbleController(
             empties = empties
         )
         return scrobbleService.getAlbumTracksGrouped(request)
+    }
+
+    @GetMapping("/runningTotals")
+    @Logged
+    @Timed
+    fun getScrobbleRunningTotals(
+        @RequestParam userName: String,
+        @RequestParam from: String?,
+        @RequestParam to: String?,
+        @RequestParam timeGroup: TimeGroup,
+    ): RunningTotalResponse {
+        val fromm = if (from != null) LocalDate.parse(from) else LocalDate.of(2000, 1, 1)
+        val too = if (to != null) LocalDate.parse(to) else LocalDate.now()
+        val request = ScrobbleRunningTotalRequest(userName, fromm, too, timeGroup)
+
+        return scrobbleService.getScrobbleRunningTotals(request)
     }
 }
