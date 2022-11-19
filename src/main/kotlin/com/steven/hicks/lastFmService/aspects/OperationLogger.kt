@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import java.util.Stack
+import java.util.UUID
 
 @Component
 @Aspect
@@ -24,7 +25,13 @@ class OperationLogger {
     val logger: Logger = LoggerFactory.getLogger(OperationLogger::class.java)
     val logContext = ThreadLocal<Stack<LoggedValueContainer>>()
 
-    data class LoggedValueContainer(val start: Long, val args: Array<*>, val clazz: String, val operation: String)
+    data class LoggedValueContainer(
+        val start: Long,
+        val args: Array<*>,
+        val clazz: String,
+        val operation: String,
+        val traceId: UUID
+    )
 
     @Pointcut("@annotation(com.steven.hicks.lastFmService.aspects.Logged)")
     fun pointCut() {
@@ -38,6 +45,7 @@ class OperationLogger {
         val args = joinPoint.args
         val clazz = joinPoint.signature.declaringType.name
         val operation = joinPoint.signature.name
+        val traceId = UUID.randomUUID()
 
         if (logContext.get() == null) {
             logContext.set(Stack())
@@ -48,7 +56,8 @@ class OperationLogger {
                 start = startTime,
                 args = args,
                 clazz = clazz,
-                operation = operation
+                operation = operation,
+                traceId = traceId
             )
         )
 
@@ -57,7 +66,8 @@ class OperationLogger {
             kv("class", clazz),
             kv("operation", operation),
             kv("args", args),
-            kv("stage", "start")
+            kv("stage", "start"),
+            kv("traceId", traceId)
         )
     }
 
@@ -100,7 +110,8 @@ class OperationLogger {
             kv("latency", latency),
             kv("result", returnValue),
             kv("status", status),
-            kv("statusCode", statusCode)
+            kv("statusCode", statusCode),
+            kv("traceId", loggedValues.traceId)
         )
     }
 }
