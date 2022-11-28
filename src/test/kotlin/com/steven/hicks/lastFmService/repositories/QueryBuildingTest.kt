@@ -92,6 +92,7 @@ class QueryBuildingTest {
             to = LocalDate.of(2021, 11, 1),
             timeGroup = TimeGroup.DAY,
             albumNames = listOf("Bleed American"),
+            artistNames = null,
             limit = 100,
             empties = false
         )
@@ -108,6 +109,7 @@ class QueryBuildingTest {
             to = LocalDate.of(2021, 11, 1),
             timeGroup = TimeGroup.DAY,
             albumNames = null,
+            artistNames = null,
             limit = 100,
             empties = true
         )
@@ -124,6 +126,7 @@ class QueryBuildingTest {
             to = LocalDate.of(2021, 11, 1),
             timeGroup = TimeGroup.DAY,
             albumNames = emptyList(),
+            artistNames = null,
             limit = 100,
             empties = null
         )

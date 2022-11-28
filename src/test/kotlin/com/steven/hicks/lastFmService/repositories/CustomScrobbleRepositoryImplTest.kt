@@ -73,6 +73,7 @@ class CustomScrobbleRepositoryImplTest {
             from = today,
             to = today,
             albumNames = listOf("Reign In Blood"),
+            artistNames = null,
             timeGroup = TimeGroup.DAY,
             limit = null
         )

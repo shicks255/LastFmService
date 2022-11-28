@@ -22,6 +22,7 @@ data class GroupedAlbumScrobbleRequest(
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     val to: LocalDate,
     val albumNames: List<String>?,
+    val artistNames: List<String>?,
     val timeGroup: TimeGroup,
     val limit: Int?,
     val empties: Boolean? = false
@@ -41,6 +42,11 @@ data class GroupedAlbumScrobbleRequest(
                     val inPieces =
                         albumNames.joinToString(separator = ",", prefix = "(", postfix = ")") { it.prepareStrQuery() }
                     and(Condition(ALBUM_NAME, IN, inPieces))
+                }
+                if (!artistNames.isNullOrEmpty()) {
+                    val inPieces =
+                        artistNames.joinToString(separator = ",", prefix = "(", postfix = ")") { it.prepareStrQuery() }
+                    and(Condition(ARTIST_NAME, IN, inPieces))
                 }
                 andTimeWhere(from, to)
             }

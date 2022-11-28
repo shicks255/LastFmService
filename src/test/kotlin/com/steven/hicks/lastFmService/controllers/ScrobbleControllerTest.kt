@@ -209,6 +209,7 @@ class ScrobbleControllerTest {
             from = LocalDate.of(2020, 3, 16),
             to = LocalDate.of(2021, 3, 16),
             albumNames = listOf("Reign In Blood"),
+            artistNames = emptyList(),
             timeGroup = TimeGroup.DAY,
             limit = null,
             empties = null

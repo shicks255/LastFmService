@@ -41,6 +41,7 @@ val mockedGroupedAlbumScrobbleRequest = GroupedAlbumScrobbleRequest(
     to = LocalDate.of(2021, 11, 1),
     timeGroup = TimeGroup.DAY,
     albumNames = listOf("Bleed American"),
+    artistNames = null,
     limit = null,
     empties = false
 )

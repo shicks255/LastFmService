@@ -108,6 +108,7 @@ class ScrobbleController(
         @RequestParam from: String?,
         @RequestParam to: String?,
         @RequestParam albumNames: List<String>?,
+        @RequestParam artistNames: List<String>?,
         @RequestParam timeGroup: TimeGroup,
         @RequestParam limit: Int?,
         @RequestParam empties: Boolean? = false
@@ -117,6 +118,7 @@ class ScrobbleController(
             from = LocalDate.parse(from),
             to = if (to != null) LocalDate.parse(to) else LocalDate.now(),
             albumNames = albumNames,
+            artistNames = artistNames,
             timeGroup = timeGroup,
             limit = limit,
             empties = empties

@@ -32,6 +32,7 @@ class LastFmLoadingService(
 
     val logger: Logger = LoggerFactory.getLogger(LastFmLoadingService::class.java)
 
+    @Logged
     fun loadTracks(userName: String, from: Long?, pn: Int, loadEvent: DataLoad): Int {
         var tracksLoaded = loadEvent.count
         var pageNumber = pn
