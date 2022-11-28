@@ -241,6 +241,7 @@ class ScrobbleControllerTest {
                 .param("from", "2020-03-16")
                 .param("to", "2021-03-16")
                 .param("albumNames", "Reign In Blood")
+                .param("artistNames", "")
                 .param("timeGroup", TimeGroup.DAY.toString())
         )
             .andExpect(status().isOk)
