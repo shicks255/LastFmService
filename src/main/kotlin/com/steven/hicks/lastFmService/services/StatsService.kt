@@ -1,6 +1,7 @@
 package com.steven.hicks.lastFmService.services
 
 import com.steven.hicks.lastFmService.aspects.Logged
+import com.steven.hicks.lastFmService.controllers.dtos.response.ArtistStats
 import com.steven.hicks.lastFmService.controllers.dtos.response.TimePeriodStat
 import com.steven.hicks.lastFmService.controllers.dtos.response.TimeStat
 import com.steven.hicks.lastFmService.controllers.dtos.response.UserStats
@@ -20,6 +21,29 @@ import java.time.ZoneOffset
 class StatsService(
     val scrobbleRepository: ScrobbleRepository
 ) {
+
+    @Logged
+    fun getArtistStats(userName: String, artistName: String): ArtistStats {
+        val rank = scrobbleRepository.getArtistRank(userName, artistName)
+        val mostRecent = scrobbleRepository.getMostRecent(userName, artistName)
+        val firstPlay = scrobbleRepository.getFirstPlay(userName, artistName)
+        val topFive = scrobbleRepository.getTopFivePlays(userName, artistName)
+
+        return ArtistStats(
+            rank = rank.first().toInt(),
+            firstPlay = listOf(
+                (firstPlay[0] as Array<Object>)[5],
+                (firstPlay[0] as Array<Object>)[2],
+                (firstPlay[0] as Array<Object>)[6]
+            ),
+            topFive = topFive,
+            mostRecent = listOf(
+                (mostRecent[0] as Array<Object>)[5],
+                (mostRecent[0] as Array<Object>)[2],
+                (mostRecent[0] as Array<Object>)[6]
+            )
+        )
+    }
 
     @Logged
     fun getStats(userName: String): UserStats {

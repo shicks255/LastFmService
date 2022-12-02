@@ -7,6 +7,7 @@ import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedArtistScro
 import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRunningTotalRequest
+import com.steven.hicks.lastFmService.controllers.dtos.response.ArtistStats
 import com.steven.hicks.lastFmService.controllers.dtos.response.DataByDay
 import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByAlbum
 import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByArtist
@@ -15,6 +16,7 @@ import com.steven.hicks.lastFmService.entities.ScrobbleField
 import com.steven.hicks.lastFmService.entities.data.Scrobble
 import com.steven.hicks.lastFmService.entities.queryBuilding.Direction
 import com.steven.hicks.lastFmService.services.ScrobbleService
+import com.steven.hicks.lastFmService.services.StatsService
 import io.micrometer.core.annotation.Timed
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -27,6 +29,7 @@ import java.time.LocalDate
 @Suppress("MagicNumber")
 class ScrobbleController(
     val scrobbleService: ScrobbleService,
+    val statsService: StatsService
 ) {
 
     @GetMapping
@@ -140,5 +143,15 @@ class ScrobbleController(
         val request = ScrobbleRunningTotalRequest(userName.toLowerCase(), fromm, too, timeGroup)
 
         return scrobbleService.getScrobbleRunningTotals(request)
+    }
+
+    @GetMapping("/artistStats")
+    @Logged
+    @Timed
+    fun getArtistStats(
+        @RequestParam artistName: String,
+        @RequestParam userName: String
+    ): ArtistStats {
+        return statsService.getArtistStats(userName.toLowerCase(), artistName.toLowerCase())
     }
 }

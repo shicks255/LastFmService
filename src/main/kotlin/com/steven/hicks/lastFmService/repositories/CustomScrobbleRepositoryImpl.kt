@@ -126,4 +126,42 @@ class CustomScrobbleRepositoryImpl(
 
         return entityManager.createNativeQuery(query).resultList as List<*>
     }
+
+    override fun getArtistRank(userName: String, artistName: String): List<String> {
+        val query = """
+            select rank from (
+            with counts as (select count(*) as c, artist_name from scrobble 
+            where user_name = '$userName' group by artist_name order by c desc)
+            select *, RANK() over (order by c desc) from counts) t where lower(t.artist_name) = '$artistName';
+        """.trimIndent()
+
+        return entityManager.createNativeQuery(query).resultList as List<String>
+    }
+
+    override fun getTopFivePlays(userName: String, artistName: String): List<*> {
+        val query = """
+            select count(*), name from scrobble where user_name = '$userName' 
+            and lower(artist_name) = '$artistName' group by name order by count(*) desc limit 5;
+        """.trimIndent()
+
+        return entityManager.createNativeQuery(query).resultList as List<*>
+    }
+
+    override fun getMostRecent(userName: String, artistName: String): List<*> {
+        val query = """
+            select * from scrobble where user_name = '$userName' 
+            and lower(artist_name) = '$artistName' order by time desc limit 1;
+        """.trimIndent()
+
+        return entityManager.createNativeQuery(query).resultList as List<*>
+    }
+
+    override fun getFirstPlay(userName: String, artistName: String): List<*> {
+        val query = """
+            select * from scrobble where user_name = '$userName' 
+            and lower(artist_name) = '$artistName' order by time asc limit 1;
+        """.trimIndent()
+
+        return entityManager.createNativeQuery(query).resultList as List<*>
+    }
 }
