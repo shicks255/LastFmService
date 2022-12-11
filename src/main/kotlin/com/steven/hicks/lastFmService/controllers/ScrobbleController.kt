@@ -47,8 +47,8 @@ class ScrobbleController(
     ): List<Scrobble> {
         val request = ScrobbleRequest(
             userName = userName,
-            artistName = artistName,
-            albumName = albumName,
+            artistName = artistName?.toLowerCase(),
+            albumName = albumName?.toLowerCase(),
             from = if (from != null) LocalDate.parse(from) else null,
             to = if (to != null) LocalDate.parse(to) else null,
             limit = limit,
@@ -94,7 +94,7 @@ class ScrobbleController(
             userName = userName,
             from = LocalDate.parse(from),
             to = if (to != null) LocalDate.parse(to) else LocalDate.now(),
-            artistNames = artistNames,
+            artistNames = artistNames?.map { it.toLowerCase() },
             timeGroup = timeGroup,
             limit = limit,
             empties = empties
@@ -120,8 +120,8 @@ class ScrobbleController(
             userName = userName,
             from = LocalDate.parse(from),
             to = if (to != null) LocalDate.parse(to) else LocalDate.now(),
-            albumNames = albumNames,
-            artistNames = artistNames,
+            albumNames = albumNames?.map { it.toLowerCase() },
+            artistNames = artistNames?.map { it.toLowerCase() },
             timeGroup = timeGroup,
             limit = limit,
             empties = empties

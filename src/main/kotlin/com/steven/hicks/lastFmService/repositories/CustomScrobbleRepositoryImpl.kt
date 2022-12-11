@@ -127,15 +127,15 @@ class CustomScrobbleRepositoryImpl(
         return entityManager.createNativeQuery(query).resultList as List<*>
     }
 
-    override fun getArtistRank(userName: String, artistName: String): List<String> {
+    override fun getArtistRank(userName: String, artistName: String): List<*> {
         val query = """
-            select rank from (
+            select artist_name, rank from (
             with counts as (select count(*) as c, artist_name from scrobble 
             where user_name = '$userName' group by artist_name order by c desc)
-            select *, RANK() over (order by c desc) from counts) t where lower(t.artist_name) = '$artistName';
+            select *, RANK() over (order by c desc) from counts) t;
         """.trimIndent()
 
-        return entityManager.createNativeQuery(query).resultList as List<String>
+        return entityManager.createNativeQuery(query).resultList as List<*>
     }
 
     override fun getTopFivePlays(userName: String, artistName: String): List<*> {

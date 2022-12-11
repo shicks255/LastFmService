@@ -21,7 +21,7 @@ interface CustomScrobbleRepository {
     fun getOldestAndNewestPlay(userName: String, type: String): Array<*>
     fun getLongestDormancy(userName: String, type: String): List<*>
     fun getScrobbleRunningTotals(request: ScrobbleRunningTotalRequest): List<*>
-    fun getArtistRank(userName: String, artistName: String): List<String>
+    fun getArtistRank(userName: String, artistName: String): List<*>
     fun getMostRecent(userName: String, artistName: String): List<*>
     fun getFirstPlay(userName: String, artistName: String): List<*>
     fun getTopFivePlays(userName: String, artistName: String): List<*>

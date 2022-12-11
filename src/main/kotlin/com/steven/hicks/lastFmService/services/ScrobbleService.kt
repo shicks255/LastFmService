@@ -53,7 +53,7 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
             val artist = it.artist
             val count = it.count
             val dbd = DataByDay(it.count, it.timeGroup)
-            artistDataMap.compute(artist) { s, t ->
+            artistDataMap.compute(artist) { _, t ->
                 if (t == null)
                     ResponseByArtist(artist, count, mutableListOf(dbd))
                 else {

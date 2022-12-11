@@ -29,8 +29,13 @@ class StatsService(
         val firstPlay = scrobbleRepository.getFirstPlay(userName, artistName)
         val topFive = scrobbleRepository.getTopFivePlays(userName, artistName)
 
+        val thing = rank.map { it as Array<Object> }
+        val artistRank = thing.indexOfFirst { it[0].toString().equals(artistName, ignoreCase = true) }
+
         return ArtistStats(
-            rank = rank.first().toInt(),
+            rank = thing[artistRank][1].toString().toInt(),
+            nextArtist = thing[artistRank + 1][0].toString(),
+            previousArtist = if (artistRank > 1) thing[artistRank - 1][0].toString() else null,
             firstPlay = listOf(
                 (firstPlay[0] as Array<Object>)[5],
                 (firstPlay[0] as Array<Object>)[2],

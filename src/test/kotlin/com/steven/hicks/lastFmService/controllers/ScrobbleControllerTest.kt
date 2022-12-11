@@ -62,8 +62,8 @@ class ScrobbleControllerTest {
 
         val request = ScrobbleRequest(
             userName = "shicks255",
-            artistName = "Pink Floyd",
-            albumName = "Animals",
+            artistName = "pink floyd",
+            albumName = "animals",
             from = LocalDate.of(2020, 3, 16),
             to = LocalDate.of(2021, 3, 16),
             limit = null,
@@ -79,9 +79,9 @@ class ScrobbleControllerTest {
                         "shicks255",
                         "Dogs",
                         "",
-                        "Pink Floyd",
+                        "pink floyd",
                         "",
-                        "Animals",
+                        "animals",
                         111L
                     )
                 )
@@ -91,8 +91,8 @@ class ScrobbleControllerTest {
             get("/api/v1/scrobbles")
                 .characterEncoding("utf-8")
                 .param("userName", "shicks255")
-                .param("artistName", "Pink Floyd")
-                .param("albumName", "Animals")
+                .param("artistName", "pink floyd")
+                .param("albumName", "animals")
                 .param("from", "2020-03-16")
                 .param("to", "2021-03-16")
         )
@@ -106,7 +106,7 @@ class ScrobbleControllerTest {
         verify(scrobbleService, times(1))
             .getTracks(request)
 
-        assertThat(response.response.contentAsString).contains("shicks255", "Pink Floyd", "Dogs", "Animals")
+        assertThat(response.response.contentAsString).contains("shicks255", "pink floyd", "Dogs", "animals")
     }
 
     @Test
@@ -155,7 +155,7 @@ class ScrobbleControllerTest {
             userName = "shicks255",
             from = LocalDate.of(2020, 3, 16),
             to = LocalDate.of(2021, 3, 16),
-            artistNames = listOf("Pink Floyd"),
+            artistNames = listOf("pink floyd"),
             timeGroup = TimeGroup.DAY,
             limit = null,
             empties = null
@@ -185,7 +185,7 @@ class ScrobbleControllerTest {
                 .param("userName", "shicks255")
                 .param("from", "2020-03-16")
                 .param("to", "2021-03-16")
-                .param("artistNames", "Pink Floyd")
+                .param("artistNames", "pink floyd")
                 .param("timeGroup", TimeGroup.DAY.toString())
 
         )
@@ -208,7 +208,7 @@ class ScrobbleControllerTest {
             userName = "shicks255",
             from = LocalDate.of(2020, 3, 16),
             to = LocalDate.of(2021, 3, 16),
-            albumNames = listOf("Reign In Blood"),
+            albumNames = listOf("reign in blood"),
             artistNames = emptyList(),
             timeGroup = TimeGroup.DAY,
             limit = null,

@@ -47,7 +47,7 @@ class QueryBuildingTest {
         )
         val query = scrobbleRequest.buildQuery()
         assertThat(query)
-            .isEqualTo("select scrobble.id, scrobble.album_name, scrobble.album_mbid, scrobble.artist_name, scrobble.artist_mbid, scrobble.name, scrobble.time, scrobble.user_name from SCROBBLE where scrobble.user_name = 'shicks255' and scrobble.album_name = 'Animals' and scrobble.time >= 1635660000 and scrobble.time < 1635660000 order by NAME desc limit 100")
+            .isEqualTo("select scrobble.id, scrobble.album_name, scrobble.album_mbid, scrobble.artist_name, scrobble.artist_mbid, scrobble.name, scrobble.time, scrobble.user_name from SCROBBLE where scrobble.user_name = 'shicks255' and lower(scrobble.album_name) = 'Animals' and scrobble.time >= 1635660000 and scrobble.time < 1635660000 order by NAME desc limit 100")
     }
 
     @Test
@@ -81,7 +81,7 @@ class QueryBuildingTest {
         )
         val query = scrobbleRequest.buildQuery()
         assertThat(query)
-            .isEqualTo("select scrobble.id, scrobble.album_name, scrobble.album_mbid, scrobble.artist_name, scrobble.artist_mbid, scrobble.name, scrobble.time, scrobble.user_name from SCROBBLE where scrobble.user_name = 'shicks255' and scrobble.artist_name = 'Pink Floyd' and scrobble.time >= 1635660000 and scrobble.time < 1635660000 order by NAME desc limit 100")
+            .isEqualTo("select scrobble.id, scrobble.album_name, scrobble.album_mbid, scrobble.artist_name, scrobble.artist_mbid, scrobble.name, scrobble.time, scrobble.user_name from SCROBBLE where scrobble.user_name = 'shicks255' and lower(scrobble.artist_name) = 'Pink Floyd' and scrobble.time >= 1635660000 and scrobble.time < 1635660000 order by NAME desc limit 100")
     }
 
     @Test
@@ -98,7 +98,7 @@ class QueryBuildingTest {
         )
         val query = groupedAlbumScrobbleRequest.buildQuery()
         assertThat(query)
-            .isEqualTo("select count(*), to_char(to_timestamp(time), 'YYYY-MM-DD'), scrobble.album_name, scrobble.artist_name from SCROBBLE where scrobble.album_name <> '' and scrobble.user_name = 'shicks255' and scrobble.album_name in ('Bleed American') and scrobble.time >= 1635660000 and scrobble.time < 1635746400 group by to_char(to_timestamp(time), 'YYYY-MM-DD'),scrobble.album_name,scrobble.artist_name")
+            .isEqualTo("select count(*), to_char(to_timestamp(time), 'YYYY-MM-DD'), scrobble.album_name, scrobble.artist_name from SCROBBLE where lower(scrobble.album_name) <> '' and scrobble.user_name = 'shicks255' and lower(scrobble.album_name) in ('Bleed American') and scrobble.time >= 1635660000 and scrobble.time < 1635746400 group by to_char(to_timestamp(time), 'YYYY-MM-DD'),scrobble.album_name,scrobble.artist_name")
     }
 
     @Test
@@ -115,7 +115,7 @@ class QueryBuildingTest {
         )
         val query = groupedAlbumScrobbleRequest.buildQuery()
         assertThat(query)
-            .isEqualTo("select count(*), to_char(to_timestamp(time), 'YYYY-MM-DD'), scrobble.album_name, scrobble.artist_name from SCROBBLE where scrobble.album_name <> '' and scrobble.user_name = 'shicks255' and scrobble.time >= 1635660000 and scrobble.time < 1635746400 group by to_char(to_timestamp(time), 'YYYY-MM-DD'),scrobble.album_name,scrobble.artist_name")
+            .isEqualTo("select count(*), to_char(to_timestamp(time), 'YYYY-MM-DD'), scrobble.album_name, scrobble.artist_name from SCROBBLE where lower(scrobble.album_name) <> '' and scrobble.user_name = 'shicks255' and scrobble.time >= 1635660000 and scrobble.time < 1635746400 group by to_char(to_timestamp(time), 'YYYY-MM-DD'),scrobble.album_name,scrobble.artist_name")
     }
 
     @Test
@@ -132,7 +132,7 @@ class QueryBuildingTest {
         )
         val query = groupedAlbumScrobbleRequest.buildQuery()
         assertThat(query)
-            .isEqualTo("select count(*), to_char(to_timestamp(time), 'YYYY-MM-DD'), scrobble.album_name, scrobble.artist_name from SCROBBLE where scrobble.album_name <> '' and scrobble.user_name = 'shicks255' and scrobble.time >= 1635660000 and scrobble.time < 1635746400 group by to_char(to_timestamp(time), 'YYYY-MM-DD'),scrobble.album_name,scrobble.artist_name")
+            .isEqualTo("select count(*), to_char(to_timestamp(time), 'YYYY-MM-DD'), scrobble.album_name, scrobble.artist_name from SCROBBLE where lower(scrobble.album_name) <> '' and scrobble.user_name = 'shicks255' and scrobble.time >= 1635660000 and scrobble.time < 1635746400 group by to_char(to_timestamp(time), 'YYYY-MM-DD'),scrobble.album_name,scrobble.artist_name")
     }
 
     @Test
@@ -148,7 +148,7 @@ class QueryBuildingTest {
         )
         val query = groupedArtistScrobbleRequest.buildQuery()
         assertThat(query)
-            .isEqualTo("select count(*), to_char(to_timestamp(time), 'YYYY-MM-DD'), scrobble.artist_name from SCROBBLE where scrobble.user_name = 'shicks255' and scrobble.artist_name in ('Slayer') and scrobble.time >= 1635660000 and scrobble.time < 1635746400 group by to_char(to_timestamp(time), 'YYYY-MM-DD'),scrobble.artist_name")
+            .isEqualTo("select count(*), to_char(to_timestamp(time), 'YYYY-MM-DD'), scrobble.artist_name from SCROBBLE where scrobble.user_name = 'shicks255' and lower(scrobble.artist_name) in ('Slayer') and scrobble.time >= 1635660000 and scrobble.time < 1635746400 group by to_char(to_timestamp(time), 'YYYY-MM-DD'),scrobble.artist_name")
     }
 
     @Test

@@ -83,7 +83,7 @@ class CustomScrobbleRepositoryImplTest {
         val selectConst =
             "select ${ScrobbleField.COUNT_STAR.field}, to_char(to_timestamp(time), 'YYYY-MM-DD'), ${ScrobbleField.ALBUM_NAME.field}, ${ScrobbleField.ARTIST_NAME.field} from ${Table.SCROBBLE}"
         val whereConst =
-            "where ${ScrobbleField.ALBUM_NAME.field} <> '' and ${ScrobbleField.USER_NAME.field} = 'shicks255' and ${ScrobbleField.ALBUM_NAME.field} in ('Reign In Blood') and ${ScrobbleField.TIME.field} >= $todayTimestamp and ${ScrobbleField.TIME.field} < $todayTimestamp"
+            "where lower(${ScrobbleField.ALBUM_NAME.field}) <> '' and ${ScrobbleField.USER_NAME.field} = 'shicks255' and lower(${ScrobbleField.ALBUM_NAME.field}) in ('Reign In Blood') and ${ScrobbleField.TIME.field} >= $todayTimestamp and ${ScrobbleField.TIME.field} < $todayTimestamp"
         val groupByConst =
             "group by to_char(to_timestamp(time), 'YYYY-MM-DD'),${ScrobbleField.ALBUM_NAME.field},${ScrobbleField.ARTIST_NAME.field}"
 
@@ -118,7 +118,7 @@ class CustomScrobbleRepositoryImplTest {
         val selectConst =
             "select ${ScrobbleField.COUNT_STAR.field}, to_char(to_timestamp(time), 'YYYY-MM-DD'), ${ScrobbleField.ARTIST_NAME.field} from ${Table.SCROBBLE}"
         val whereConst =
-            "where ${ScrobbleField.USER_NAME.field} = 'shicks255' and ${ScrobbleField.ARTIST_NAME.field} in ('Pink Floyd') and ${ScrobbleField.TIME.field} >= $todayTimestamp and ${ScrobbleField.TIME.field} < $todayTimestamp"
+            "where ${ScrobbleField.USER_NAME.field} = 'shicks255' and lower(${ScrobbleField.ARTIST_NAME.field}) in ('Pink Floyd') and ${ScrobbleField.TIME.field} >= $todayTimestamp and ${ScrobbleField.TIME.field} < $todayTimestamp"
         val groupByConst =
             "group by to_char(to_timestamp(time), 'YYYY-MM-DD'),${ScrobbleField.ARTIST_NAME.field}"
 

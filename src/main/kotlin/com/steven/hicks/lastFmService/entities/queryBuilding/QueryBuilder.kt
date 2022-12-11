@@ -91,7 +91,11 @@ class WhereBuilder(condition: Condition) {
 
     override fun toString(): String {
         return conditions.joinToString(separator = " and ", prefix = " where ") {
-            "${it.scrobbleField.field} ${it.op.field} ${it.item}"
+            if (it.scrobbleField == ScrobbleField.ARTIST_NAME || it.scrobbleField == ScrobbleField.ALBUM_NAME) {
+                "lower(${it.scrobbleField.field}) ${it.op.field} ${it.item}"
+            } else {
+                "${it.scrobbleField.field} ${it.op.field} ${it.item}"
+            }
         }
     }
 }
