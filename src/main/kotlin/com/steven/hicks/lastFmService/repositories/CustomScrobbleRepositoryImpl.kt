@@ -164,4 +164,12 @@ class CustomScrobbleRepositoryImpl(
 
         return entityManager.createNativeQuery(query).resultList as List<*>
     }
+
+    override fun getArtistScrobbleCount(userName: String, artistName: String): Int {
+        val query = """
+            select count(*) from scrobble where user_name = '$userName' and lower(artist_name) = '$artistName'
+        """.trimIndent()
+
+        return (entityManager.createNativeQuery(query).singleResult as BigInteger).toInt()
+    }
 }

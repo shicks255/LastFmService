@@ -96,8 +96,6 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
     fun getScrobbleRunningTotals(request: ScrobbleRunningTotalRequest): RunningTotalResponse {
         val data = scrobbleRepository.getScrobbleRunningTotals(request)
 
-        println(data)
-
         val x = data.map {
             val thi = it as Array<java.lang.Object>
             RunningTotals(thi.get(0) as String, (thi.get(1) as BigDecimal).toInt())

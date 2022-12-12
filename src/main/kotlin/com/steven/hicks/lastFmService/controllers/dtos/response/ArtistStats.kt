@@ -6,5 +6,6 @@ data class ArtistStats(
     val previousArtist: String?,
     val firstPlay: Any?,
     val mostRecent: Any?,
-    val topFive: List<*>
+    val topFive: List<*>,
+    val plays: Int
 )

@@ -25,4 +25,5 @@ interface CustomScrobbleRepository {
     fun getMostRecent(userName: String, artistName: String): List<*>
     fun getFirstPlay(userName: String, artistName: String): List<*>
     fun getTopFivePlays(userName: String, artistName: String): List<*>
+    fun getArtistScrobbleCount(userName: String, artistName: String): Int
 }
