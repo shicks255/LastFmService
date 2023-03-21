@@ -22,7 +22,7 @@ class OperationLogger {
         const val MAX_LOG_LENGTH = 2500
     }
 
-    val logger: Logger = LoggerFactory.getLogger(OperationLogger::class.java)
+    val logger: Logger = LoggerFactory.getLogger("OperationLogger")
     val logContext = ThreadLocal<Stack<LoggedValueContainer>>()
 
     data class LoggedValueContainer(
@@ -62,7 +62,7 @@ class OperationLogger {
         )
 
         logger.info(
-            "{} {} {} {}",
+            "{} {} {} {} {}",
             kv("class", clazz),
             kv("operation", operation),
             kv("args", args),
@@ -103,7 +103,7 @@ class OperationLogger {
         }
 
         logger.info(
-            "{} {} {} {} {} {} {}",
+            "{} {} {} {} {} {} {} {}",
             kv("class", clazz),
             kv("operation", operation),
             kv("stage", "end"),
