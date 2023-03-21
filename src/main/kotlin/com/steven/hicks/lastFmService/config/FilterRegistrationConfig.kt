@@ -1,6 +1,7 @@
 package com.steven.hicks.lastFmService.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.steven.hicks.lastFmService.controllers.filters.AccessLoggingFilter
 import com.steven.hicks.lastFmService.controllers.filters.UserNameCheckingFilter
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.springframework.boot.web.servlet.FilterRegistrationBean
@@ -19,5 +20,14 @@ class FilterRegistrationConfig(val scrobbleRepository: ScrobbleRepository, val o
         usernameCheckingFilter.addUrlPatterns("/api/v1/user/*")
 
         return usernameCheckingFilter
+    }
+
+    @Bean
+    fun accessLoggingFilter(): FilterRegistrationBean<AccessLoggingFilter> {
+        val accessLoggingFilter = FilterRegistrationBean<AccessLoggingFilter>()
+        accessLoggingFilter.filter = AccessLoggingFilter()
+        accessLoggingFilter.addUrlPatterns("/api/*")
+
+        return accessLoggingFilter
     }
 }

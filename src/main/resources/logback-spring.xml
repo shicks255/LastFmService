@@ -27,43 +27,19 @@
             <maxIndex>3</maxIndex>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>10MB</maxFileSize>
-        </triggeringPolicy>
-    </appender>
-
-    <appender name="RollingFileOld" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/spring-boot-logger-old.log</file>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%d %p ${SERVICE_NAME} %C{1.} [%t] %m%n</Pattern>
-        </encoder>
-
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${LOGS}/archived/spring-boot-logger-old-%i.log</fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>3</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>10MB</maxFileSize>
+            <maxFileSize>2MB</maxFileSize>
         </triggeringPolicy>
     </appender>
 
     <!-- LOG everything at INFO level -->
     <root level="info">
         <appender-ref ref="RollingFile"/>
-        <appender-ref ref="RollingFileOld"/>
         <appender-ref ref="Console"/>
     </root>
 
     <logger name="org.hibernate.sql" level="debug">
         <appender-ref ref="RollingFile"/>
-        <appender-ref ref="RollingFileOld"/>
         <appender-ref ref="Console"/>
     </logger>
-
-    <!-- LOG "com.baeldung*" at TRACE level -->
-    <!--    <logger name="com.baeldung" level="trace" additivity="false">-->
-    <!--        <appender-ref ref="RollingFile" />-->
-    <!--        <appender-ref ref="Console" />-->
-    <!--    </logger>-->
 
 </configuration>
