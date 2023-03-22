@@ -45,10 +45,14 @@ class OperationLogger {
         val args = joinPoint.args
         val clazz = joinPoint.signature.declaringType.name
         val operation = joinPoint.signature.name
-        val traceId = UUID.randomUUID()
+        var traceId = UUID.randomUUID()
 
         if (logContext.get() == null) {
             logContext.set(Stack())
+        }
+
+        if (logContext.get().size > 0) {
+            traceId = logContext.get().peek().traceId
         }
 
         logContext.get().push(
@@ -62,7 +66,7 @@ class OperationLogger {
         )
 
         logger.info(
-            "{} {} {} {} {}",
+            "Start operationLog",
             kv("class", clazz),
             kv("operation", operation),
             kv("args", args),
@@ -103,7 +107,7 @@ class OperationLogger {
         }
 
         logger.info(
-            "{} {} {} {} {} {} {} {}",
+            "End operationLog",
             kv("class", clazz),
             kv("operation", operation),
             kv("stage", "end"),

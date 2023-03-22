@@ -32,7 +32,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     implementation("org.postgresql:postgresql")
-    implementation("net.logstash.logback:logstash-logback-encoder:4.11")
+    implementation("net.logstash.logback:logstash-logback-encoder:5.2")
 
     implementation("org.springdoc:springdoc-openapi-ui:1.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")

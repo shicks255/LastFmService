@@ -18,7 +18,7 @@
         <file>${LOGS}/spring-boot-logger.log</file>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <customFields>{"service":"${SERVICE_NAME}"}</customFields>
-            <provider class="net.logstash.logback.composite.loggingevent.ArgumentsJsonProvider"/>
+<!--            <provider class="net.logstash.logback.composite.loggingevent.MessageJsonProvider"/>-->
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
@@ -32,7 +32,7 @@
     </appender>
 
     <!-- LOG everything at INFO level -->
-    <root level="info">
+    <root level="INFO">
         <appender-ref ref="RollingFile"/>
         <appender-ref ref="Console"/>
     </root>

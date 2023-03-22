@@ -21,7 +21,7 @@ class ExceptionHandler {
     fun handleAllExceptions(
         e: java.lang.Exception,
     ): ResponseEntity<ErrorResponse> {
-        logger.error("Unhandled exception caught: ${e.message}, ${e.stackTraceToString()}")
+        logger.error("Unhandled exception caught: ${e.message}", e)
         val er = ErrorResponse(0, "Unknown Error")
         return ResponseEntity(er, HttpStatus.INTERNAL_SERVER_ERROR)
     }
@@ -31,7 +31,7 @@ class ExceptionHandler {
     fun handleServiceException(
         e: LastFmException
     ): ResponseEntity<ErrorResponse> {
-        logger.error("Service exception caught: ${e.message}, ${e.stackTraceToString()}")
+        logger.error("Service exception caught: ${e.message}", e)
         return ResponseEntity(e.errorResponse, e.status)
     }
 }

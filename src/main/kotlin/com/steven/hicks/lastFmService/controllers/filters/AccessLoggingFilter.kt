@@ -1,6 +1,7 @@
 package com.steven.hicks.lastFmService.controllers.filters
 
-import net.logstash.logback.argument.StructuredArguments.kv
+import java.util.UUID
+import net.logstash.logback.argument.StructuredArguments.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.servlet.Filter
@@ -36,28 +37,31 @@ class AccessLoggingFilter : Filter {
         val referer = servletRequest.getHeader("referer")
         val userAgent = servletRequest.getHeader("user-agent")
         val clientIp = getClientIP(servletRequest)
+        val traceId = UUID.randomUUID()
 
         logger.info(
-            "{} {} {} {} {}",
+            "Start accessLog",
             kv("path", path),
             kv("referer", referer),
             kv("user-agent", userAgent),
             kv("client-ip", clientIp),
-            kv("stage", "start")
+            kv("stage", "start"),
+            kv("traceId", traceId)
         )
 
         val start = System.currentTimeMillis()
         chain!!.doFilter(request, response)
 
         logger.info(
-            "{} {} {} {} {} {} {}",
+            "End accessLog",
             kv("path", path),
             kv("referer", referer),
             kv("user-agent", userAgent),
             kv("client-ip", clientIp),
             kv("stage", "end"),
             kv("latency", System.currentTimeMillis() - start),
-            kv("responseStatus", (response as HttpServletResponse).status)
+            kv("responseStatus", (response as HttpServletResponse).status),
+            kv("traceId", traceId)
         )
     }
 
