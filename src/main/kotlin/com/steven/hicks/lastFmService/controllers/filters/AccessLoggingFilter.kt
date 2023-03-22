@@ -1,9 +1,9 @@
 package com.steven.hicks.lastFmService.controllers.filters
 
-import java.util.UUID
-import net.logstash.logback.argument.StructuredArguments.*
+import net.logstash.logback.argument.StructuredArguments.kv
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.UUID
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
