@@ -10,13 +10,13 @@ import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import javax.annotation.PreDestroy
-import org.springframework.scheduling.annotation.Async
 
 @Service
 @Suppress("ReturnCount")
