@@ -11,24 +11,19 @@ import java.util.concurrent.Executor
 @SpringBootApplication
 @EnableScheduling
 @EnableAsync
-class LastFmServiceApplication {
+class LastFmServiceApplication
 
-    companion object {
-        const val CORE_POOL = 2
-        const val MAX_POOL = 4
-    }
+fun main(args: Array<String>) {
+    runApplication<LastFmServiceApplication>(*args)
+}
 
-    fun main(args: Array<String>) {
-        runApplication<LastFmServiceApplication>(*args)
-    }
-
-    @Bean
-    fun taskExecutor(): Executor {
-        val executor = ThreadPoolTaskExecutor()
-        executor.corePoolSize = CORE_POOL
-        executor.maxPoolSize = MAX_POOL
-        executor.setThreadNamePrefix("ThreadPool-")
-        executor.initialize()
-        return executor
-    }
+@Bean
+@Suppress("MagicNumber")
+fun taskExecutor(): Executor {
+    val executor = ThreadPoolTaskExecutor()
+    executor.corePoolSize = 2
+    executor.maxPoolSize = 4
+    executor.setThreadNamePrefix("ThreadPool-")
+    executor.initialize()
+    return executor
 }
