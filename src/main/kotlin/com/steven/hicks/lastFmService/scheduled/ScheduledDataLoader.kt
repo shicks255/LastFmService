@@ -34,10 +34,9 @@ class ScheduledDataLoader(
             logger.info("Starting scheduled data load")
             val loadEvent = dataLoadService.createDataLoad("shicks255")
             val finishedEvent: DataLoad = try {
-                val result = lastFmLoadingService.loadRecent(DataLoadService.MY_USERNAME)
+                lastFmLoadingService.loadRecent(DataLoadService.MY_USERNAME)
                 loadEvent.copy(
                     status = DataLoadStatus.SUCCESS,
-                    count = result
                 )
             } catch (e: Exception) {
                 logger.error(e.localizedMessage, e.stackTraceToString())

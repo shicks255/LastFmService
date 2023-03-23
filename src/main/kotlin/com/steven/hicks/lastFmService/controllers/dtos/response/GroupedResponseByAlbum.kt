@@ -7,6 +7,11 @@ data class GroupedResponseByAlbum(
 data class ResponseByAlbum(
     val artistName: String,
     val albumName: String,
-    var total: Int,
-    val data: MutableList<DataByDay>,
-)
+    override var total: Int,
+    override val data: MutableList<DataByDay>,
+) : GroupedResponse
+
+interface GroupedResponse {
+    val total: Int
+    val data: MutableList<DataByDay>
+}

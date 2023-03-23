@@ -1,5 +1,6 @@
 package com.steven.hicks.lastFmService.services
 
+import com.steven.hicks.lastFmService.clients.LastFmRestClient
 import com.steven.hicks.lastFmService.entities.LastFmException
 import com.steven.hicks.lastFmService.entities.data.DataLoad
 import com.steven.hicks.lastFmService.entities.data.DataLoadStatus
@@ -12,11 +13,10 @@ import com.steven.hicks.lastFmService.entities.dto.RecentTrack
 import com.steven.hicks.lastFmService.entities.dto.RecentTracks
 import com.steven.hicks.lastFmService.entities.dto.Track
 import com.steven.hicks.lastFmService.repositories.ScrobbleRepository
-import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyList
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
@@ -73,10 +73,8 @@ class LastFmLoadingServiceTest {
                 )
             )
 
-        val result = sut.loadRecent("shicks255")
+        sut.loadRecent("shicks255")
 
-        assertThat(result)
-            .isEqualTo(1)
         verify(scrobbleRepository, times(1))
             .existsScrobbleByUserNameEquals("shicks255")
         verify(scrobbleRepository, times(1))
@@ -90,12 +88,12 @@ class LastFmLoadingServiceTest {
         verify(dataLoadService, times(1))
             .endDataLoadStatus("shicks255")
         verify(scrobbleRepository, times(1))
-            .save(any())
+            .saveAll(anyList())
         verifyNoMoreInteractions(scrobbleRepository)
         verifyNoMoreInteractions(client)
     }
 
-//    @Test
+    //    @Test
     fun `should throw exception when calling last fm`() {
         `when`(scrobbleRepository.existsScrobbleByUserNameEquals("shicks255"))
             .thenReturn(false)
@@ -123,7 +121,7 @@ class LastFmLoadingServiceTest {
             .thenReturn(createRecentTracks())
         `when`(client.getRecentTracks(from = null, to = null, page = 1, userName = "shicks255"))
             .thenReturn(createRecentTracks())
-        `when`(scrobbleRepository.save(any()))
+        `when`(scrobbleRepository.saveAll(anyList()))
             .then { throw Exception() }
         `when`(dataLoadService.createDataLoad("shicks255"))
             .thenReturn(

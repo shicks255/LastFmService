@@ -33,6 +33,11 @@ class DataLoadService(
     }
 
     @Logged
+    fun getRunningDataLoads(): List<DataLoad> {
+        return dataLoadRepository.getRunningDataLoads()
+    }
+
+    @Logged
     fun createDataLoad(userName: String): DataLoad {
         val loadEvent = DataLoad(
             OffsetDateTime.now(), userName.toLowerCase(), DataLoadStatus.RUNNING, 0

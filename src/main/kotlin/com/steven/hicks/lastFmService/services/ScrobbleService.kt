@@ -8,6 +8,7 @@ import com.steven.hicks.lastFmService.controllers.dtos.request.GroupedScrobbleRe
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRequest
 import com.steven.hicks.lastFmService.controllers.dtos.request.ScrobbleRunningTotalRequest
 import com.steven.hicks.lastFmService.controllers.dtos.response.DataByDay
+import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponse
 import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByAlbum
 import com.steven.hicks.lastFmService.controllers.dtos.response.GroupedResponseByArtist
 import com.steven.hicks.lastFmService.controllers.dtos.response.ResponseByAlbum
@@ -25,7 +26,9 @@ import java.time.format.DateTimeFormatter.ofPattern
 
 @Service
 @Suppress("MagicNumber")
-class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
+class ScrobbleService(
+    val scrobbleRepository: ScrobbleRepository
+) {
 
     @Logged
     fun getTracks(request: ScrobbleRequest): List<Scrobble> {
@@ -45,51 +48,57 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
     fun getArtistTracksGrouped(request: GroupedArtistScrobbleRequest): GroupedResponseByArtist {
         val artistDataMap = mutableMapOf<String, ResponseByArtist>()
 
-        val dates = generateDateList(request.from, request.to, request.timeGroup)
-        val formatter = getFormatter(request.timeGroup)
-
         val artistData = scrobbleRepository.getArtistGroupedScrobbles(request)
         artistData.forEach {
             val artist = it.artist
             val count = it.count
             val dbd = DataByDay(it.count, it.timeGroup)
-            artistDataMap.compute(artist) { _, t ->
-                if (t == null)
-                    ResponseByArtist(artist, count, mutableListOf(dbd))
+            artistDataMap.compute(artist) { key, value ->
+                if (value == null)
+                    ResponseByArtist(key, count, mutableListOf(dbd))
                 else {
-                    t.data.add(dbd)
-                    t.total += count
-                    t
+                    value.data.add(dbd)
+                    value.total += count
+                    value
                 }
             }
         }
 
-        var list = artistDataMap.values
+        var filteredList = artistDataMap.values
             .sortedByDescending { it.total }
             .take(request.limit ?: artistDataMap.size)
             .toList()
 
         if (request.empties == true) {
-            val allTimeGroups = dates.map {
-                it.format(formatter)
-            }
-            val emptyRecords = allTimeGroups.map {
-                DataByDay(0, it)
-            }
-
-            list = list.map { it ->
-                val da = it.data
-                val timeGroupsAdded = da.map { it.timeGroup }
-                val timeGroupsToAdd = emptyRecords.filter { !timeGroupsAdded.contains(it.timeGroup) }
-                da.addAll(timeGroupsToAdd)
-                da.sortBy { it.timeGroup }
-                it.copy(
-                    data = da
-                )
-            }
+            val dates = generateDateList(request.from, request.to, request.timeGroup)
+            val formatter = getFormatter(request.timeGroup)
+            filteredList = populateEmpties(dates, formatter, filteredList) as MutableList<ResponseByArtist>
         }
 
-        return GroupedResponseByArtist(list)
+        return GroupedResponseByArtist(filteredList)
+    }
+
+    @Logged
+    private fun populateEmpties(
+        dates: List<LocalDate>,
+        formatter: DateTimeFormatter,
+        list: List<GroupedResponse>
+    ): List<GroupedResponse> {
+        val allTimeGroups = dates.map {
+            it.format(formatter)
+        }
+        val emptyRecords = allTimeGroups.map {
+            DataByDay(0, it)
+        }
+
+        return list.map { it ->
+            val data = it.data
+            val timeGroupsAdded = data.map { it.timeGroup }
+            val timeGroupsToAdd = emptyRecords.filter { !timeGroupsAdded.contains(it.timeGroup) }
+            data.addAll(timeGroupsToAdd)
+            data.sortBy { it.timeGroup }
+            it
+        }
     }
 
     @Logged
@@ -97,15 +106,15 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
         val data = scrobbleRepository.getScrobbleRunningTotals(request)
 
         val x = data.map {
-            val thi = it as Array<java.lang.Object>
-            RunningTotals(thi.get(0) as String, (thi.get(1) as BigDecimal).toInt())
+            val dataArray = it as Array<Object>
+            RunningTotals(dataArray[0] as String, (dataArray[1] as BigDecimal).toInt())
         }
             .toMutableList()
 
-        val start = Year.parse(x.get(0).timeGroup)
-
+        val start = Year.parse(x[0].timeGroup).value - 1
         val years = x.map { it.timeGroup }
-        for (i in start.value - 1..Year.now().value) {
+
+        for (i in start..Year.now().value) {
             val year = Year.of(i)
             if (!years.contains(year.toString())) {
                 x.add(
@@ -132,9 +141,6 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
     @Logged
     fun getAlbumTracksGrouped(request: GroupedAlbumScrobbleRequest): GroupedResponseByAlbum {
         val albumDataMap = mutableMapOf<String, ResponseByAlbum>()
-
-        val dates = generateDateList(request.from, request.to, request.timeGroup)
-        val formatter = getFormatter(request.timeGroup)
 
         val albumData = scrobbleRepository.getAlbumGroupedScrobbles(request)
         albumData.forEach {
@@ -163,24 +169,9 @@ class ScrobbleService(val scrobbleRepository: ScrobbleRepository) {
             .toList()
 
         if (request.empties == true) {
-
-            val allTimeGroups = dates.map {
-                it.format(formatter)
-            }
-            val emptyRecords = allTimeGroups.map {
-                DataByDay(0, it)
-            }
-
-            list = list.map { it ->
-                val da = it.data
-                val timeGroupsAdded = da.map { it.timeGroup }
-                val timeGroupedToAdd = emptyRecords.filter { !timeGroupsAdded.contains(it.timeGroup) }
-                da.addAll(timeGroupedToAdd)
-                da.sortBy { it.timeGroup }
-                it.copy(
-                    data = da
-                )
-            }
+            val dates = generateDateList(request.from, request.to, request.timeGroup)
+            val formatter = getFormatter(request.timeGroup)
+            list = populateEmpties(dates, formatter, list) as MutableList<ResponseByAlbum>
         }
 
         return GroupedResponseByAlbum(list)

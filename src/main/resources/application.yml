@@ -2,12 +2,6 @@ server:
   port: 8686
 
 spring:
-#  datasource:
-#    url: jdbc:postgresql://192.168.1.39:5432/Lastfm
-#    username: shicks
-#    password:
-#    platform: postgres
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,9 +10,17 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+          batch_size: 25
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     open-in-view: false
+
+springdoc:
+  swagger-ui:
+    path: /swagger
+    display-request-duration: true
+    operations-sorter: "alpha"
+    tags-sorter: "alpha"
 
 lastfm:
   user: shicks255

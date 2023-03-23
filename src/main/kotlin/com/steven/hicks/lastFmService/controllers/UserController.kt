@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import java.util.concurrent.CompletableFuture
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -41,10 +40,7 @@ class UserController(
     fun loadScrobbles(
         @RequestParam userName: String
     ): HttpStatus {
-        CompletableFuture.supplyAsync {
-            lastFmLoadingService.loadRecent(userName)
-        }
-
+        lastFmLoadingService.loadRecent(userName)
         return HttpStatus.ACCEPTED
     }
 

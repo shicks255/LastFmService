@@ -1,5 +1,6 @@
 package com.steven.hicks.lastFmService.services
 
+import com.steven.hicks.lastFmService.clients.LastFmRestClient
 import com.steven.hicks.lastFmService.entities.LastFmException
 import com.steven.hicks.lastFmService.entities.dto.Album
 import com.steven.hicks.lastFmService.entities.dto.Artist

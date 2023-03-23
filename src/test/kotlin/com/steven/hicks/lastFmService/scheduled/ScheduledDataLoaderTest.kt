@@ -39,8 +39,8 @@ class ScheduledDataLoaderTest {
                     error = null
                 )
             )
-        `when`(lastFmLoadingService.loadRecent("shicks255"))
-            .thenReturn(1)
+//        `when`(lastFmLoadingService.loadRecent("shicks255"))
+//            .thenReturn(1)
 
         sut.loadDay()
 

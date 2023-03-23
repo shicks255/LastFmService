@@ -1,4 +1,4 @@
-package com.steven.hicks.lastFmService.services
+package com.steven.hicks.lastFmService.clients
 
 import com.steven.hicks.lastFmService.aspects.Logged
 import com.steven.hicks.lastFmService.entities.LastFmException
@@ -18,10 +18,8 @@ class LastFmRestClient {
         .baseUrl(LAST_FM_URL)
         .build()
 
-//    @Value("\${lastfm.user}")
     var lastFmDefaultUser: String = System.getenv("lastfm.user") ?: ""
 
-//    @Value("\${lastfm.apiKey}")
     var lastFmKey: String = System.getenv("lastfm.apiKey") ?: ""
 
     companion object {
