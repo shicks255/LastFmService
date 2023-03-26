@@ -162,5 +162,6 @@ class LastFmLoadingService(
                 )
             }
         }
+        logger.info("Shutdown tasks complete")
     }
 }

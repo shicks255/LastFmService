@@ -200,6 +200,12 @@ class ScrobbleService(
             dates.add(currentDate)
         }
 
+        if (timeGroup == TimeGroup.YEAR) {
+            dates.removeIf {
+                it.year > LocalDate.now().year
+            }
+        }
+
         return dates
     }
 

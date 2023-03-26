@@ -1,11 +1,14 @@
 package com.steven.hicks.lastFmService.aspects
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.ObjectMapper
 import net.logstash.logback.argument.StructuredArguments.kv
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
 import org.aspectj.lang.annotation.Pointcut
+import org.aspectj.lang.reflect.CodeSignature
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -16,7 +19,9 @@ import java.util.UUID
 
 @Component
 @Aspect
-class OperationLogger {
+class OperationLogger(
+    val objectMapper: ObjectMapper
+) {
 
     companion object {
         const val MAX_LOG_LENGTH = 2500
@@ -27,7 +32,7 @@ class OperationLogger {
 
     data class LoggedValueContainer(
         val start: Long,
-        val args: Array<*>,
+        val args: Map<String, Any>,
         val clazz: String,
         val operation: String,
         val traceId: UUID
@@ -55,10 +60,17 @@ class OperationLogger {
             traceId = logContext.get().peek().traceId
         }
 
+        val paramNames = (joinPoint.signature as CodeSignature).parameterNames
+        val argList = paramNames.zip(args)
+            .filter { x -> x.second != null }
+            .toMap()
+
+        val x = objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL).writeValueAsString(argList)
+
         logContext.get().push(
             LoggedValueContainer(
                 start = startTime,
-                args = args,
+                args = argList,
                 clazz = clazz,
                 operation = operation,
                 traceId = traceId
@@ -69,7 +81,7 @@ class OperationLogger {
             "Start operationLog",
             kv("class", clazz),
             kv("operation", operation),
-            kv("args", args),
+            kv("args", x),
             kv("stage", "start"),
             kv("traceId", traceId)
         )
@@ -89,7 +101,7 @@ class OperationLogger {
             returnValue = returnValue.substring(0, MAX_LOG_LENGTH)
         }
 
-        var statusCode: Int? = null
+        var statusCode: Int = 0
         var status = "success"
         if (returnedObject is ResponseEntity<*>) {
             statusCode = returnedObject.statusCode.value()
@@ -102,7 +114,7 @@ class OperationLogger {
             statusCode = returnedObject.value()
         }
 
-        if (statusCode == null && clazz.contains("controller")) {
+        if (clazz.contains("controller")) {
             statusCode = HttpStatus.OK.value()
         }
 

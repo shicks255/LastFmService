@@ -1,5 +1,8 @@
 package com.steven.hicks.lastFmService.entities
 
+import io.swagger.v3.oas.annotations.media.Schema
+
+@Schema(allowableValues = ["ID", "ALBUM_NAME", "ARTIST_NAME", "NAME", "TIME"], type = "String")
 enum class ScrobbleField(val field: String) {
 
     COUNT_STAR("count(*)") {

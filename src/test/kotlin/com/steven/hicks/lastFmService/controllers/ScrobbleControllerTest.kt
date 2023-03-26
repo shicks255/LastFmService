@@ -66,7 +66,7 @@ class ScrobbleControllerTest {
             albumName = "animals",
             from = LocalDate.of(2020, 3, 16),
             to = LocalDate.of(2021, 3, 16),
-            limit = null,
+            limit = 200,
             sort = null,
             direction = null
         )
@@ -157,7 +157,7 @@ class ScrobbleControllerTest {
             to = LocalDate.of(2021, 3, 16),
             artistNames = listOf("pink floyd"),
             timeGroup = TimeGroup.DAY,
-            limit = null,
+            limit = 200,
             empties = null
         )
 
@@ -211,7 +211,7 @@ class ScrobbleControllerTest {
             albumNames = listOf("reign in blood"),
             artistNames = emptyList(),
             timeGroup = TimeGroup.DAY,
-            limit = null,
+            limit = 200,
             empties = null
         )
 

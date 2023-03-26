@@ -1,0 +1,2 @@
+[*.{kt,kts}]
+import-ordering = disabled

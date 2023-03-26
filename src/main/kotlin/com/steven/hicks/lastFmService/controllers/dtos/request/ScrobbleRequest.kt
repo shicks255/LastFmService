@@ -14,7 +14,6 @@ import com.steven.hicks.lastFmService.entities.queryBuilding.Direction
 import com.steven.hicks.lastFmService.entities.queryBuilding.QueryBuilder
 import com.steven.hicks.lastFmService.entities.queryBuilding.WhereOperator.EQ
 import com.steven.hicks.lastFmService.prepareStrQuery
-import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate
 import com.steven.hicks.lastFmService.entities.ScrobbleField.ALBUM_NAME as ALBUM_NAME1
@@ -28,18 +27,6 @@ data class ScrobbleRequest(
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     val to: LocalDate?,
     val limit: Int?,
-    @Schema(
-        allowableValues = [
-            "ID",
-            "ALBUM_MBID",
-            "ALBUM_NAME",
-            "ARTIST_MBID",
-            "ARTIST_NAME",
-            "TIME",
-            "USER_NAME",
-            "NAME"
-        ]
-    )
     val sort: ScrobbleField?,
     val direction: Direction?
 ) : QueryRequest {
