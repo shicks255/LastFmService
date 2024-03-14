@@ -58,7 +58,7 @@ class LastFmLoadingService(
         }
 
         // if its been ran in the last 3 hours
-        val now = ZonedDateTime.now(ZoneId.systemDefault())
+        val now = OffsetDateTime.now(ZoneId.of("-04:00"))
         val lastDataLoad = dataLoadService.getMostRecentDataLoad(userName.toLowerCase())
         if (lastDataLoad != null && Duration.between(lastDataLoad.timestamp, now).toHours() < RELOAD_THRESHOLD) {
             return
