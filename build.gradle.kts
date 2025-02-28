@@ -18,6 +18,7 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 repositories {
     mavenCentral()
     jcenter()
+    maven("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven")
 }
 
 dependencies {
@@ -35,6 +36,7 @@ dependencies {
 
     implementation("org.springdoc:springdoc-openapi-ui:1.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2")
 
     implementation("io.micrometer:micrometer-registry-prometheus:latest.release")
 
