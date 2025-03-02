@@ -59,10 +59,10 @@ class StatsService(
         val longestDormancyArtist = GlobalScope.async { getLongestDormancy(userName.toLowerCase(), "artist_name") }
         val oldestAndNewestAlbum = GlobalScope.async { getOldestAndNewest(userName.toLowerCase(), "album_name") }
         val longestDormancyAlbum = GlobalScope.async { getLongestDormancy(userName.toLowerCase(), "album_name") }
-        val firstTo100Artist = GlobalScope.async { getFirstToX(userName.toLowerCase(),  100, "artist_name") }
-        val firstTo100Album = GlobalScope.async { getFirstToX(userName.toLowerCase(),  100, "album_name") }
-        val firstTo1000Artist = GlobalScope.async { getFirstToX(userName.toLowerCase(),  1000, "artist_name") }
-        val firstTo1000Album = GlobalScope.async { getFirstToX(userName.toLowerCase(),  1000, "album_name") }
+        val firstTo100Artist = GlobalScope.async { getFirstToX(userName.toLowerCase(), 100, "artist_name") }
+        val firstTo100Album = GlobalScope.async { getFirstToX(userName.toLowerCase(), 100, "album_name") }
+        val firstTo1000Artist = GlobalScope.async { getFirstToX(userName.toLowerCase(), 1000, "artist_name") }
+        val firstTo1000Album = GlobalScope.async { getFirstToX(userName.toLowerCase(), 1000, "album_name") }
         val firstTo100Song = GlobalScope.async { getFirstToX(userName.toLowerCase(), 100, "song_name") }
         val firstTo200Song = GlobalScope.async { getFirstToX(userName.toLowerCase(), 200, "song_name") }
 
