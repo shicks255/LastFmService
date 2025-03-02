@@ -81,13 +81,29 @@ class UserControllerTest {
             )
         )
 
+        val firstTo = TimePeriodStat(
+            name = "Pink Floyd",
+            extra = null,
+            timeStat = TimeStat(
+                oldest = LocalDate.now(),
+                newest = LocalDate.now(),
+                difference = Period.ofMonths(1)
+            )
+        )
+
         `when`(statsService.getStats("shicks255"))
             .thenReturn(
                 UserStats(
                     oldestAndNewestAlbum = oldestAndNewestStat,
                     oldestAndNewestArtist = oldestAndNewestStat,
                     longestDormancyAlbum = longestDormancyStat,
-                    longestDormancyArtist = longestDormancyStat
+                    longestDormancyArtist = longestDormancyStat,
+                    firstTo100Artist = firstTo,
+                    firstTo1000Album = firstTo,
+                    firstTo1000Artist = firstTo,
+                    firstTo100Song = firstTo,
+                    firstTo200Song = firstTo,
+                    firstTo100Album = firstTo,
                 )
             )
 

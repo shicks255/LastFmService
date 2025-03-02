@@ -172,4 +172,65 @@ class CustomScrobbleRepositoryImpl(
 
         return (entityManager.createNativeQuery(query).singleResult as BigInteger).toInt()
     }
+
+    override fun getFirstToXArtist(userName: String, threshold: Int): Array<*>? {
+        val query = """
+            with runningTotals as (
+	            select 
+		            artist_name,
+		            time, 
+		            count(*) over (partition by artist_name order by time asc) as running_count 
+	            from scrobble where user_name = '$userName'
+            ) select 
+                artist_name,
+                time 
+              from runningTotals 
+              where running_count = $threshold 
+              order by time asc; 
+        """.trimIndent()
+
+        return (entityManager.createNativeQuery(query).resultList as List<*>).firstOrNull() as Array<*>?
+    }
+
+    override fun getFirstToXAlbum(userName: String, threshold: Int): Array<*>? {
+        val query = """
+            with runningTotals as (
+	            select 
+		            artist_name,
+                    album_name,
+		            time, 
+		            count(*) over (partition by album_name, artist_name order by time asc) as running_count 
+	            from scrobble where user_name = '$userName'
+            ) select 
+                album_name,
+                artist_name,
+                time 
+              from runningTotals 
+              where running_count = $threshold 
+              order by time asc; 
+        """.trimIndent()
+
+        return (entityManager.createNativeQuery(query).resultList as List<*>).firstOrNull() as Array<*>?
+    }
+
+    override fun getFirstToXSong(userName: String, threshold: Int): Array<*>? {
+        val query = """
+            with runningTotals as (
+            	select 
+            		artist_name,
+            		name, 
+            		time, 
+            		count(*) over (partition by artist_name, name order by time asc) as running_count 
+            	from scrobble where user_name = '$userName'
+            ) select 
+                name, 
+                artist_name, 
+                time 
+              from runningTotals 
+              where running_count = $threshold 
+              order by time asc;
+        """.trimIndent()
+
+        return (entityManager.createNativeQuery(query).resultList as List<*>).firstOrNull() as Array<*>?
+    }
 }

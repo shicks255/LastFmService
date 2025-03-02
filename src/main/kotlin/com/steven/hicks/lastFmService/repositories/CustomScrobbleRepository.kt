@@ -26,4 +26,7 @@ interface CustomScrobbleRepository {
     fun getFirstPlay(userName: String, artistName: String): List<*>
     fun getTopFivePlays(userName: String, artistName: String): List<*>
     fun getArtistScrobbleCount(userName: String, artistName: String): Int
+    fun getFirstToXArtist(userName: String, threshold: Int): Array<*>?
+    fun getFirstToXAlbum(userName: String, threshold: Int): Array<*>?
+    fun getFirstToXSong(userName: String, threshold: Int): Array<*>?
 }

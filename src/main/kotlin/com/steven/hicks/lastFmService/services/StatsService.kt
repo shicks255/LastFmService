@@ -59,14 +59,37 @@ class StatsService(
         val longestDormancyArtist = GlobalScope.async { getLongestDormancy(userName.toLowerCase(), "artist_name") }
         val oldestAndNewestAlbum = GlobalScope.async { getOldestAndNewest(userName.toLowerCase(), "album_name") }
         val longestDormancyAlbum = GlobalScope.async { getLongestDormancy(userName.toLowerCase(), "album_name") }
+        val firstTo100Artist = GlobalScope.async { getFirstToX(userName.toLowerCase(),  100, "artist_name") }
+        val firstTo100Album = GlobalScope.async { getFirstToX(userName.toLowerCase(),  100, "album_name") }
+        val firstTo1000Artist = GlobalScope.async { getFirstToX(userName.toLowerCase(),  1000, "artist_name") }
+        val firstTo1000Album = GlobalScope.async { getFirstToX(userName.toLowerCase(),  1000, "album_name") }
+        val firstTo100Song = GlobalScope.async { getFirstToX(userName.toLowerCase(), 100, "song_name") }
+        val firstTo200Song = GlobalScope.async { getFirstToX(userName.toLowerCase(), 200, "song_name") }
 
         val stats: UserStats = runBlocking {
-            awaitAll(oldestAndNewestAlbum, longestDormancyAlbum, oldestAndNewestArtist, longestDormancyArtist)
+            awaitAll(
+                oldestAndNewestAlbum,
+                longestDormancyAlbum,
+                oldestAndNewestArtist,
+                longestDormancyArtist,
+                firstTo100Artist,
+                firstTo100Album,
+                firstTo1000Artist,
+                firstTo1000Album,
+                firstTo100Song,
+                firstTo200Song
+            )
             return@runBlocking UserStats(
                 oldestAndNewestArtist = oldestAndNewestArtist.await(),
                 longestDormancyArtist = longestDormancyArtist.await(),
                 oldestAndNewestAlbum = oldestAndNewestAlbum.await(),
-                longestDormancyAlbum = longestDormancyAlbum.await()
+                longestDormancyAlbum = longestDormancyAlbum.await(),
+                firstTo100Artist = firstTo100Artist.await(),
+                firstTo100Album = firstTo100Album.await(),
+                firstTo1000Artist = firstTo1000Artist.await(),
+                firstTo1000Album = firstTo1000Album.await(),
+                firstTo100Song = firstTo100Song.await(),
+                firstTo200Song = firstTo200Song.await(),
             )
         }
 
@@ -110,5 +133,39 @@ class StatsService(
 
         val result = scrobbleRepository.getOldestAndNewestPlay(userName.toLowerCase(), field)
         return createStatsFromFields(result, field)
+    }
+
+    @Logged
+    suspend fun getFirstToX(userName: String, threshold: Int, field: String): TimePeriodStat? {
+
+        val result: Array<*>? = when (field) {
+            "song_name" -> scrobbleRepository.getFirstToXSong(userName.toLowerCase(), threshold)
+            "artist_name" -> scrobbleRepository.getFirstToXArtist(userName.toLowerCase(), threshold)
+            "album_name" -> scrobbleRepository.getFirstToXAlbum(userName.toLowerCase(), threshold)
+            else -> null
+        }
+
+        if (result == null) {
+            return null
+        }
+
+        val name = result[0] as String
+        val extra = if (field == "song_name" || field == "album_name") {
+            result[1] as String
+        } else null
+
+        val time = if (field == "song_name" || field == "album_name") {
+            (result[2] as Double).toLong()
+        } else (result[1] as Double).toLong()
+
+        return TimePeriodStat(
+            name = name,
+            extra = extra,
+            timeStat = TimeStat(
+                oldest = LocalDate.ofInstant(Instant.ofEpochSecond(time), ZoneOffset.UTC),
+                newest = LocalDate.ofInstant(Instant.ofEpochSecond(time), ZoneOffset.UTC),
+                difference = Period.of(0, 0, 0),
+            )
+        )
     }
 }

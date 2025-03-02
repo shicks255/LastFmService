@@ -18,10 +18,7 @@ class LastFmRestClient {
         .baseUrl(LAST_FM_URL)
         .build()
 
-    var lastFmDefaultUser: String = System.getenv("lastfm.user") ?: ""
-
     var lastFmKey: String = System.getenv("lastfm.apiKey") ?: ""
-
     companion object {
         const val LAST_FM_URL = "https://ws.audioscrobbler.com"
         const val PAGE_LIMIT = 200

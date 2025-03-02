@@ -38,7 +38,6 @@ class LastFmRestClientTest {
     val sut = LastFmRestClient()
 
     init {
-        sut.lastFmDefaultUser = ""
         sut.lastFmKey = ""
     }
 
