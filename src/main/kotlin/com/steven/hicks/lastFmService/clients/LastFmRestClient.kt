@@ -18,9 +18,13 @@ class LastFmRestClient {
 
     var client: WebClient = WebClient
         .builder()
-        .clientConnector(ReactorClientHttpConnector(
-            HttpClient.create().resolver(DefaultAddressResolverGroup.INSTANCE)
-        ))
+        .clientConnector(
+            ReactorClientHttpConnector(
+                HttpClient.create().resolver(
+                    DefaultAddressResolverGroup.INSTANCE
+                )
+            )
+        )
         .baseUrl(LAST_FM_URL)
         .build()
 
